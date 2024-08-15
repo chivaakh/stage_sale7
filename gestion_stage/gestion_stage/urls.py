@@ -19,5 +19,6 @@ from django.urls import path,include
 
 urlpatterns = [
     path('admin/', admin.site.urls),
+    # ch
     path('',include('stage_moov.urls')),
 ]
