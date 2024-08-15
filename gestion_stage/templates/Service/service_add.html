@@ -1,0 +1,102 @@
+
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ajouter un Service</title>
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        body {
+            background-color: #f3f4f6;
+            font-family: 'Poppins', sans-serif;
+        }
+
+        h1 {
+            color: #2c3e50;
+            font-weight: bold;
+            margin-bottom: 40px;
+        }
+
+        .container {
+            max-width: 600px;
+            background: linear-gradient(135deg, #ffffff, #f9f9f9);
+            padding: 30px;
+            border-radius: 15px;
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
+        }
+
+        form {
+            margin-top: 20px;
+        }
+
+        form p {
+            margin-bottom: 20px;
+        }
+
+        input, select, textarea {
+            border-radius: 50px;
+            border: 1px solid #ccc;
+            padding: 10px 20px;
+            width: 100%;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+            transition: border-color 0.3s ease-in-out, box-shadow 0.3s ease-in-out;
+        }
+
+        input:focus, select:focus, textarea:focus {
+            border-color: #2980b9;
+            box-shadow: 0 4px 15px rgba(41, 128, 185, 0.4);
+            outline: none;
+        }
+
+        .btn-primary {
+            background-color: #2980b9;
+            color: white;
+            border-radius: 50px;
+            padding: 10px 20px;
+            font-size: 1rem;
+            transition: background-color 0.3s ease-in-out, box-shadow 0.3s ease-in-out;
+        }
+
+        .btn-primary:hover {
+            background-color: #1c5986;
+            box-shadow: 0 8px 15px rgba(41, 128, 185, 0.3);
+        }
+
+        .btn-secondary {
+            border-radius: 50px;
+            padding: 10px 20px;
+            font-size: 1rem;
+            color: #7f8c8d;
+            background-color: #ecf0f1;
+            border: none;
+            transition: background-color 0.3s ease-in-out;
+        }
+
+        .btn-secondary:hover {
+            background-color: #dce1e4;
+        }
+
+        .text-center {
+            margin-top: 30px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container mt-5">
+        <h1 class="text-center">Ajouter un Service</h1>
+        <form method="post">
+            {% csrf_token %}
+            {{ form.as_p }}
+            <div class="text-center">
+                <button type="submit" class="btn btn-primary">Ajouter</button>
+                <a href="{% url 'service_list' %}" class="btn btn-secondary">Annuler</a>
+            </div>
+        </form>
+    </div>
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.2/dist/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+</body>
+</html>
+

@@ -3,6 +3,9 @@ from .forms import UtilisateurForm,CandidateForm,ServiceForm
 from .models import Utilisateur
 from django.contrib.auth import authenticate, login
 from django.contrib.auth.decorators import login_required
+from .models import Service
+from django.shortcuts import render, get_object_or_404, redirect
+from django.db.models import Q
 # Create your views here.
 #les views pour gestions des utilisateur
 def create_utilisateur(request):
@@ -62,34 +65,40 @@ def create_candidate(request):
 
 
 #les views pour la service
-def create_service(request):
-    if request.method=='POST':
-        form=ServiceForm(request.POST)
-        if form .is_valid():
-            form.save()
-            return redirect('#')
+def service_list(request):
+    query = request.GET.get('q')
+    if query:
+        services = Service.objects.filter(Nom_service__icontains=query)
     else:
-        form=ServiceForm()
-    return render(request,'Service/ajouter_un_service.html',{'form':form})
-# @login_required
-# def admin_service_page(request):
-#     # Vérifiez si l'utilisateur est admin
-#     if request.user.role != 'admin':
-#         return redirect('no_access')  # Rediriger si l'utilisateur n'est pas un admin
+        services = Service.objects.all()
+    
+    return render(request, 'service/service_list.html', {'services': services, 'query': query})
 
-#     if request.method == 'POST':
-#         service_form = ServiceForm(request.POST)
-#         if service_form.is_valid():
-#             service_form.save()
-#             return redirect('admin_service_page')  # Rediriger après la création du service
-#     else:
-#         service_form = ServiceForm()
+# Rest of your views...
+def service_add(request):
+    if request.method == 'POST':
+        form = ServiceForm(request.POST)
+        if form.is_valid():
+            form.save()
+            return redirect('service_list')
+    else:
+        form = ServiceForm()
+    return render(request, 'service/service_add.html', {'form': form})
 
-#     utilisateurs = Utilisateur.objects.all()
+def service_edit(request, pk):
+    service = get_object_or_404(Service, pk=pk)
+    if request.method == 'POST':
+        form = ServiceForm(request.POST, instance=service)
+        if form.is_valid():
+            form.save()
+            return redirect('service_list')
+    else:
+        form = ServiceForm(instance=service)
+    return render(request, 'service/service_edit.html', {'form': form, 'service': service})
 
-#     context = {
-#         'service_form': service_form,
-#         'utilisateurs': utilisateurs,
-#     }
-#     return render(request, 'admin_service_page.html', context)
-
+def service_delete(request, pk):
+    service = get_object_or_404(Service, pk=pk)
+    if request.method == 'POST':
+        service.delete()
+        return redirect('service_list')
+    return render(request, 'service/service_delete.html', {'service': service})
