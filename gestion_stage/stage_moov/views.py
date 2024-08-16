@@ -3,6 +3,9 @@ from .forms import UtilisateurForm,CandidateForm,ServiceForm
 from .models import Utilisateur
 from django.contrib.auth import authenticate, login
 from django.contrib.auth.decorators import login_required
+from .models import Service,Utilisateur,Candidats,Demandes
+from django.shortcuts import render, get_object_or_404, redirect
+from django.db.models import Q
 # Create your views here.
 #les views pour gestions des utilisateur
 def create_utilisateur(request):
@@ -10,16 +13,16 @@ def create_utilisateur(request):
         form = UtilisateurForm(request.POST)
         if form.is_valid():
             form.save()
-            return redirect('hello')  # Replace 'success_url' with your desired redirect URL
+            return redirect('interface_principal')  
     else:
         form = UtilisateurForm()
     
     return render(request, 'gestions_users/create_utilisateur.html', {'form': form})
+
 def hello(request):
     return render(request,'gestions_users/hello.html',{'hello':'hello'})
-def interface_principal(request):
-    return render(request,'gestions_users/hello_user.html',{'home':'home'} )
-def home(request):
+#fonction pour la login
+def login(request):
     error_message = None  # Initialise la variable pour stocker les messages d'erreur
 
     if request.method == 'POST':
@@ -29,10 +32,14 @@ def home(request):
         if email and password:
         
             utilisateur = Utilisateur.objects.filter(Email=email).first()
-
             if utilisateur and utilisateur.check_password(password):
-               
-                return redirect('hello') 
+                if utilisateur and utilisateur.role.strip().lower() == 'admin':
+                    return redirect('interface_principal') 
+                elif utilisateur and utilisateur.role == 'RH':
+                     return redirect('gestion_demandes') 
+                else:
+                     return redirect('hello') 
+                
             else:
                 error_message = "Email ou mot de passe incorrect."
         else:
@@ -48,7 +55,7 @@ def home(request):
         'error_message': error_message, 
     })
 
-#les views pour les candidates
+#les views pour les creet de candidate
 def create_candidate(request):
     if request.method == 'POST':
         form = CandidateForm(request.POST, request.FILES)
@@ -60,36 +67,81 @@ def create_candidate(request):
     
     return render(request, 'gestions_candidate/create_candidate.html', {'form': form})
 
+#les fonction CRUD pour gestions les utilisateurs
+def interface_principal(request):
+    utilisateur=Utilisateur.objects.all()
+    return render(request,'gestions_users/Interface_principale.html',{'utilisateur': utilisateur} )
+def deletuser(request, id_user):
+    utilisateur = Utilisateur.objects.filter(Id_utilisateur=id_user).first()  
+    if utilisateur: 
+        utilisateur.delete()  
+    return redirect('interface_principal') 
 
+#RD pour la candidate
+def show_candidate(request):
+    candidate=Candidats.objects.all()
+    return render(request,'gestions_candidate/show_candidate.html',{'candidate':candidate})
+
+def delete_candidate(request,id_candidate):
+    candidate=Candidats.objects.filter(Id_candidat=id_candidate).first()
+    if candidate:
+        candidate.delete()
+    return redirect('show_candidate')
 #les views pour la service
-def create_service(request):
-    if request.method=='POST':
-        form=ServiceForm(request.POST)
-        if form .is_valid():
-            form.save()
-            return redirect('#')
+def service_list(request):
+    query = request.GET.get('q')
+    if query:
+        services = Service.objects.filter(Nom_service__icontains=query)
     else:
-        form=ServiceForm()
-    return render(request,'Service/ajouter_un_service.html',{'form':form})
-# @login_required
-# def admin_service_page(request):
-#     # Vérifiez si l'utilisateur est admin
-#     if request.user.role != 'admin':
-#         return redirect('no_access')  # Rediriger si l'utilisateur n'est pas un admin
+        services = Service.objects.all()
+    
+    return render(request, 'Service/service_list.html', {'services': services, 'query': query})
 
-#     if request.method == 'POST':
-#         service_form = ServiceForm(request.POST)
-#         if service_form.is_valid():
-#             service_form.save()
-#             return redirect('admin_service_page')  # Rediriger après la création du service
-#     else:
-#         service_form = ServiceForm()
+# Rest of your views...
+def service_add(request):
+    if request.method == 'POST':
+        form = ServiceForm(request.POST)
+        if form.is_valid():
+            form.save()
+            return redirect('service_list')
+    else:
+        form = ServiceForm()
+    return render(request, 'Service/service_add.html', {'form': form})
 
-#     utilisateurs = Utilisateur.objects.all()
+def service_edit(request, pk):
+    service = get_object_or_404(Service, pk=pk)
+    if request.method == 'POST':
+        form = ServiceForm(request.POST, instance=service)
+        if form.is_valid():
+            form.save()
+            return redirect('service_list')
+    else:
+        form = ServiceForm(instance=service)
+    return render(request, 'Service/service_edit.html', {'form': form, 'service': service})
 
-#     context = {
-#         'service_form': service_form,
-#         'utilisateurs': utilisateurs,
-#     }
-#     return render(request, 'admin_service_page.html', context)
+def service_delete(request, pk):
+    service = get_object_or_404(Service, pk=pk)
+    if request.method == 'POST':
+        service.delete()
+        return redirect('service_list')
+    return render(request, 'Service/service_delete.html', {'service': service})
 
+#pour gestion des demandes
+def gestion_demandes(request):
+    if not request.user.is_authenticated:
+        return redirect('login')
+    demandes = Demandes.objects.all()
+    return render(request, 'gestion_demande/gestion_demandes.html',{'demandes': demandes})
+#les views pour accepter
+def accepter_demande(request, demande_id):
+   demande = Demandes.objects.filter(Id_demande=demande_id).first()
+   demande.statut = 'accepter'
+   demande.save()
+   return redirect('gestion_demandes')
+
+#pour la rejet
+def rejeter_demande(request, demande_id):
+    demande = Demandes.objects.filter(Id_demande=demande_id).first()
+    demande.statut = 'rejete'
+    demande.save()
+    return redirect('gestion_demandes')
