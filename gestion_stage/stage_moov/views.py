@@ -6,6 +6,8 @@ from django.contrib.auth.decorators import login_required
 from .models import Service,Utilisateur,Candidats,Demandes
 from django.shortcuts import render, get_object_or_404, redirect
 from django.db.models import Q
+from .models import Notification
+from .forms import CandidatForm
 # Create your views here.
 #les views pour gestions des utilisateur
 def create_utilisateur(request):
@@ -65,7 +67,7 @@ def create_candidate(request):
     else:
         form = CandidateForm()
     
-    return render(request, 'gestions_candidate/create_candidate.html', {'form': form})
+    return render(request, 'Candidats/code.html', {'form': form})
 
 #les fonction CRUD pour gestions les utilisateurs
 def interface_principal(request):
@@ -80,13 +82,33 @@ def deletuser(request, id_user):
 #RD pour la candidate
 def show_candidate(request):
     candidate=Candidats.objects.all()
-    return render(request,'gestions_candidate/show_candidate.html',{'candidate':candidate})
+    return render(request,'Candidats/show_candidat.html',{'candidate':candidate})
 
 def delete_candidate(request,id_candidate):
     candidate=Candidats.objects.filter(Id_candidat=id_candidate).first()
     if candidate:
         candidate.delete()
-    return redirect('show_candidate')
+    return redirect('show_candidat')
+
+#pour gestion des demandes
+def gestion_demandes(request):
+    if not request.user.is_authenticated:
+        return redirect('login')
+    demandes = Demandes.objects.all()
+    return render(request, 'gestion_demande/gestion_demandes.html',{'demandes': demandes})
+#les views pour accepter
+def accepter_demande(request, demande_id):
+   demande = Demandes.objects.filter(Id_demande=demande_id).first()
+   demande.statut = 'accepter'
+   demande.save()
+   return redirect('gestion_demandes')
+
+#pour la rejet
+def rejeter_demande(request, demande_id):
+    demande = Demandes.objects.filter(Id_demande=demande_id).first()
+    demande.statut = 'rejete'
+    demande.save()
+    return redirect('gestion_demandes')
 #les views pour la service
 def service_list(request):
     query = request.GET.get('q')
@@ -124,24 +146,24 @@ def service_delete(request, pk):
     if request.method == 'POST':
         service.delete()
         return redirect('service_list')
-    return render(request, 'Service/service_delete.html', {'service': service})
+    return render(request, 'service/service_delete.html', {'service': service})
 
-#pour gestion des demandes
-def gestion_demandes(request):
-    if not request.user.is_authenticated:
-        return redirect('login')
-    demandes = Demandes.objects.all()
-    return render(request, 'gestion_demande/gestion_demandes.html',{'demandes': demandes})
-#les views pour accepter
-def accepter_demande(request, demande_id):
-   demande = Demandes.objects.filter(Id_demande=demande_id).first()
-   demande.statut = 'accepter'
-   demande.save()
-   return redirect('gestion_demandes')
+def enregistrer_candidat(request):
+    if request.method == 'POST':
+        form = CandidatForm(request.POST, request.FILES)
+        if form.is_valid():
+            form.save()
+            return redirect('confirmation')  # Redirigez vers une page de confirmation ou autre
+    else:
+        form = CandidatForm()
+    return render(request, 'Candidats/candidats.html', {'form': form})
 
-#pour la rejet
-def rejeter_demande(request, demande_id):
-    demande = Demandes.objects.filter(Id_demande=demande_id).first()
-    demande.statut = 'rejete'
-    demande.save()
-    return redirect('gestion_demandes')
+def confirmation(request):
+    return render(request, 'Candidats/confirmation.html')
+
+def form_candidat(request):
+    return render(request, 'Candidats/code.html')
+
+def notifications_view(request):
+    notifications = Notification.objects.filter(utilisateur=request.user, statut="non lu")
+    return render(request, 'notifications.html', {'notifications': notifications})
