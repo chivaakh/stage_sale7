@@ -50,4 +50,8 @@ class ServiceForm(forms.ModelForm):
         if commit:
             service.save()
         return service
+class CandidatForm(forms.ModelForm):
+    class Meta:
+        model = Candidats
+        fields = ['Nom_complet', 'universite', 'niveau_academique', 'specialite', 'Date_Naissance', 'email', 'telephone', 'cv', 'lettre_motivation', 'demande', 'periode']
     
