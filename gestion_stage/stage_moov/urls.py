@@ -11,4 +11,8 @@ urlpatterns=[
     path('services/add/', views.service_add, name='service_add'),
     path('services/edit/<int:pk>/', views.service_edit, name='service_edit'),
     path('services/delete/<int:pk>/', views.service_delete, name='service_delete'),
+    path('notifications/', views.notifications_view, name='notifications'),
+    path('enregistrer/', views.enregistrer_candidat, name='enregistrer_candidat'),
+    path('confirmation/', views.confirmation, name='confirmation'),
+    path('form_candidat/', views.form_candidat, name='form_candidat'),
 ]

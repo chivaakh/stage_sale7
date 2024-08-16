@@ -6,6 +6,8 @@ from django.contrib.auth.decorators import login_required
 from .models import Service
 from django.shortcuts import render, get_object_or_404, redirect
 from django.db.models import Q
+from .models import Notification
+from .forms import CandidatForm
 # Create your views here.
 #les views pour gestions des utilisateur
 def create_utilisateur(request):
@@ -102,3 +104,23 @@ def service_delete(request, pk):
         service.delete()
         return redirect('service_list')
     return render(request, 'service/service_delete.html', {'service': service})
+
+def enregistrer_candidat(request):
+    if request.method == 'POST':
+        form = CandidatForm(request.POST, request.FILES)
+        if form.is_valid():
+            form.save()
+            return redirect('confirmation')  # Redirigez vers une page de confirmation ou autre
+    else:
+        form = CandidatForm()
+    return render(request, 'Candidats/candidats.html', {'form': form})
+
+def confirmation(request):
+    return render(request, 'Candidats/confirmation.html')
+
+def form_candidat(request):
+    return render(request, 'Candidats/code.html')
+
+def notifications_view(request):
+    notifications = Notification.objects.filter(utilisateur=request.user, statut="non lu")
+    return render(request, 'notifications.html', {'notifications': notifications})
