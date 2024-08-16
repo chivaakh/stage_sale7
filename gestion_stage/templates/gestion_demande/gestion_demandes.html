@@ -1,0 +1,31 @@
+{% load static %}
+<head>
+    <link href="{% static 'css/table.css'%}" rel="stylesheet">
+</head>
+<h1>Gestion des demandes</h1>
+<table border="1">
+    <tr>
+        <th>ID Demande</th>
+        <th>ID Candidat</th>
+        <th>ID Sujet</th>
+        <th>Date Soumission</th>
+        <th>Statut</th>
+        <th colspan="2">Actions</th>
+    </tr>
+    {% for demande in demandes %}
+    <tr>
+        <td>{{ demande.Id_demande }}</td>
+        <td>{{ demande.Id_candidat }}</td>
+        <td>{{ demande.Id_sujet }}</td>
+        <td>{{ demande.Date_soumission }}</td>
+        <td>{{ demande.statut }}</td>
+        <td>
+            <a href="{% url 'accepter_demande' demande.Id_demande %}">Accepter</a>
+        </td>
+        <td>
+            <a href="{% url 'rejeter_demande' demande.Id_demande %}">Rejeter</a>
+        </td>
+    </tr>
+    {% endfor %}
+</table>
+
