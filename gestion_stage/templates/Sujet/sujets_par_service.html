@@ -1,0 +1,10 @@
+<h1>Sujets disponibles pour {{ service.Nom_service }}</h1>
+
+<ul>
+    {% for sujet in sujets %}
+        <li>
+            {{ sujet.titre }} - {{ sujet.Description }}
+            <a href="{% url 'choisir_sujet' sujet.Id_sujet %}">Choisir ce sujet</a>
+        </li>
+    {% endfor %}
+</ul>

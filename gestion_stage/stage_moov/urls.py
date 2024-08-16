@@ -11,4 +11,8 @@ urlpatterns=[
     path('services/add/', views.service_add, name='service_add'),
     path('services/edit/<int:pk>/', views.service_edit, name='service_edit'),
     path('services/delete/<int:pk>/', views.service_delete, name='service_delete'),
-]
+    path('service/<int:service_id>/sujets/', views.sujets_par_service, name='sujets_par_service'),
+    path('choisir_sujet/<int:sujet_id>/', views.choisir_sujet, name='choisir_sujet'),
+    path('service/<int:service_id>/choix/', views.voir_choix_stagiaires, name='voir_choix_stagiaires'),
+    path('sujets/', views.liste_sujets, name='liste_sujets'),
+      ]

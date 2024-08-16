@@ -6,6 +6,7 @@ from django.contrib.auth.decorators import login_required
 from .models import Service
 from django.shortcuts import render, get_object_or_404, redirect
 from django.db.models import Q
+from .models import ChoixSujet,Sujet_stage
 # Create your views here.
 #les views pour gestions des utilisateur
 def create_utilisateur(request):
@@ -102,3 +103,47 @@ def service_delete(request, pk):
         service.delete()
         return redirect('service_list')
     return render(request, 'service/service_delete.html', {'service': service})
+
+
+def sujets_par_service(request, service_id):
+    service = get_object_or_404(Service, pk=service_id)
+    sujets = Sujet_stage.objects.filter(Id_service=service)
+
+    return render(request, 'sujets/sujets_par_service.html', {
+        'service': service,
+        'sujets': sujets
+    })
+
+
+def choisir_sujet(request, sujet_id):
+    sujet = get_object_or_404(Sujet_stage, pk=sujet_id)
+    candidat = request.user.candidats  # Assure-toi que l'utilisateur connecté est un candidat
+
+    # Vérifier si le candidat a déjà fait un choix
+    if ChoixSujet.objects.filter(candidat=candidat).exists():
+        # Redirige ou affiche un message indiquant que le choix est déjà fait
+        return redirect('sujets_par_service', service_id=sujet.Id_service.Id_service)
+
+    choix = ChoixSujet(candidat=candidat, sujet=sujet)
+    choix.save()
+
+    return redirect('confirmation_choix')
+
+def voir_choix_stagiaires(request, service_id):
+    service = get_object_or_404(Service, pk=service_id)
+    choix = ChoixSujet.objects.filter(sujet__Id_service=service)
+
+    return render(request, 'encadrants/voir_choix_stagiaires.html', {
+        'service': service,
+        'choix': choix
+    })
+
+def confirmation_choix(request):
+    return render(request, 'sujets/confirmation_choix.html', {'message': 'Votre choix a été enregistré.'})
+
+
+
+def liste_sujets(request):
+    sujets = Sujet_stage.objects.all()
+    return render(request, 'Sujet/liste_sujets.html', {'sujets': sujets})
+

@@ -1,0 +1,8 @@
+<h1>Liste des sujets de stage</h1>
+<ul>
+    {% for sujet in sujets %}
+    <li>
+        <a href="{% url 'choisir_sujet' sujet.Id_sujet %}">{{ sujet.titre }}</a> - {{ sujet.Description }}
+    </li>
+    {% endfor %}
+</ul>

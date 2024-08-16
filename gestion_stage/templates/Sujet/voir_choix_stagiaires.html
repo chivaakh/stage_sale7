@@ -1,0 +1,7 @@
+<h1>Choix des stagiaires pour {{ service.Nom_service }}</h1>
+
+<ul>
+    {% for choix in choix %}
+        <li>{{ choix.candidat.Nom_complet }} a choisi le sujet : {{ choix.sujet.titre }}</li>
+    {% endfor %}
+</ul>

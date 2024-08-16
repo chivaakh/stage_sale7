@@ -142,3 +142,13 @@ class Notification(models.Model):
 
     def __str__(self):
         return str(self.Id_notification)
+
+
+class ChoixSujet(models.Model):
+    candidat = models.ForeignKey(Candidats, on_delete=models.CASCADE)
+    sujet = models.ForeignKey(Sujet_stage, on_delete=models.CASCADE)
+    date_choix = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return f"{self.candidat.Nom_complet} - {self.sujet.titre}"
+
