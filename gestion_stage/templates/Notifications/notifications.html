@@ -1,0 +1,10 @@
+{% extends 'sidebar/sidebar.html' %}
+
+{% block content %}
+    <h2>Notifications</h2>
+    <ul>
+        {% for notification in notifications %}
+            <li>{{ notification.Message }} - {{ notification.Date_notification }}</li>
+        {% endfor %}
+    </ul>
+{% endblock %}
