@@ -1,18 +1,23 @@
 from django.urls import path
 from . import views
+from .views import choisir_sujet
+
+
 
 urlpatterns=[
     path('start_user',views.create_utilisateur, name='create_utilisateur'),
     path('hello',views.hello, name='hello'),
-    path('',views.home, name='home'),
-    path('interface',views.interface_principal, name='interface_principal'),
+    path('',views.login, name='home'),
     path('create_candidate',views.create_candidate, name='create_candidate'),
     path('services/', views.service_list, name='service_list'),
     path('services/add/', views.service_add, name='service_add'),
     path('services/edit/<int:pk>/', views.service_edit, name='service_edit'),
     path('services/delete/<int:pk>/', views.service_delete, name='service_delete'),
-    path('service/<int:service_id>/sujets/', views.sujets_par_service, name='sujets_par_service'),
-    path('choisir_sujet/<int:sujet_id>/', views.choisir_sujet, name='choisir_sujet'),
-    path('service/<int:service_id>/choix/', views.voir_choix_stagiaires, name='voir_choix_stagiaires'),
-    path('sujets/', views.liste_sujets, name='liste_sujets'),
-      ]
+    path('interface',views.interface_principal, name='interface_principal'),
+    path('deletuser/<int:id_user>/', views.deletuser,name='deletuser'),
+    path('show_candidate',views.show_candidate, name='show_candidate'),
+    path('delete_candidate/<int:id_candidate>/', views.delete_candidate,name='delete_candidate'),
+    path('gestion_demandes/', views.gestion_demandes, name='gestion_demandes'),
+    path('accepter_demande/<int:demande_id>/', views.accepter_demande, name='accepter_demande'),
+    path('rejeter_demande/<int:demande_id>/', views.rejeter_demande, name='rejeter_demande'),
+]

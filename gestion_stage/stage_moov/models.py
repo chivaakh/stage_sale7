@@ -80,6 +80,7 @@ class Demandes(models.Model):
     Date_soumission = models.DateTimeField()
     statut = models.CharField(max_length=50)
 
+
     def save(self, *args, **kwargs):
         if self.Date_soumission is None:
             self.Date_soumission = self.Id_candidat.Date_demande
@@ -143,12 +144,4 @@ class Notification(models.Model):
     def __str__(self):
         return str(self.Id_notification)
 
-
-class ChoixSujet(models.Model):
-    candidat = models.ForeignKey(Candidats, on_delete=models.CASCADE)
-    sujet = models.ForeignKey(Sujet_stage, on_delete=models.CASCADE)
-    date_choix = models.DateTimeField(auto_now_add=True)
-
-    def __str__(self):
-        return f"{self.candidat.Nom_complet} - {self.sujet.titre}"
 
