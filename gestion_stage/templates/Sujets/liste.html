@@ -1,0 +1,142 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Liste des Sujets</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="{% static 'css/styles.css' %}">
+    <!-- Icônes Bootstrap -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css">
+    <style>
+        .description-cell, .title-cell {
+            max-width: 250px;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+        .full-text {
+            display: none;
+            white-space: normal;
+        }
+        .see-more, .see-more-title {
+            color: #007bff;
+            text-decoration: none;
+            cursor: pointer;
+            font-weight: bold;
+            margin-left: 5px;
+        }
+        .see-more:hover, .see-more-title:hover {
+            text-decoration: underline;
+        }
+        .modal-body {
+            white-space: pre-wrap;
+            word-wrap: break-word;
+        }
+    </style>
+</head>
+<body>
+    <div class="container mt-5">
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            <h1 class="h3">Liste des Sujets</h1>
+            <div class="d-flex">
+                <!-- Formulaire de recherche -->
+                <form class="d-flex me-2" method="get" action="">
+                    <input class="form-control me-2" type="search" name="query" placeholder="Rechercher un sujet" value="{{ request.GET.query }}" aria-label="Search">
+                    <button class="btn btn-outline-primary" type="submit">
+                        <i class="bi bi-search"></i>
+                    </button>
+                </form>
+                <a href="{% url 'ajouter_sujet' %}" class="btn btn-success">
+                    <i class="bi bi-plus-circle"></i> Ajouter un nouveau sujet
+                </a>
+            </div>
+        </div>
+
+        {% if sujets %}
+            <table class="table table-hover">
+                <thead class="table-dark">
+                    <tr>
+                        <th>ID</th>
+                        <th>Titre</th>
+                        <th>Description</th>
+                        <th>Date de création</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for sujet in sujets %}
+                    <tr>
+                        <td>{{ sujet.Id_sujet }}</td>
+                        <td class="title-cell">
+                            <span class="short-text">{{ sujet.titre|truncatechars:20 }}</span>
+                            <span class="full-text">{{ sujet.titre }}</span>
+                            {% if sujet.titre|length > 20 %}
+                                <span class="see-more-title">Voir plus</span>
+                            {% endif %}
+                        </td>
+                        <td class="description-cell">
+                            <span class="short-text">{{ sujet.Description|truncatechars:20 }}</span>
+                            <span class="full-text">{{ sujet.Description }}</span>
+                            {% if sujet.Description|length > 20 %}
+                                <span class="see-more">Voir plus</span>
+                            {% endif %}
+                        </td>
+                        <td>{{ sujet.Date_creation|date:"d/m/Y" }}</td>
+                        <td>
+                            <a href="{% url 'modifier_sujet' sujet.Id_sujet %}" class="btn btn-warning btn-sm">
+                                <i class="bi bi-pencil-square"></i> Modifier
+                            </a>
+                            <a href="{% url 'supprimer_sujet' sujet.Id_sujet %}" class="btn btn-danger btn-sm">
+                                <i class="bi bi-trash"></i> Supprimer
+                            </a>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        {% else %}
+            <div class="alert alert-info" role="alert">
+                Aucun sujet trouvé pour votre recherche.
+            </div>
+        {% endif %}
+    </div>
+
+    <!-- Boîte modale pour afficher le texte complet -->
+    <div class="modal fade" id="textModal" tabindex="-1" aria-labelledby="textModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="textModalLabel">Description complet</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <!-- Le texte complet sera injecté ici -->
+                    <p id="modalText"></p>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Fermer</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        document.querySelectorAll('.see-more, .see-more-title').forEach(button => {
+            button.addEventListener('click', function() {
+                const fullText = this.previousElementSibling;
+                const modal = new bootstrap.Modal(document.getElementById('textModal'));
+                const modalText = document.getElementById('modalText');
+
+                // Injecter le texte complet dans la modale
+                modalText.textContent = fullText.textContent;
+
+                // Afficher la modale
+                modal.show();
+            });
+        });
+    </script>
+</body>
+</html>

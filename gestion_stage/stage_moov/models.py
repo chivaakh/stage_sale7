@@ -6,6 +6,7 @@ from django.core.files.base import ContentFile
 from django.utils import timezone
 from django.contrib.auth.hashers import make_password, check_password
 
+
 # def get_upload_path(instance, filename):
 #     return f'Documents/documents_user_{instance.Id_candidat}/{filename}'
 
