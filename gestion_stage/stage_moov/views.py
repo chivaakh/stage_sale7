@@ -15,11 +15,8 @@ def create_utilisateur(request):
         form = UtilisateurForm(request.POST)
         if form.is_valid():
             form.save()
-<<<<<<< HEAD
             return redirect('confirmation')  
-=======
             return redirect('interface_principal')  
->>>>>>> 6702d40c70e612a14f1944d1b73bae750fa905d3
     else:
         form = UtilisateurForm()
     
@@ -67,7 +64,7 @@ def create_candidate(request):
         form = CandidateForm(request.POST, request.FILES)
         if form.is_valid():
             form.save()
-            return redirect('#')  # Replace 'success_url' with your desired redirect URL
+            return redirect('Candidats/confirmation.html')  # Replace 'success_url' with your desired redirect URL
     else:
         form = CandidateForm()
     
@@ -93,8 +90,6 @@ def delete_candidate(request,id_candidate):
     if candidate:
         candidate.delete()
     return redirect('show_candidat')
-<<<<<<< HEAD
-=======
 
 #pour gestion des demandes
 def gestion_demandes(request):
@@ -115,7 +110,6 @@ def rejeter_demande(request, demande_id):
     demande.statut = 'rejete'
     demande.save()
     return redirect('gestion_demandes')
->>>>>>> 6702d40c70e612a14f1944d1b73bae750fa905d3
 #les views pour la service
 def service_list(request):
     query = request.GET.get('q')
