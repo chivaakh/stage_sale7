@@ -58,12 +58,10 @@ class CandidatForm(forms.ModelForm):
     
 
 
+
+
 class SujetStageForm(forms.ModelForm):
     class Meta:
         model = Sujet_stage
-        fields = ['Id_service', 'titre', 'Description']
-        widgets = {
-            'Id_service': forms.Select(attrs={'class': 'form-control'}),
-            'titre': forms.TextInput(attrs={'class': 'form-control'}),
-            'Description': forms.Textarea(attrs={'class': 'form-control'}),
-        }
+        fields = ['titre', 'Description', 'Id_service']  # Inclure le service ici
+
