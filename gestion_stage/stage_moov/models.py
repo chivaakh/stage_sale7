@@ -5,6 +5,8 @@ from django.dispatch import receiver
 from django.core.files.base import ContentFile
 from django.utils import timezone
 from django.contrib.auth.hashers import make_password, check_password
+from django.contrib.auth.models import User
+
 
 # def get_upload_path(instance, filename):
 #     return f'Documents/documents_user_{instance.Id_candidat}/{filename}'
@@ -80,6 +82,7 @@ class Demandes(models.Model):
     Date_soumission = models.DateTimeField()
     statut = models.CharField(max_length=50)
 
+
     def save(self, *args, **kwargs):
         if self.Date_soumission is None:
             self.Date_soumission = self.Id_candidat.Date_demande
@@ -138,7 +141,9 @@ class Notification(models.Model):
     utilisateur = models.ForeignKey(Utilisateur, on_delete=models.CASCADE)
     Message = models.TextField(max_length=50)
     Date_notification = models.DateTimeField(auto_now_add=True)
-    statut = models.CharField(max_length=50)
+    statut = models.CharField(max_length=50)          
 
     def __str__(self):
-        return str(self.Id_notification)
+        return str(self.utilisateur)
+
+

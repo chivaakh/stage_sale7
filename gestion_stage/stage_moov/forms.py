@@ -1,6 +1,12 @@
 from django import forms
 from .models import Utilisateur,Candidats,Service
 from django.contrib.auth.hashers import make_password
+from .models import Sujet_stage 
+from .models import Notification
+from django.contrib.auth.models import User
+
+
+
 
 class UtilisateurForm(forms.ModelForm):
     class Meta:
@@ -55,3 +61,14 @@ class CandidatForm(forms.ModelForm):
         model = Candidats
         fields = ['Nom_complet', 'universite', 'niveau_academique', 'specialite', 'Date_Naissance', 'email', 'telephone', 'cv', 'lettre_motivation', 'demande', 'periode']
     
+
+
+class SujetStageForm(forms.ModelForm):
+    class Meta:
+        model = Sujet_stage
+        fields = ['Id_service', 'titre', 'Description']
+        widgets = {
+            'Id_service': forms.Select(attrs={'class': 'form-control'}),
+            'titre': forms.TextInput(attrs={'class': 'form-control'}),
+            'Description': forms.Textarea(attrs={'class': 'form-control'}),
+        }
