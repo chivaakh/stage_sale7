@@ -3,7 +3,6 @@ from . import views
 
 urlpatterns=[
     path('start_user',views.create_utilisateur, name='create_utilisateur'),
-    path('hello',views.hello, name='hello'),
     path('',views.login, name='home'),
     path('create_candidate',views.create_candidate, name='create_candidate'),
     path('services/', views.service_list, name='service_list'),
@@ -18,7 +17,19 @@ urlpatterns=[
     path('deletuser/<int:id_user>/', views.deletuser,name='deletuser'),
     path('show_candidate',views.show_candidate, name='show_candidate'),
     path('delete_candidate/<int:id_candidate>/', views.delete_candidate,name='delete_candidate'),
+    # path('gestion_demandes/', views.gestion_demandes, name='gestion_demandes'),
+    # path('accepter_demande/<int:demande_id>/', views.accepter_demande, name='accepter_demande'),
+    # path('rejeter_demande/<int:demande_id>/', views.rejeter_demande, name='rejeter_demande'),
+    path('deletuser/<int:id_user>/', views.deletuser,name='deletuser'),
+    path('show_candidate',views.show_candidate, name='show_candidate'),
+    path('delete_candidate/<int:id_candidate>/', views.delete_candidate,name='delete_candidate'),
     path('gestion_demandes/', views.gestion_demandes, name='gestion_demandes'),
     path('accepter_demande/<int:demande_id>/', views.accepter_demande, name='accepter_demande'),
     path('rejeter_demande/<int:demande_id>/', views.rejeter_demande, name='rejeter_demande'),
+    path('sujets/', views.liste_sujets, name='liste_sujets'),
+    path('sujets/ajouter/', views.ajouter_sujet, name='ajouter_sujet'),
+    path('sujets/modifier/<int:pk>/', views.modifier_sujet, name='modifier_sujet'),
+    path('sujets/supprimer/<int:pk>/', views.supprimer_sujet, name='supprimer_sujet'),
+
+
 ]
