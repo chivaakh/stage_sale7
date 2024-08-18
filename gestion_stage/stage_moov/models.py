@@ -5,31 +5,34 @@ from django.dispatch import receiver
 from django.core.files.base import ContentFile
 from django.utils import timezone
 from django.contrib.auth.hashers import make_password, check_password
+from django.contrib.auth.models import User
 
 
 # def get_upload_path(instance, filename):
 #     return f'Documents/documents_user_{instance.Id_candidat}/{filename}'
 
 class Utilisateur(models.Model):
+    ROLE_CHOICES = [
+        ('admin', 'Admin'),
+        ('rh', 'RH'),
+        ('encadeur', 'Encadeur'),
+        ('user_simple', 'User_simple'),
+    ]
+
     Id_utilisateur = models.AutoField(primary_key=True)
-    Nom_complet = models.CharField(max_length=50)
-    Email = models.EmailField(max_length=50, unique=True)
-    password = models.CharField(max_length=50)
-    role = models.CharField(max_length=50)
+    Nom_complet = models.CharField(max_length=100)
+    Email = models.EmailField(max_length=254, unique=True)
+    password = models.CharField(max_length=128)
+    role = models.CharField( choices=ROLE_CHOICES, max_length=100)
     Date_creation = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):
         return self.Nom_complet
-    # pour cacher password avant de save
     def set_password(self, raw_password):
         self.password = make_password(raw_password)
 
     def check_password(self, raw_password):
         return check_password(raw_password, self.password)
-    class Meta:
-        indexes = [
-            models.Index(fields=['Email']),
-        ]
     
 
 class Candidats(models.Model):
@@ -140,9 +143,9 @@ class Notification(models.Model):
     utilisateur = models.ForeignKey(Utilisateur, on_delete=models.CASCADE)
     Message = models.TextField(max_length=50)
     Date_notification = models.DateTimeField(auto_now_add=True)
-    statut = models.CharField(max_length=50)
+    statut = models.CharField(max_length=50)          
 
     def __str__(self):
-        return str(self.Id_notification)
+        return str(self.utilisateur)
 
 

@@ -2,6 +2,11 @@ from django import forms
 from .models import Utilisateur,Candidats,Service
 from django.contrib.auth.hashers import make_password
 from .models import Sujet_stage 
+from .models import Notification
+from django.contrib.auth.models import User
+
+
+
 
 class UtilisateurForm(forms.ModelForm):
     class Meta:

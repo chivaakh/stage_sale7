@@ -1,40 +1,57 @@
 from django.shortcuts import render, redirect,get_object_or_404
 from .forms import UtilisateurForm,CandidateForm,ServiceForm
-from .models import Utilisateur
+from .models import *
 from django.contrib.auth import authenticate, login
 from django.contrib.auth.decorators import login_required
 from .models import Service,Utilisateur,Candidats,Demandes
 from django.db.models import Q
 from .models import Notification
 from .forms import CandidatForm
-from django.db.models import Q
-from .forms import SujetStageForm
-from .models import Sujet_stage
-
-
-
+from django.contrib.auth.hashers import make_password
+from django.contrib import messages
 # Create your views here.
 #les views pour gestions des utilisateur
+
+
 def create_utilisateur(request):
     if request.method == 'POST':
-        form = UtilisateurForm(request.POST)
-        if form.is_valid():
-            form.save()
-            return redirect('interface_principal')  
-    else:
-        form = UtilisateurForm()
-    
-    return render(request, 'gestions_users/create_utilisateur.html', {'form': form})
+        nom_complet = request.POST.get('Nom_complet')
+        email = request.POST.get('Email')
+        password = request.POST.get('password')
+        role = request.POST.get('role')
 
-def hello(request):
-    return render(request,'gestions_users/hello.html',{'hello':'hello'})
+        # Validation des données
+        if not (nom_complet and email and password and role):
+            messages.error(request, 'Tous les champs doivent être remplis.')
+            return redirect('create_utilisateur')
+
+        # Vérification si l'email est déjà utilisé
+        if Utilisateur.objects.filter(Email=email).exists():
+            messages.error(request, 'Un utilisateur avec cet email existe déjà.')
+            return redirect('create_utilisateur')
+
+        # Hachage du mot de passe
+        hashed_password = make_password(password)
+
+        # Création et sauvegarde de l'utilisateur
+        Utilisateur.objects.create(
+            Nom_complet=nom_complet,
+            Email=email,
+            password=hashed_password,
+            role=role
+        )
+
+        messages.success(request, 'Utilisateur créé avec succès.')
+        return redirect('interface_principal')
+
+    return render(request, 'gestions_users/home.html')
 #fonction pour la login
 def login(request):
     error_message = None  # Initialise la variable pour stocker les messages d'erreur
 
     if request.method == 'POST':
-        email = request.POST['email']
-        password = request.POST['password']
+        email = request.POST.get('email')
+        password = request.POST.get('password')
 
         if email and password:
         
@@ -61,14 +78,13 @@ def login(request):
         'utilisateur_exists': utilisateur_exists,
         'error_message': error_message, 
     })
-
 #les views pour les creet de candidate
 def create_candidate(request):
     if request.method == 'POST':
         form = CandidateForm(request.POST, request.FILES)
         if form.is_valid():
             form.save()
-            return redirect('#')  # Replace 'success_url' with your desired redirect URL
+            return redirect('Candidats/confirmation.html')  # Replace 'success_url' with your desired redirect URL
     else:
         form = CandidateForm()
     
@@ -170,8 +186,24 @@ def form_candidat(request):
     return render(request, 'Candidats/code.html')
 
 def notifications_view(request):
-    notifications = Notification.objects.filter(utilisateur=request.user, statut="non lu")
-    return render(request, 'notifications.html', {'notifications': notifications})
+    # Récupère toutes les notifications
+    notifications = Notification.objects.all()
+    return render(request, 'Notifications/notifications.html', {'notifications': notifications})
+def create_candidate(request):
+    if request.method == 'POST':
+        form = CandidateForm(request.POST, request.FILES)
+        if form.is_valid():
+            candidate = form.save()
+            # Créer une notification pour l'utilisateur
+            Notification.objects.create(
+                utilisateur=request.user,
+                message="Un nouveau candidat a été créé."
+            )
+            return redirect('Candidats/confirmation.html')
+    else:
+        form = CandidateForm()
+
+    return render(request, 'Candidats/code.html', {'form': form})
 
 
 
