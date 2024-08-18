@@ -8,18 +8,43 @@ from django.shortcuts import render, get_object_or_404, redirect
 from django.db.models import Q
 from .models import Notification
 from .forms import CandidatForm
+from django.contrib import messages
+from django.contrib.auth.hashers import make_password, check_password
 # Create your views here.
 #les views pour gestions des utilisateur
+
 def create_utilisateur(request):
     if request.method == 'POST':
-        form = UtilisateurForm(request.POST)
-        if form.is_valid():
-            form.save()
-            return redirect('interface_principal')  
-    else:
-        form = UtilisateurForm()
-    
-    return render(request, 'gestions_users/create_utilisateur.html', {'form': form})
+        nom_complet = request.POST.get('Nom_complet')
+        email = request.POST.get('Email')
+        password = request.POST.get('password')
+        role = request.POST.get('role')
+
+        # Validation des données
+        if not (nom_complet and email and password and role):
+            messages.error(request, 'Tous les champs doivent être remplis.')
+            return redirect('create_utilisateur')
+
+        # Vérification si l'email est déjà utilisé
+        if Utilisateur.objects.filter(Email=email).exists():
+            messages.error(request, 'Un utilisateur avec cet email existe déjà.')
+            return redirect('create_utilisateur')
+
+        # Hachage du mot de passe
+        hashed_password = make_password(password)
+
+        # Création et sauvegarde de l'utilisateur
+        Utilisateur.objects.create(
+            Nom_complet=nom_complet,
+            Email=email,
+            password=hashed_password,
+            role=role
+        )
+
+        messages.success(request, 'Utilisateur créé avec succès.')
+        return redirect('interface_principal')
+
+    return render(request, 'gestions_users/home.html')
 
 def hello(request):
     return render(request,'gestions_users/hello.html',{'hello':'hello'})
