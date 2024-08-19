@@ -6,8 +6,6 @@ from .models import Notification
 from django.contrib.auth.models import User
 
 
-
-
 class UtilisateurForm(forms.ModelForm):
     class Meta:
         model = Utilisateur
