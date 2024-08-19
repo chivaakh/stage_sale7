@@ -30,6 +30,5 @@ urlpatterns=[
     path('sujets/ajouter/', views.ajouter_sujet, name='ajouter_sujet'),
     path('sujets/modifier/<int:pk>/', views.modifier_sujet, name='modifier_sujet'),
     path('sujets/supprimer/<int:pk>/', views.supprimer_sujet, name='supprimer_sujet'),
-
-
+    path('services/<int:service_id>/sujets/', views.liste_sujets_par_service, name='liste_sujets_par_service'),
 ]

@@ -1,0 +1,38 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sujets de Stage pour {{ service.Nom_service }}</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+</head>
+<body>
+    <div class="container mt-5">
+        <h1>Sujets de Stage pour {{ service.Nom_service }}</h1>
+        {% if sujets %}
+            <table class="table table-striped">
+                <thead>
+                    <tr>
+                        <th>Titre</th>
+                        <th>Description</th>
+                        <th>Date de Création</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for sujet in sujets %}
+                        <tr>
+                            <td>{{ sujet.titre }}</td>
+                            <td>{{ sujet.Description }}</td>
+                            <td>{{ sujet.Date_creation|date:"d/m/Y" }}</td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        {% else %}
+            <p>Aucun sujet trouvé pour ce service.</p>
+        {% endif %}
+        <a href="{% url 'ajouter_sujet' %}" class="btn btn-primary">Ajouter un Sujet</a>
+    </div>
+</body>
+</html>

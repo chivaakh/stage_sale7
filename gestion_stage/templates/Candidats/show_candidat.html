@@ -1,56 +1,111 @@
-{% block content%}
 {% load static %}
 <head>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css">
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-    <link href="{% static 'css/table.css'%}" rel="stylesheet"></head>
+    <style>
+        body {
+            background-color: #f4f7f6;
+            font-family: Arial, sans-serif;
+        }
+        
+        h1 {
+            text-align: center;
+            color: #333;
+            margin-top: 20px;
+        }
 
+        table.can {
+            width: 90%;
+            margin: 30px auto;
+            border-collapse: collapse;
+            background-color: #fff;
+            color: #333;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        table.can th, table.can td {
+            padding: 12px;
+            text-align: left;
+            border: 1px solid #ddd;
+        }
+
+        table.can th {
+            background-color: #007BFF;
+            color: #fff;
+            font-weight: bold;
+            text-transform: uppercase;
+        }
+
+        table.can tr:nth-child(even) {
+            background-color: #f9f9f9;
+        }
+
+        table.can tr:hover {
+            background-color: #e1e1e1;
+        }
+
+        table.can td a {
+            color: #007BFF;
+            text-decoration: none;
+            transition: color 0.3s ease;
+        }
+
+        table.can td a:hover {
+            color: #0056b3;
+        }
+    </style>
+</head>
 <body>
     <h1>Liste des Candidates</h1>
     <table border="1" class="can">
-        <th>Id_candidate</th>
-        <th>Nom_complet</th>
-        <th>universite</th>
-        <th>niveau_academique</th>
-        <th>specialite</th>
-        <th>email</th>
-        <th>Date_Naissance</th>
-        <th>telephone</th>
-        <th>Date_demande</th>
-        <th>cv</th>
-        <th>lettre_motivation</th>
-        <th>demande</th>
-        <th>periode</th>
-        <th>actions</th>
-        {% for user in candidate %}
-        <tr>
-            <td>{{ user.Id_candidat }} </td>
-            <td>{{ user.Nom_complet }} </td>
-            <td>{{ user.universite }}</td>
-            <td>{{ user.niveau_academique }}</td>
-            <td>{{ user.specialite }}</td>
-            <td>{{ user.email }}</td>
-            <td>{{ user.Date_Naissance }}</td>
-            <td>{{ user.telephone }}</td>
-            <td>{{ user.Date_demande }}</td>
-            <td>{{ user.cv }}</td>
-            <td>{{ user.lettre_motivation }}</td>
-            <td>{{ user.demande }}</td>
-            <td>{{ user.lettre_motivation }}</td>
-            <td>{{user.periode}}</td>
-            <td>
-                <a href="#" data-id="{{user.Id_candidat}}"   onclick="confirmDelete(this);">
-                    <i class="fa-solid fa-trash-can" style="color: rgb(231, 52, 52);"></i>
-                </a>
-            </td>
-    
-        </tr>
-        {% endfor %}
+        <thead>
+            <tr>
+                <th>Id Candidate</th>
+                <th>Nom Complet</th>
+                <th>Université</th>
+                <th>Niveau Académique</th>
+                <th>Spécialité</th>
+                <th>Email</th>
+                <th>Date de Naissance</th>
+                <th>Téléphone</th>
+                <th>Date de Demande</th>
+                <th>CV</th>
+                <th>Lettre de Motivation</th>
+                <th>Demande</th>
+                <th>Période</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for user in candidate %}
+            <tr>
+                <td>{{ user.Id_candidat }}</td>
+                <td>{{ user.Nom_complet }}</td>
+                <td>{{ user.universite }}</td>
+                <td>{{ user.niveau_academique }}</td>
+                <td>{{ user.specialite }}</td>
+                <td>{{ user.email }}</td>
+                <td>{{ user.Date_Naissance }}</td>
+                <td>{{ user.telephone }}</td>
+                <td>{{ user.Date_demande }}</td>
+                <td>{{ user.cv }}</td>
+                <td>{{ user.lettre_motivation }}</td>
+                <td>{{ user.demande }}</td>
+                <td>{{ user.periode }}</td>
+                <td>
+                    <a href="#" data-id="{{ user.Id_candidat }}" onclick="confirmDelete(this);">
+                        <i class="fa-solid fa-trash-can" style="color: #dc3545;"></i>
+                    </a>
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
     </table>
-   <script>
+    <script>
         function confirmDelete(element) {
-            const userId=element.getAttribute('data-id')
+            const userId = element.getAttribute('data-id');
             Swal.fire({
                 title: "Êtes-vous sûr?",
                 text: "Vous ne pourrez pas revenir en arrière!",
@@ -67,4 +122,3 @@
         }
     </script>
 </body>
-{% endblock %}
