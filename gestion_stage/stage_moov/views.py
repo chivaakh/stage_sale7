@@ -1,5 +1,5 @@
 from django.shortcuts import render, redirect,get_object_or_404
-from .forms import UtilisateurForm,CandidateForm,ServiceForm
+from .forms import UtilisateurForm,CandidateForm,ServiceForm,SujetStageForm
 from .models import *
 from django.contrib.auth import authenticate, login
 from django.contrib.auth.decorators import login_required
@@ -9,6 +9,7 @@ from .models import Notification
 from .forms import CandidatForm
 from django.contrib.auth.hashers import make_password
 from django.contrib import messages
+
 # Create your views here.
 #les views pour gestions des utilisateur
 
