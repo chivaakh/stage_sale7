@@ -3,7 +3,7 @@ from . import views
 
 urlpatterns=[
     path('start_user',views.create_utilisateur, name='create_utilisateur'),
-    path('',views.login, name='home'),
+    path('form_user',views.login, name='home'),
     path('create_candidate',views.create_candidate, name='create_candidate'),
     path('services/', views.service_list, name='service_list'),
     path('services/add/', views.service_add, name='service_add'),
@@ -31,4 +31,7 @@ urlpatterns=[
     path('sujets/modifier/<int:pk>/', views.modifier_sujet, name='modifier_sujet'),
     path('sujets/supprimer/<int:pk>/', views.supprimer_sujet, name='supprimer_sujet'),
     path('services/<int:service_id>/sujets/', views.liste_sujets_par_service, name='liste_sujets_par_service'),
+    path('candidat/inscription/', views.form_candidat, name='create_candidat'),
+    path('utilisateur/inscription/', views.create_utilisateur, name='create_utilisateur'),
+    path('', views.homepage, name='homepage'),
 ]

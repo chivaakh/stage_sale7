@@ -261,3 +261,6 @@ def liste_sujets_par_service(request, service_id):
     }
     return render(request, 'Sujets/liste_par_service.html', context)
 
+def homepage(request):
+    return render(request, 'first/code.html')
+
