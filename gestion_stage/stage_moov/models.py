@@ -18,14 +18,9 @@ class Utilisateur(models.Model):
         ('encadeur', 'Encadeur'),
         ('user_simple', 'User_simple'),
     ]
-
     Id_utilisateur = models.AutoField(primary_key=True)
     Nom_complet = models.CharField(max_length=50)
-<<<<<<< HEAD
-    Email = models.EmailField(max_length=100, unique=True)
-=======
     Email = models.EmailField(max_length=70, unique=True)
->>>>>>> af8af194ca7093c33b354174e2cf3a17671e9678
     password = models.CharField(max_length=50)
     role = models.CharField( choices=ROLE_CHOICES, max_length=50)
     Date_creation = models.DateTimeField(auto_now_add=True)
