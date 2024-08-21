@@ -5,9 +5,72 @@
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css">
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <link href="{% static 'css/table.css'%}" rel="stylesheet"></head>
-
+    <style>
+        /* Style de la table */
+        body{
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+        }
+        table {
+            margin-top: 40px;
+            border-collapse: collapse;
+            width: 900px;
+            height: 50%;
+            margin-bottom: 20px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+        
+        /* Style des cellules */
+        th, td {
+            border: 1px solid #dddddd;
+            padding: 10px;
+            text-align: left;
+            text-align: center;
+           
+        }
+        
+        /* Style des entêtes */
+        th {
+            background-color:rgb(59, 155, 251);;
+            color: #333;
+            font-weight: bold;
+            color: #fff;
+        }
+        
+        /* Style des lignes */
+        tr:nth-child(even) {
+            background-color: #f9f9f9;
+        }
+        
+        /* Style des liens */
+        a {
+            color: #337ab7;
+            text-decoration: none;
+        }
+        
+        /* Style des icônes */
+        .icon {
+            font-size: 16px;
+            margin-right: 5px;
+        }
+        h1{ text-align: center;
+            padding: 9px 6px;
+            background-color: #a4cef3;
+            margin-top: 20px;
+            border-radius: 2px;
+            border-style: none;
+            width: 500px;
+            color: #fff;
+        }
+        
+        .can{
+            width: 600px;
+        }
+    </style>
 <body>
-    <h1>Liste des utilisateurss</h1>
+    <h1>Liste des utilisateurs</h1>
     <table border="1">
         <th>Id_utilisateur</th>
         <th>Nom_complet</th>
