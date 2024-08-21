@@ -81,12 +81,12 @@ DATABASES = {
         'USER': 'root',
         'PASSWORD': '',
         'HOST': 'localhost',
-        'PORT': '3306',
         'OPTIONS': {
-            'charset': 'utf8',
+            'init_command': "SET default_storage_engine=INNODB; SET innodb_strict_mode=1;",
         },
     }
 }
+
 
 
 # Password validation

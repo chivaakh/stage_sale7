@@ -2,7 +2,6 @@
 
 from django.db import migrations, models
 
-
 class Migration(migrations.Migration):
 
     dependencies = [
@@ -10,10 +9,7 @@ class Migration(migrations.Migration):
     ]
 
     operations = [
-        migrations.RemoveIndex(
-            model_name='utilisateur',
-            name='stage_moov__Email_d4251a_idx',
-        ),
+        # Suppression de l'opération RemoveIndex qui causait l'erreur
         migrations.AlterField(
             model_name='utilisateur',
             name='Email',
