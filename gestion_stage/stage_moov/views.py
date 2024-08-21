@@ -57,7 +57,7 @@ def login(request):
         
             utilisateur = Utilisateur.objects.filter(Email=email).first()
             if utilisateur and utilisateur.check_password(password):
-                if utilisateur and utilisateur.role.strip().lower() == 'admin':
+                if utilisateur and utilisateur.role == 'Admin':
                     return redirect('interface_principal') 
                 elif utilisateur and utilisateur.role == 'RH':
                      return redirect('gestion_demandes') 

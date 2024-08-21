@@ -209,10 +209,10 @@ select {
             </div>
             <div class="field-wrap">
               <select name="role" id="id_role" class="form-control">
-                <option value="role1">Admin</option>
-                <option value="role2">RH</option>
-                <option value="role3">Encadeur</option>
-                <option value="role4">User_simple</option>
+                <option value="Admin">Admin</option>
+                <option value="RH">RH</option>
+                <option value="Encadeur">Encadeur</option>
+                <option value="User_simple">User_simple</option>
             </select>
             </div>
           </div>
@@ -230,7 +230,7 @@ select {
         {% if error_message %}
         <p style="color: red;">{{ error_message }}</p>
        {% endif %}
-        <form action="/" method="POST">
+        <form action="{% url 'home' %}" method="POST">
           {% csrf_token %}
           <div class="field-wrap">
             <input type="email" required placeholder="Email" name="email" />
@@ -238,8 +238,8 @@ select {
           <div class="field-wrap">
             <input type="password" required placeholder="Password" name="password" />
           </div>
-          <p class="forgot"><a href="https://www.web-leb.com/code">Forgot Password?</a></p>
-          <button class="button button-block" />Login</button>
+          
+          <button  type="submit" class="button button-block" />Login</button>
         </form>
       </div>
     </div>

@@ -5,11 +5,63 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css">
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-    <link href="{% static 'css/table.css'%}" rel="stylesheet"></head>
+   <style>
+       body {
+            background-color: #f4f7f6;
+            font-family: Arial, sans-serif;
+        }
+        
+        h1 {
+            text-align: center;
+            color: #333;
+            margin-top: 20px;
+        }
+
+        table.can {
+            width: 90%;
+            margin: 30px auto;
+            border-collapse: collapse;
+            background-color: #fff;
+            color: #333;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        table.can th, table.can td {
+            padding: 12px;
+            text-align: left;
+            border: 1px solid #ddd;
+        }
+
+        table.can th {
+            background-color: #007BFF;
+            color: #fff;
+            font-weight: bold;
+            text-transform: uppercase;
+        }
+
+        table.can tr:nth-child(even) {
+            background-color: #f9f9f9;
+        }
+
+        table.can tr:hover {
+            background-color: #e1e1e1;
+        }
+
+        table.can td a {
+            color: #007BFF;
+            text-decoration: none;
+            transition: color 0.3s ease;
+        }
+
+        table.can td a:hover {
+            color: #0056b3;
+        }
+   </style>
 
 <body>
     <h1>Liste des utilisateurss</h1>
-    <table border="1">
+    <table border="1" class="can">
         <th>Id_utilisateur</th>
         <th>Nom_complet</th>
         <th>Email</th>
