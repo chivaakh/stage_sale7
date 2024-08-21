@@ -20,7 +20,7 @@ class Utilisateur(models.Model):
     ]
     Id_utilisateur = models.AutoField(primary_key=True)
     Nom_complet = models.CharField(max_length=50)
-    Email = models.EmailField(max_length=70, unique=True)
+    Email = models.EmailField(max_length=191, unique=True)
     password = models.CharField(max_length=100)
     role = models.CharField( choices=ROLE_CHOICES, max_length=50)
     Date_creation = models.DateTimeField(auto_now_add=True)
