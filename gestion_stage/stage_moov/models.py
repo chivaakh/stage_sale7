@@ -19,10 +19,10 @@ class Utilisateur(models.Model):
         ('User_simple', 'User_simple'),
     ]
     Id_utilisateur = models.AutoField(primary_key=True)
-    Nom_complet = models.CharField(max_length=50)
+    Nom_complet = models.CharField(max_length=20)
     Email = models.EmailField(max_length=70, unique=True)
-    password = models.CharField(max_length=100)
-    role = models.CharField( choices=ROLE_CHOICES, max_length=50)
+    password = models.CharField(max_length=70)
+    role = models.CharField( choices=ROLE_CHOICES, max_length=20)
     Date_creation = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):
