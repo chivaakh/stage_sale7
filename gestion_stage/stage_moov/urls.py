@@ -34,4 +34,9 @@ urlpatterns=[
     path('candidat/inscription/', views.form_candidat, name='create_candidat'),
     path('utilisateur/inscription/', views.create_utilisateur, name='create_utilisateur'),
     path('', views.homepage, name='homepage'),
+    path('ev_start', views.start_chat , name ="start"),
+    path('<str:room>/', views.room , name ="room"),
+    path('checkview', views.checkview , name ="checkview"),
+    path('send', views.send , name ="send"),
+    path('getMessages/<str:room>/', views.getMessages , name ="getMessages"),
 ]

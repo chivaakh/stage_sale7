@@ -1,7 +1,7 @@
 from django.shortcuts import render, redirect,get_object_or_404
-from .forms import UtilisateurForm,CandidateForm,ServiceForm
+from .forms import UtilisateurForm,CandidateForm,ServiceForm,SujetStageForm
 from .models import *
-from django.contrib.auth import authenticate, login
+from django.contrib.auth import authenticate, login as auth_login
 from django.contrib.auth.decorators import login_required
 from .models import Service,Utilisateur,Candidats,Demandes
 from django.db.models import Q
@@ -9,6 +9,8 @@ from .models import Notification
 from .forms import CandidatForm
 from django.contrib.auth.hashers import make_password
 from django.contrib import messages
+from django.http import HttpResponse , JsonResponse
+
 # Create your views here.
 #les views pour gestions des utilisateur
 
@@ -78,6 +80,8 @@ def login(request):
         'utilisateur_exists': utilisateur_exists,
         'error_message': error_message, 
     })
+
+
 #les views pour les creet de candidate
 def create_candidate(request):
     if request.method == 'POST':
@@ -263,4 +267,43 @@ def liste_sujets_par_service(request, service_id):
 
 def homepage(request):
     return render(request, 'first/code.html')
+
+#les view pour evaluation
+def start_chat(request):
+    return render(request, 'evaluation/lancer_chat.html')
+
+def room(request , room):
+    username = request.GET.get('username')
+    room_details = get_object_or_404(Room, name=room)
+    return render(request , 'evaluation/room.html' , {
+        'username' : username ,
+        'room' : room ,
+        'room_details' : room_details
+    })
+def checkview(request):
+    room = request.POST['room_name']
+    username = request.POST['username']
+
+    if Room.objects.filter(name = room).exists():
+        return redirect('/'+ room + '/?username=' + username)
+    else:
+        new_room = Room.objects.create(name = room)
+        new_room.save()
+        return redirect('/'+ room + '/?username=' + username)
+    
+
+def send(request):
+    message = request.POST['message']
+    username = request.POST['username']
+    room_name= request.POST['room_id']
+
+    new_message = Evaluation.objects.create(content= message , user = username , room = room_name)
+    new_message.save()
+    return HttpResponse('Message envoyé avec succès')
+
+def getMessages(request , room):
+    room_details = Room.objects.get(name=room)
+    messages = Evaluation.objects.filter(room = room_details.id).order_by('date')
+    return JsonResponse({"messages" :list(messages.values())})
+
 

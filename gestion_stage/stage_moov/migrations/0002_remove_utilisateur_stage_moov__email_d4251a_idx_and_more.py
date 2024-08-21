@@ -17,21 +17,21 @@ class Migration(migrations.Migration):
         migrations.AlterField(
             model_name='utilisateur',
             name='Email',
-            field=models.EmailField(max_length=254, unique=True),
+            field=models.EmailField(max_length=50, unique=True),
         ),
         migrations.AlterField(
             model_name='utilisateur',
             name='Nom_complet',
-            field=models.CharField(max_length=100),
+            field=models.CharField(max_length=60),
         ),
         migrations.AlterField(
             model_name='utilisateur',
             name='password',
-            field=models.CharField(max_length=128),
+            field=models.CharField(max_length=79),
         ),
         migrations.AlterField(
             model_name='utilisateur',
             name='role',
-            field=models.CharField(choices=[('admin', 'Admin'), ('rh', 'RH'), ('encadeur', 'Encadeur'), ('user_simple', 'User_simple')], max_length=100),
+            field=models.CharField(choices=[('admin', 'Admin'), ('rh', 'RH'), ('encadeur', 'Encadeur'), ('user_simple', 'User_simple')], max_length=50),
         ),
     ]
