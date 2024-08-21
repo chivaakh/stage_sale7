@@ -6,22 +6,22 @@ from django.core.files.base import ContentFile
 from django.utils import timezone
 from django.contrib.auth.hashers import make_password, check_password
 from django.contrib.auth.models import User
-
+from datetime import datetime
 
 # def get_upload_path(instance, filename):
 #     return f'Documents/documents_user_{instance.Id_candidat}/{filename}'
 
 class Utilisateur(models.Model):
     ROLE_CHOICES = [
-        ('admin', 'Admin'),
-        ('rh', 'RH'),
-        ('encadeur', 'Encadeur'),
-        ('user_simple', 'User_simple'),
+        ('Admin', 'Admin'),
+        ('RH', 'RH'),
+        ('Encadeur', 'Encadeur'),
+        ('User_simple', 'User_simple'),
     ]
     Id_utilisateur = models.AutoField(primary_key=True)
     Nom_complet = models.CharField(max_length=50)
     Email = models.EmailField(max_length=70, unique=True)
-    password = models.CharField(max_length=50)
+    password = models.CharField(max_length=100)
     role = models.CharField( choices=ROLE_CHOICES, max_length=50)
     Date_creation = models.DateTimeField(auto_now_add=True)
 
@@ -115,18 +115,22 @@ class Affectation(models.Model):
     def __str__(self):
         return str(self.Id_affectation)
 
-class Evaluation(models.Model):
-    Id_evaluation = models.AutoField(primary_key=True)
-    Id_affectation = models.ForeignKey(Affectation, on_delete=models.CASCADE)
-    Id_utilisateur = models.ForeignKey(Utilisateur, on_delete=models.CASCADE)
-    Id_candidat = models.ForeignKey(Candidats, on_delete=models.CASCADE)
-    commentaire = models.TextField()
-    Note_performance = models.DecimalField(decimal_places=2, max_digits=10)
-    date_evaluation = models.DateTimeField(auto_now=True)
+class Room(models.Model):
+    id = models.AutoField(primary_key=True)
+    name = models.CharField(max_length=20, unique=True)  
 
     def __str__(self):
-        return str(self.Id_evaluation)
+        return self.name
 
+class Evaluation(models.Model):
+    Id_evaluation = models.AutoField(primary_key=True)
+    content = models.CharField(max_length=50, null=False, blank=False) 
+    user = models.CharField(max_length=20, null=False, blank=False) 
+    room = models.ForeignKey(Room, on_delete=models.CASCADE)  
+    date = models.DateTimeField(default=datetime.now, blank=True)
+
+    def __str__(self):
+        return f'Evaluation {self.Id_evaluation} by {self.user}'
 class Attestation(models.Model):
     Id_attestation = models.AutoField(primary_key=True)
     Id_affectation = models.ForeignKey(Affectation, on_delete=models.CASCADE)
