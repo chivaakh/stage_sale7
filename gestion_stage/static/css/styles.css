@@ -1,0 +1,21 @@
+body {
+    background-color: #f8f9fa;
+}
+
+h1 {
+    color: #343a40;
+}
+
+.table th, .table td {
+    vertical-align: middle;
+}
+
+
+.card {
+    border-radius: 0.25rem;
+    box-shadow: 0 0.125rem 0.25rem rgba(0, 0, 0, 0.075);
+}
+
+.btn i {
+    margin-right: 5px;
+}

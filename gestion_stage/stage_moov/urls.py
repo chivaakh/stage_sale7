@@ -2,6 +2,14 @@ from django.urls import path
 from . import views
 
 urlpatterns=[
+     # URL pour lister tous les candidats
+    path('candidats/', views.liste_candidats, name='liste_candidats'),
+    # URL pour envoyer un message à un candidat
+    path('candidats/<int:candidat_id>/envoyer-message/', views.envoyer_message, name='envoyer_message'),
+    # URL pour afficher les messages pour un candidat
+    path('candidats/messages/', views.liste_messages, name='liste_messages'),
+    # URL pour marquer un message comme lu
+    path('messages/<int:notification_id>/marquer-comme-lu/', views.marquer_comme_lu, name='marquer_comme_lu'),
     path('start_user',views.create_utilisateur, name='create_utilisateur'),
     path('form_user',views.login, name='home'),
     path('create_candidate',views.create_candidate, name='create_candidate'),
@@ -9,7 +17,6 @@ urlpatterns=[
     path('services/add/', views.service_add, name='service_add'),
     path('services/edit/<int:pk>/', views.service_edit, name='service_edit'),
     path('services/delete/<int:pk>/', views.service_delete, name='service_delete'),
-    path('notifications/', views.notifications_view, name='notifications'),
     path('enregistrer/', views.enregistrer_candidat, name='enregistrer_candidat'),
     path('confirmation/', views.confirmation, name='confirmation'),
     path('form_candidat/', views.form_candidat, name='form_candidat'),
@@ -17,9 +24,6 @@ urlpatterns=[
     path('deletuser/<int:id_user>/', views.deletuser,name='deletuser'),
     path('show_candidate',views.show_candidate, name='show_candidate'),
     path('delete_candidate/<int:id_candidate>/', views.delete_candidate,name='delete_candidate'),
-    # path('gestion_demandes/', views.gestion_demandes, name='gestion_demandes'),
-    # path('accepter_demande/<int:demande_id>/', views.accepter_demande, name='accepter_demande'),
-    # path('rejeter_demande/<int:demande_id>/', views.rejeter_demande, name='rejeter_demande'),
     path('deletuser/<int:id_user>/', views.deletuser,name='deletuser'),
     path('show_candidate',views.show_candidate, name='show_candidate'),
     path('delete_candidate/<int:id_candidate>/', views.delete_candidate,name='delete_candidate'),

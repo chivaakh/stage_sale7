@@ -12,6 +12,7 @@ from datetime import datetime
 #     return f'Documents/documents_user_{instance.Id_candidat}/{filename}'
 
 class Utilisateur(models.Model):
+    
     ROLE_CHOICES = [
         ('Admin', 'Admin'),
         ('RH', 'RH'),
@@ -20,8 +21,9 @@ class Utilisateur(models.Model):
     ]
     Id_utilisateur = models.AutoField(primary_key=True)
     Nom_complet = models.CharField(max_length=50)
-    Email = models.EmailField(max_length=70, unique=True)
-    password = models.CharField(max_length=50)
+    
+    Email = models.EmailField(max_length=191, unique=True)
+    password = models.CharField(max_length=100)
     role = models.CharField( choices=ROLE_CHOICES, max_length=50)
     Date_creation = models.DateTimeField(auto_now_add=True)
 
@@ -142,13 +144,12 @@ class Attestation(models.Model):
         return str(self.Id_attestation)
 
 class Notification(models.Model):
-    Id_notification = models.AutoField(primary_key=True)
-    utilisateur = models.ForeignKey(Utilisateur, on_delete=models.CASCADE)
-    Message = models.TextField(max_length=50)
-    Date_notification = models.DateTimeField(auto_now_add=True)
-    statut = models.CharField(max_length=50)          
+    message = models.TextField()
+    date_envoi = models.DateTimeField(auto_now_add=True)
+    lu = models.BooleanField(default=False)
+    utilisateur = models.ForeignKey(Utilisateur, on_delete=models.CASCADE, related_name='notifications_envoyees')
+    candidat = models.ForeignKey(Candidats, on_delete=models.CASCADE, related_name='notifications_recues')
 
-    def __str__(self):
-        return str(self.utilisateur)
+    
 
 

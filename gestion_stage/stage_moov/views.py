@@ -10,9 +10,66 @@ from .forms import CandidatForm
 from django.contrib.auth.hashers import make_password
 from django.contrib import messages
 from django.http import HttpResponse , JsonResponse
+from django.contrib.auth.models import User
+from django.contrib.auth.decorators import user_passes_test
+import logging
 
 # Create your views here.
 #les views pour gestions des utilisateur
+
+from django.shortcuts import render, get_object_or_404, redirect
+from .models import Candidats, Notification
+
+def liste_candidats(request):
+    candidats = Candidats.objects.all()
+    return render(request, 'utilisateur/liste_candidats.html', {'candidats': candidats})
+
+logger = logging.getLogger(__name__)
+
+def envoyer_message(request, candidat_id):
+    candidat = get_object_or_404(Candidats, pk=candidat_id)
+    if request.method == 'POST':
+        message = request.POST.get('message')
+        
+        utilisateur_django = request.user
+        logger.debug(f'Utilisateur Django connecté : {utilisateur_django.email}')
+        
+        # Essayer de récupérer l'utilisateur personnalisé basé sur l'email
+        try:
+            utilisateur = Utilisateur.objects.get(Email=utilisateur_django.email)
+            logger.debug(f'Utilisateur trouvé : {utilisateur.Nom_complet}')
+        except Utilisateur.DoesNotExist:
+            logger.error(f'Utilisateur non trouvé pour l\'email : {utilisateur_django.email}')
+            return render(request, 'sidebar/error.html', {'error_message': "Utilisateur non trouvé."})
+
+        # Créer la notification
+        notification = Notification.objects.create(
+            message=message,
+            utilisateur=utilisateur,
+            candidat=candidat
+        )
+        notification.save()
+        
+         
+
+        return redirect('liste_messages')
+     
+    return render(request, 'utilisateur/envoyer_message.html', {'candidat': candidat})
+    
+
+
+def liste_messages(request):
+    
+    notifications = Notification.objects.all()
+    return render(request, 'utilisateur/liste_messages.html', {'notifications': notifications})
+
+def marquer_comme_lu(request, notification_id):
+    notification = get_object_or_404(Notification, pk=notification_id)
+    notification.lu = True
+    notification.save()
+    return redirect('liste_messages')
+
+
 
 
 def create_utilisateur(request):
@@ -189,9 +246,7 @@ def confirmation(request):
 def form_candidat(request):
     return render(request, 'Candidats/code.html')
 
-def notifications_view(request):
-    # Récupère toutes les notifications
-    notifications = Notification.objects.all()
+
     return render(request, 'Notifications/notifications.html', {'notifications': notifications})
 def create_candidate(request):
     if request.method == 'POST':
@@ -307,3 +362,4 @@ def getMessages(request , room):
     return JsonResponse({"messages" :list(messages.values())})
 
 
+#dfghjkjhg
