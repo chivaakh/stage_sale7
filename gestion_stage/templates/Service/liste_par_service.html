@@ -1,136 +1,108 @@
+ <!-- templates/Sujets/liste_par_service.html -->
+{% load static %}
 <!DOCTYPE html>
-<html lang="fr">
+<html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Sujets pour {{ service.Nom_service }}</title>
-    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="{% static 'css/styles.css' %}">
     <style>
-        body {
-            background-color: #f3f4f6;
-            font-family: 'Poppins', sans-serif;
+        .description-cell, .title-cell {
+            max-width: 250px;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
         }
-
-        h1 {
-            color: #2c3e50;
+        .full-text {
+            display: none;
+            white-space: normal;
+        }
+        .see-more, .see-more-title {
+            color: #007bff;
+            text-decoration: none;
+            cursor: pointer;
             font-weight: bold;
-            margin-bottom: 30px;
+            margin-left: 5px;
         }
-
-        .card {
-            background: #ffffff;
-            border-radius: 20px;
-            border: none;
-            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
-            transition: transform 0.3s ease, box-shadow 0.3s ease;
-            margin-bottom: 30px;
+        .see-more:hover, .see-more-title:hover {
+            text-decoration: underline;
         }
-
-        .card:hover {
-            transform: translateY(-10px);
-            box-shadow: 0 15px 25px rgba(0, 0, 0, 0.2);
-        }
-
-        .card-body {
-            padding: 25px;
-        }
-
-        .card-title {
-            font-size: 1.5rem;
-            font-weight: 600;
-            color: #34495e;
-        }
-
-        .card-text {
-            color: #7f8c8d;
-            font-size: 1rem;
-            line-height: 1.7;
-        }
-
-        .btn {
-            border-radius: 50px;
-            padding: 10px 20px;
-            transition: background-color 0.3s ease, box-shadow 0.3s ease;
-        }
-
-        .btn-primary {
-            background-color: #2980b9;
-            color: white;
-        }
-
-        .btn-primary:hover {
-            background-color: #1c5986;
-            box-shadow: 0 8px 15px rgba(41, 128, 185, 0.3);
-        }
-
-        .btn-secondary {
-            background-color: #7f8c8d;
-            color: white;
-        }
-
-        .btn-secondary:hover {
-            background-color: #5e6a72;
-            box-shadow: 0 8px 15px rgba(127, 140, 141, 0.3);
-        }
-
-        .alert-info {
-            background-color: #eaf2f8;
-            color: #2980b9;
-            border-radius: 15px;
-            padding: 20px;
-        }
-
-        .button-group {
-            margin-top: 40px;
-            display: flex;
-            justify-content: space-between;
-        }
-
-        .button-group .btn {
-            width: 48%;
-        }
-
-        .btn-back i, .btn-cancel i {
-            margin-right: 8px;
+        .modal-body {
+            white-space: pre-wrap;
+            word-wrap: break-word;
         }
     </style>
 </head>
 <body>
     <div class="container mt-5">
-        <h1 class="text-center">Sujets pour le service : {{ service.Nom_service }}</h1>
+        <h1 class="h3 mb-4">Liste des Sujets pour le Service : {{ service.Nom_service }}</h1>
 
         {% if sujets %}
-            <div class="row">
-                {% for sujet in sujets %}
-                <div class="col-md-6">
-                    <div class="card">
-                        <div class="card-body">
-                            <h5 class="card-title">{{ sujet.titre }}</h5>
-                            <p class="card-text">{{ sujet.Description }}</p>
-                        </div>
-                    </div>
-                </div>
-                {% endfor %}
-            </div>
+            <table class="table table-hover">
+                <thead class="table-dark">
+                    <tr>
+                        <th>ID</th>
+                        <th>Titre</th>
+                        <th>Description</th>
+                        <th>Date de création</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for sujet in sujets %}
+                    <tr>
+                        <td>{{ sujet.Id_sujet }}</td>
+                        <td class="title-cell">
+                            <span class="short-text">{{ sujet.titre|truncatechars:20 }}</span>
+                            <span class="full-text">{{ sujet.titre }}</span>
+                            {% if sujet.titre|length > 20 %}
+                                <span class="see-more-title">Voir plus</span>
+                            {% endif %}
+                        </td>
+                        <td class="description-cell">
+                            <span class="short-text">{{ sujet.Description|truncatechars:20 }}</span>
+                            <span class="full-text">{{ sujet.Description }}</span>
+                            {% if sujet.Description|length > 20 %}
+                                <span class="see-more">Voir plus</span>
+                            {% endif %}
+                        </td>
+                        <td>{{ sujet.Date_creation|date:"d/m/Y" }}</td>
+                        <td>
+                            <a href="{% url 'modifier_sujet' sujet.Id_sujet %}" class="btn btn-warning btn-sm">
+                                <i class="bi bi-pencil-square"></i> Modifier
+                            </a>
+                            <a href="{% url 'supprimer_sujet' sujet.Id_sujet %}" class="btn btn-danger btn-sm">
+                                <i class="bi bi-trash"></i> Supprimer
+                            </a>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
         {% else %}
-            <div class="alert alert-info text-center">
+            <div class="alert alert-info" role="alert">
                 Aucun sujet disponible pour ce service.
             </div>
         {% endif %}
-        
-        <div class="button-group">
-            <a href="{% url 'service_list' %}" class="btn btn-primary btn-back">
-                <i class="fas fa-arrow-left"></i> Retour à la liste des services
-            </a>
-            <a href="#" class="btn btn-secondary btn-cancel">
-                <i class="fas fa-times"></i> Annuler
-            </a>
-        </div>
     </div>
 
-    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.2/dist/umd/popper.min.js"></script>
-    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        document.querySelectorAll('.see-more, .see-more-title').forEach(button => {
+            button.addEventListener('click', function() {
+                const fullText = this.previousElementSibling;
+                const modal = new bootstrap.Modal(document.getElementById('textModal'));
+                const modalText = document.getElementById('modalText');
+
+                // Injecter le texte complet dans la modale
+                modalText.textContent = fullText.textContent;
+
+                // Afficher la modale
+                modal.show();
+            });
+        });
+    </script>
 </body>
-</html>
+</html> 
