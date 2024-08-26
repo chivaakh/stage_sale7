@@ -71,12 +71,13 @@ class Sujet_stage(models.Model):
     Id_sujet = models.AutoField(primary_key=True)
     Id_service = models.ForeignKey(Service, on_delete=models.CASCADE)
     titre = models.CharField(max_length=50)
-    Description = models.TextField()
+    description = models.TextField()  # Assurez-vous que c'est bien en minuscules
     Date_creation = models.DateTimeField(auto_now_add=True)
     Date_mise_a_jour = models.DateTimeField(auto_now=True)
 
-    def __str__(self):
-        return self.titre
+
+
+
 
 class Demandes(models.Model):
     Id_demande = models.AutoField(primary_key=True)

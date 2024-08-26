@@ -8,7 +8,6 @@ from .models import Notification
 
 
 
-
 class UtilisateurForm(forms.ModelForm):
     class Meta:
         model = Utilisateur
@@ -66,6 +65,7 @@ class CandidatForm(forms.ModelForm):
 
 
 
+
 class SujetStageForm(forms.ModelForm):
     class Meta:
         model = Sujet_stage
@@ -73,3 +73,4 @@ class SujetStageForm(forms.ModelForm):
 
 
 
+        fields = ['titre', 'description']

@@ -30,11 +30,6 @@ urlpatterns=[
     path('gestion_demandes/', views.gestion_demandes, name='gestion_demandes'),
     path('accepter_demande/<int:demande_id>/', views.accepter_demande, name='accepter_demande'),
     path('rejeter_demande/<int:demande_id>/', views.rejeter_demande, name='rejeter_demande'),
-    path('sujets/', views.liste_sujets, name='liste_sujets'),
-    path('sujets/ajouter/', views.ajouter_sujet, name='ajouter_sujet'),
-    path('sujets/modifier/<int:pk>/', views.modifier_sujet, name='modifier_sujet'),
-    path('sujets/supprimer/<int:pk>/', views.supprimer_sujet, name='supprimer_sujet'),
-    path('services/<int:service_id>/sujets/', views.liste_sujets_par_service, name='liste_sujets_par_service'),
     path('candidat/inscription/', views.form_candidat, name='create_candidat'),
     path('utilisateur/inscription/', views.create_utilisateur, name='create_utilisateur'),
     path('', views.homepage, name='homepage'),
@@ -43,4 +38,10 @@ urlpatterns=[
     path('checkview', views.checkview , name ="checkview"),
     path('send', views.send , name ="send"),
     path('getMessages/<str:room>/', views.getMessages , name ="getMessages"),
+    path('service/<int:service_id>/sujets/', views.liste_sujets_par_service, name='liste_sujets_par_service'),
+    path('service/<int:service_id>/sujets/ajouter/', views.ajouter_sujet, name='ajouter_sujet'),
+    path('sujets/<int:sujet_id>/modifier/', views.modifier_sujet, name='modifier_sujet'),
+    path('sujets/<int:sujet_id>/supprimer/', views.supprimer_sujet, name='supprimer_sujet'),
+
+
 ]
