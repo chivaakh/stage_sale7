@@ -57,11 +57,11 @@ def envoyer_message(request, candidat_id):
     return render(request, 'utilisateur/envoyer_message.html', {'candidat': candidat})
     
 
-
 def liste_messages(request):
     
     notifications = Notification.objects.all()
     return render(request, 'utilisateur/liste_messages.html', {'notifications': notifications})
+
 
 def marquer_comme_lu(request, notification_id):
     notification = get_object_or_404(Notification, pk=notification_id)

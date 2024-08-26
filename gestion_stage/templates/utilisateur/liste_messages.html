@@ -111,7 +111,7 @@
             {% for notification in notifications %}
                 <li>
                     <div class="message">
-                        <strong>{{ notification.utilisateur.Nom_complet }}:</strong> {{ notification.message }}
+                        <strong>{{ notification.utilisateur.Nom_complet }} à {{ notification.candidat.Nom_complet }}:</strong> {{ notification.message }}
                     </div>
                     <div class="date-time">Envoyé le {{ notification.date_envoi }}</div>
                     {% if notification.lu %}
