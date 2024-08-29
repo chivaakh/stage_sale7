@@ -19,10 +19,10 @@ class Utilisateur(models.Model):
         ('User_simple', 'User_simple'),
     ]
     Id_utilisateur = models.AutoField(primary_key=True)
-    Nom_complet = models.CharField(max_length=20)
-    Email = models.EmailField(max_length=70, unique=True)
-    password = models.CharField(max_length=70)
-    role = models.CharField( choices=ROLE_CHOICES, max_length=20)
+    Nom_complet = models.CharField(max_length=50)
+    Email = models.EmailField(max_length=191, unique=True)
+    password = models.CharField(max_length=100)
+    role = models.CharField( choices=ROLE_CHOICES, max_length=50)
     Date_creation = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):
@@ -124,8 +124,9 @@ class Room(models.Model):
 
 class Evaluation(models.Model):
     Id_evaluation = models.AutoField(primary_key=True)
-    content = models.CharField(max_length=50, null=False, blank=False) 
+    content = models.CharField(max_length=50, default='') 
     user = models.CharField(max_length=20, null=False, blank=False) 
+    files=models.FileField(upload_to='Evaluation/')
     room = models.ForeignKey(Room, on_delete=models.CASCADE)  
     date = models.DateTimeField(default=datetime.now, blank=True)
 

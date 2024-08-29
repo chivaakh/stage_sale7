@@ -1,211 +1,259 @@
 <!DOCTYPE html>
-<html>
+<html lang="fr">
+
 <head>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <style>
-    @import url('https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100;0,200;0,300;0,400;1,200;1,300;1,400&display=swap');
-    *{
-        margin: 0;
-        padding: 0;
-        font-family: 'Montserrat', sans-serif;
-    }
-    ::-webkit-scrollbar {
-    width: 8px; 
-
-    }
-    ::-webkit-scrollbar-thumb {
-    background-color: #888;
-    border-radius: 6px;
-    }
-    body {
-    margin: 0 ;
-    max-height: 100vh;
-    padding:0;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    flex-direction: column;
-    font-family: 'Montserrat', sans-serif;
-    background: #fff; 
-    }
-
-    .container {
-    border: 2px solid #dedede;
-    background-color: #f1f1f1;
-    border-radius: 5px;
-    padding: 15px;
-    margin: 10px 0;
-    width: 700PX;
-    
-
-    }
-    #display {
-        border: 2px solid #dedede;
-        width: 800PX;
-        height: 650PX;
-        max-height: 450px;
-        overflow-y: auto;
-        padding: 15px;
-        background-color: #f8f7f7;
-    }
-    .darker {
-    border-color: #ccc ;
-   
-    margin-bottom: 10px;
-    word-break:break;
-    width: 730px;
-    background-color: rgba(199, 94, 217, 0.08);
-    }
-
-    .darker p {
-        line-height: 25px;
-        margin: 5PX 0;
-        padding: 6px 0;
-        font-weight: bold;
-    }
-    .darker span {
-        color: #52dff1;
-      
-    }
-
-    .darker b {
-    text-transform: capitalize;
-    font-style: italic;
-
-    }
-    input[type=text], select {
-        width: 100%;
-        padding: 12px 20px;
-        margin: 8px 0;
-        display: inline-block;
-        border: 1px solid #ccc;
-        border-radius: 4px;
-        box-sizing: border-box;
-        font-weight: bold;
-        margin-right: 6px;
-        height: 50px;
-        }
-        input:focus{
-            border-color: rgb(5, 127, 249);
-            box-shadow: 0 0 8px rgba(0, 123, 255, 0,5);
-            outline: none;
-            background-color:#e9f5ff ;
-        }
-        button[type=submit] {
-        width: 5%;
-        color: #4CAF50;
-        border: none;
-        cursor: pointer;
+        @import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;700&display=swap');
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Montserrat', sans-serif;
         }
 
-        input[type=submit]:hover {
-        background-color: #45a049;
+        body {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            flex-direction: column;
+            height: 100vh;
+            background: #f4f4f4;
+            padding: 20px;
         }
 
-        div {
-        border-radius: 5px;
-        background-color: #f2f2f2;
-        padding: 20px;
+        .container {
+            background-color: #fff;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            padding: 20px;
+            width: 100%;
+            max-width: 700px;
+            overflow: hidden;
         }
-        .link {
-            font-size: 14px;
-            margin-left: 20px;
-            color: #45a049;
-            background-color: #45a049;
-            padding: 8px 10px;
-            color: #fff;
-            border-radius: 6px;
-            text-decoration: none;
 
-        }
         .title {
-            margin: 20px 0;
-            color: #000;
+            font-size: 24px;
+            color: #333;
+            margin-bottom: 20px;
+            text-align: center;
+            border-bottom: 2px solid #f88909;
+            padding-bottom: 10px;
+            font-weight: 700;
+            text-transform: uppercase;
         }
-    #post-form { 
-        display: flex; 
-        align-items: center;
+
+        #display {
+            border: 1px solid #ddd;
+            background-color: #fafafa;
+            border-radius: 4px;
+            padding: 10px;
+            width: 700px;
+            height: 500px;
+            overflow-y: auto;
+            margin-bottom: 20px;
+            box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.1);
+        }
+
+        .message-item {
+            background: #f9f9f9;
+            border-left: 4px solid #007bff;
+            margin-bottom: 10px;
+            padding: 10px;
+            border-radius: 4px;
+        }
+
+        .message-item p {
+            margin: 0;
+            color: #555;
+        }
+
+        .message-item img {
+            max-width: 100%;
+            height: auto;
+            display: block;
+            margin: 10px 0;
+        }
+
+        input[type=text] {
+            width: calc(100% - 50px);
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            margin-right: 10px;
+            font-size: 16px;
+        }
+
+        input[type=file] {
+            display: none;
+        }
+
+        label.file-upload {
+            display: inline-block;
+            cursor: pointer;
+            color: #007bff;
+            font-size: 24px;
+            margin-right: 10px;
+        }
+
+        button[type=submit] {
+            background-color: #007bff;
+            color: #fff;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 16px;
+            display: flex;
+            align-items: center;
+            font-size: 18px;
+        }
+
+        button[type=submit] i {
+            margin-left: 5px;
+        }
+
+        button[type=submit]:hover {
+            background-color: #0056b3;
+        }
+
+        .file-upload i {
+            font-size: 24px;
         }
     </style>
-    <!-- AJAX -->
-    <script   src="https://code.jquery.com/jquery-3.1.1.min.js"   integrity="sha256-hVVnYaiADRTO2PzUGmuLJr8BLUSjGIZsDYGmIJLv2b8="   crossorigin="anonymous"></script>
+
+    <script src="https://code.jquery.com/jquery-3.1.1.min.js" integrity="sha256-hVVnYaiADRTO2PzUGmuLJr8BLUSjGIZsDYGmIJLv2b8=" crossorigin="anonymous"></script>
 </head>
+
 <body>
-    
-    <!-- Récupération des messages en ajax -->
-    <script>
-        $(document).ready(function(){
-          var display = $("#display");
-          setInterval(function(){
-              $.ajax({
-                  type: 'GET',
-                  url : "/getMessages/{{room}}/",
-                  success: function(response){
-                      console.log(response);
-                      var isAtBottom = display.scrollTop() + display.innerHeight() >= display[0].scrollHeight;
-                      $("#display").empty();
-                      for (var key in response.messages)
-                      {
-                          var rawDate = new Date(response.messages[key].date);
-                          var formattedDate = rawDate.toLocaleString('fr-FR', {day: 'numeric', month: 'short', year: 'numeric', hour: '2-digit', minute:'2-digit'});
-                          var temp="<div class='darker'><b>"+response.messages[key].user+"</b><p>"+response.messages[key].content+"</p><span>"+formattedDate+"</span></div>";
-                          $("#display").append(temp);
-                      }
-                      // Scroll to the bottom of the chat window if the user is already at the bottom
-                      if (isAtBottom) {
-                          $("#display").scrollTop($("#display")[0].scrollHeight);
-                      }
-                  },
-                  error: function(response){
-                      alert('An error occured')
-                  }
-              });
-          },500);
-      });
-      </script>
-
-
-
-    <h2 class="title"> Evalution - {{room}} </h2>
-    <div id="display" >
-        <!-- Les messages de chat seront ajoutés ici 
-         pour cree neveau room <a class="link" href="{% url 'home' %}">Change Group</a>-->
+    <h2 class="title">Évaluation - {{room}}</h2>
+    <div id="display">
         <p>Aucun message présent</p>
     </div>
     <div class="container">
-        <form id="post-form">
+        <form id="post-form" method="POST" enctype="multipart/form-data">
             {% csrf_token %}
-            <input type="hidden" name="username" id="username" value="{{username}}"/>
-            <input type="hidden" name="room_id" id="room_id" value="{{room_details.id}}"/>
-            <input type="text" name="message" id="message" />
-            <button type="submit"><i class="fa-solid fa-circle-chevron-right fa-3x"></i></button>
-         
+            <input type="hidden" name="username" id="username" value="{{username}}" />
+            <input type="hidden" name="room_id" id="room_id" value="{{room_details.id}}" />
+            <div style="display: flex; align-items: center;">
+                <input type="text" name="message" id="message" placeholder="Tapez votre message ici..." />
+                <label for="file-upload" class="file-upload">
+                    <i class="fa-solid fa-paperclip"></i>
+                </label>
+                <input type="file" id="file-upload" name="file" />
+                <button type="submit">
+                    Envoyer <i class="fa-solid fa-circle-chevron-right fa-2x"></i>
+                </button>
+            </div>
         </form>
     </div>
 
     <script type="text/javascript">
-        // pour soumettre le formulaire en ajax
-         $(document).on('submit','#post-form',function(e){
-        e.preventDefault();
-    
-        $.ajax({
-          type:'POST',
-          url:'/send',
-          data:{
-              username:$('#username').val(),
-              room_id:$('#room_id').val(),
-              message:$('#message').val(),
-            csrfmiddlewaretoken:$('input[name=csrfmiddlewaretoken]').val(),
-          },
-        //la  réponse HTTP pour signaler que le message a été envoyé avec succes
-          success: function(data){
-           // alert(data)
-          }
+        $(document).on('submit', '#post-form', function (e) {
+            e.preventDefault();
+
+            var formData = new FormData(this);
+
+            $.ajax({
+                type: 'POST',
+                url: "{% url 'send' %}",
+                data: formData,
+                processData: false,
+                contentType: false,
+                success: function (response) {
+                    console.log(response);
+                    $('#message').val('');
+                    $('#file-upload').val('');
+                },
+                error: function (response) {
+                    alert('Une erreur est survenue');
+                }
+            });
         });
-        document.getElementById('message').value = ''
-      });
+
+        $(document).ready(function () {
+            var display = $("#display");
+            setInterval(function () {
+                $.ajax({
+                    type: 'GET',
+                    url: "/getMessages/{{room}}/",
+                    success: function (response) {
+                        console.log(response);
+                        var isAtBottom = display.scrollTop() + display.innerHeight() >= display[0].scrollHeight;
+                        $("#display").empty();
+
+                        for (var key in response.messages) {
+                            var message = response.messages[key];
+                            var rawDate = new Date(message.date);
+                            var formattedDate = rawDate.toLocaleString('fr-FR', {
+                                day: 'numeric',
+                                month: 'short',
+                                year: 'numeric',
+                                hour: '2-digit',
+                                minute: '2-digit'
+                            });
+
+                            var contentHtml = message.content ? "<p>" + message.content + "</p>" : "";
+                            var fileHtml = "";
+
+                            if (message.files) {
+                                var fileUrl = message.files;
+                                var fileName = fileUrl.split('/').pop();
+
+                                if (fileName.match(/\.(jpg|jpeg|png|gif)$/)) {
+                                    fileHtml = "<img src='" + fileUrl + "' alt='Fichier' style='max-width: 100%; height: auto;'/>";
+                                } else {
+                                    fileHtml = "<a href='" + fileUrl + "' download>" + fileName + "</a>";
+                                }
+                            }
+
+                            var temp = "<div class='message-item'><b>" + message.user + "</b>" + contentHtml + fileHtml + "<span>" + formattedDate + "</span></div>";
+                            $("#display").append(temp);
+                        }
+
+                        if (isAtBottom) {
+                            $("#display").scrollTop($("#display")[0].scrollHeight);
+                        }
+                    },
+                    error: function (response) {
+                        alert('Une erreur est survenue');
+                    }
+                });
+            }, 500);
+        });
     </script>
+    <script type="text/javascript">
+        // Afficher l'aperçu du fichier sélectionné
+        document.getElementById('file-upload').addEventListener('change', function(event) {
+            var display = document.getElementById('display');
+            var files = event.target.files;
+            
+            // Nettoyer le contenu précédent
+            display.innerHTML = '';
+
+            // Boucle à travers les fichiers sélectionnés
+            Array.from(files).forEach(file => {
+                var reader = new FileReader();
+                
+                reader.onload = function(e) {
+                    var fileType = file.type.split('/')[0];
+
+                    var fileHtml = '';
+                    if (fileType === 'image') {
+                        fileHtml = "<img src='" + e.target.result + "' class='file-preview' alt='Preview'/>";
+                    } else {
+                        fileHtml = "<a href='" + e.target.result + "' download='" + file.name + "' class='file-preview'>" + file.name + "</a>";
+                    }
+
+                    display.innerHTML += fileHtml;
+                };
+
+                reader.readAsDataURL(file); // Lire le fichier comme Data URL
+            });
+        });
+    </script>
+
 </body>
 
-</html>`
+</html>

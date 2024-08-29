@@ -230,7 +230,7 @@ select {
         {% if error_message %}
         <p style="color: red;">{{ error_message }}</p>
        {% endif %}
-        <form action="{% url 'home' %}" method="POST">
+        <form action="{% url 'login' %}" method="POST">
           {% csrf_token %}
           <div class="field-wrap">
             <input type="email" required placeholder="Email" name="email" />

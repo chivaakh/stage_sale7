@@ -36,19 +36,21 @@
             </li>
             <li>
               <span class="material-symbols-outlined">show_chart</span>
-              <a href="Service/service_list.html">Gestion des services</a>
+              <a href="{% url 'service_list' %}">Gestion des services</a>
             </li>
             <li>
               <span class="material-symbols-outlined">group</span>
-              <a href="Candidats/show_candidat.html">Gestion des Candidates</a>
+              <a href= "{% url 'show_candidate'%}">Gestion des Candidates</a>
             </li>
             <li>
               <span class="material-symbols-outlined">group</span>
-              <a href="gestions_users/Interface_principale.html">Gestion des utilisateur </a>
+              <a href="{% url 'interface_principal' %}">Gestion des utilisateur </a>
             </li>
             <li class="logout-link">
               <span class="material-symbols-outlined">logout</span>
-              <a href="#">Logout</a>
+              <a href="{% url 'logout' %}">Logout</a>
+    
+
             </li>
           </ul>
         </aside>

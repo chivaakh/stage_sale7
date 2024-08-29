@@ -1,6 +1,7 @@
 from django.shortcuts import render, redirect,get_object_or_404
 from .forms import UtilisateurForm,CandidateForm,ServiceForm,SujetStageForm
 from .models import *
+from django.contrib.auth import logout
 from django.contrib.auth import authenticate, login as auth_login
 from django.contrib.auth.decorators import login_required
 from .models import Service,Utilisateur,Candidats,Demandes
@@ -60,7 +61,7 @@ def login(request):
             utilisateur = Utilisateur.objects.filter(Email=email).first()
             if utilisateur and utilisateur.check_password(password):
                 if utilisateur and utilisateur.role == 'Admin':
-                    return redirect('interface_principal') 
+                    return redirect('nevbar_admin') 
                 elif utilisateur and utilisateur.role == 'RH':
                      return redirect('gestion_demandes') 
                 else:
@@ -81,7 +82,8 @@ def login(request):
         'error_message': error_message, 
     })
 
-
+def logout(request):
+    return redirect('login')
 #les views pour les creet de candidate
 def create_candidate(request):
     if request.method == 'POST':
@@ -103,6 +105,8 @@ def deletuser(request, id_user):
     if utilisateur: 
         utilisateur.delete()  
     return redirect('interface_principal') 
+def nevbar_admin(request):
+    return render(request,'sidebar/nevbar_admin.html')
 
 #RD pour la candidate
 def show_candidate(request):
@@ -270,7 +274,7 @@ def homepage(request):
 
 #les view pour evaluation
 def start_chat(request):
-    return render(request, 'evaluation/lancer_chat.html')
+    return render(request, 'evaluation/noveau_evaluation.html')
 
 def room(request , room):
     username = request.GET.get('username')
@@ -293,18 +297,34 @@ def checkview(request):
     
 
 def send(request):
-    message = request.POST['message']
-    username = request.POST['username']
-    room_name= request.POST['room_id']
+    if request.method == 'POST':
+        message = request.POST['message']
+        username = request.POST['username']
+        room_Id = request.POST['room_id']  
+        file=request.FILES.get('file')
+  
+        room = Room.objects.get(id=room_Id)
+        if file:
+                new_message = Evaluation.objects.create(content=message, user=username, room=room, files=file)
+        else:
+                new_message = Evaluation.objects.create(content=message, user=username, room=room)
+        new_message.save()
+        return JsonResponse({'status': 'Message envoyé avec succès!'})
+    return JsonResponse({'status': 'Requête invalide'}, status=400)
 
-    new_message = Evaluation.objects.create(content= message , user = username , room = room_name)
-    new_message.save()
-    return HttpResponse('Message envoyé avec succès')
-
-def getMessages(request , room):
+def getMessages(request, room):
     room_details = Room.objects.get(name=room)
-    messages = Evaluation.objects.filter(room = room_details.id).order_by('date')
-    return JsonResponse({"messages" :list(messages.values())})
+    messages = Evaluation.objects.filter(room=room_details.id).order_by('date')
+    messages_list = []
 
+    for message in messages:
+        message_data = {
+            'content': message.content,
+            'user': message.user,
+            'date': message.date.isoformat(),
+            'files': message.files.url if message.files else None
+        }
+        messages_list.append(message_data)
 
+    return JsonResponse({"messages": messages_list})
 #dfghjkjhg
