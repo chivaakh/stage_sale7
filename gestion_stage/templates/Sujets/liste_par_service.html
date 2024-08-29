@@ -1,38 +1,141 @@
-{% load static %}
-<!DOCTYPE html>
-<html lang="en">
+{% comment %} {% extends 'base.html' %} {% endcomment %}
+
+{% block content %}
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Sujets de Stage pour {{ service.Nom_service }}</title>
+    <title>Sujets pour le service {{ service.Nom_service }}</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css">
+    <style>
+        .description-cell, .title-cell {
+            max-width: 250px;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+        .hi{
+            width: -25%;
+        }
+        .full-text {
+            display: none;
+            white-space: normal;
+        }
+        .see-more, .see-more-title {
+            color: #007bff;
+            text-decoration: none;
+            cursor: pointer;
+            font-weight: bold;
+            margin-left: 5px;
+        }
+        .see-more:hover, .see-more-title:hover {
+            text-decoration: underline;
+        }
+        .modal-body {
+            white-space: pre-wrap;
+            word-wrap: break-word;
+        }
+    </style>
 </head>
 <body>
     <div class="container mt-5">
-        <h1>Sujets de Stage pour {{ service.Nom_service }}</h1>
-        {% if sujets %}
-            <table class="table table-striped">
-                <thead>
-                    <tr>
-                        <th>Titre</th>
-                        <th>Description</th>
-                        <th>Date de Création</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    {% for sujet in sujets %}
-                        <tr>
-                            <td>{{ sujet.titre }}</td>
-                            <td>{{ sujet.Description }}</td>
-                            <td>{{ sujet.Date_creation|date:"d/m/Y" }}</td>
-                        </tr>
-                    {% endfor %}
-                </tbody>
-            </table>
-        {% else %}
-            <p>Aucun sujet trouvé pour ce service.</p>
-        {% endif %}
-        <a href="{% url 'ajouter_sujet' %}" class="btn btn-primary">Ajouter un Sujet</a>
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            <h1 class="h3">Liste des Sujets pour le service {{ service.Nom_service }}</h1>
+            <div class="d-flex">
+                <!-- Formulaire de recherche -->
+                <form class="d-flex me-2" method="get" action="">
+                    <input class="form-control me-2" type="search" name="q" placeholder="Rechercher un sujet" aria-label="Search" value="{{ request.GET.q }}">
+                    <button class="btn btn-outline-primary" type="submit">
+                        <i class="bi bi-search"></i>
+                    </button>
+                </form>
+                <div class='hi'>
+                <a href="{% url 'ajouter_sujet' service.Id_service %}" class="btn btn-success">
+                    <i class="bi bi-plus-circle"></i> Ajouter un nouveau sujet
+                </a>
+            </div>
+            </div>
+        </div>
+
+        <table class="table table-hover">
+            <thead class="table-dark">
+                <tr>
+                    
+                    <th>Titre</th>
+                    <th>Description</th>
+                   
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for sujet in sujets %}
+                <tr>
+                    
+                    <td class="title-cell">
+                        <span class="short-text">{{ sujet.titre|truncatechars:30 }}</span>
+                        <span class="full-text">{{ sujet.titre }}</span>
+                        {% if sujet.titre|length > 20 %}
+                            <span class="see-more-title">Voir plus</span>
+                        {% endif %}
+                    </td>
+                    <td class="description-cell">
+                        <span class="short-text">{{ sujet.description|truncatechars:30 }}</span>
+                        <span class="full-text">{{ sujet.description }}</span>
+                        {% if sujet.description|length > 20 %}
+                            <span class="see-more">Voir plus</span>
+                        {% endif %}
+                    </td>
+                    
+                    <td>
+                        <a href="{% url 'modifier_sujet' sujet.Id_sujet %}" class="btn btn-warning btn-sm">
+                            <i class="bi bi-pencil-square"></i> Modifier
+                        </a>
+                        <a href="{% url 'supprimer_sujet' sujet.Id_sujet %}" class="btn btn-danger btn-sm">
+                            <i class="bi bi-trash"></i> Supprimer
+                        </a>
+                    </td>
+                </tr>
+                {% empty %}
+                <tr>
+                    <td colspan="5" class="text-center">Aucun sujet trouvé.</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+
+        <!-- Boîte modale pour afficher le texte complet -->
+        <div class="modal fade" id="textModal" tabindex="-1" aria-labelledby="textModalLabel" aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="textModalLabel">Description complète</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        <p id="modalText"></p>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Fermer</button>
+                    </div>
+                </div>
+            </div>
+        </div>
     </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        document.querySelectorAll('.see-more, .see-more-title').forEach(button => {
+            button.addEventListener('click', function() {
+                const fullText = this.previousElementSibling;
+                const modal = new bootstrap.Modal(document.getElementById('textModal'));
+                const modalText = document.getElementById('modalText');
+
+                // Injecter le texte complet dans la modale
+                modalText.textContent = fullText.textContent;
+
+                // Afficher la modale
+                modal.show();
+            });
+        });
+    </script>
 </body>
-</html>
+{% endblock %}

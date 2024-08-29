@@ -4,6 +4,8 @@ from django.contrib.auth.hashers import make_password
 from .models import Sujet_stage 
 from .models import Notification
 from django.contrib.auth.models import User
+from .models import Notification
+
 
 
 class UtilisateurForm(forms.ModelForm):
@@ -63,8 +65,12 @@ class CandidatForm(forms.ModelForm):
 
 
 
+
 class SujetStageForm(forms.ModelForm):
     class Meta:
         model = Sujet_stage
         fields = ['titre', 'Description', 'Id_service']  # Inclure le service ici
 
+
+
+        fields = ['titre', 'description']

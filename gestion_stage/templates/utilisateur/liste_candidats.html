@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Liste des Candidats</title>
+    <style>
+        @import url("https://fonts.googleapis.com/css2?family=Poppins:wght@200;300;400;500;600;700&display=swap");
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
+            display: flex;
+            justify-content: center;
+            align-items: flex-start; /* Modifié pour aligner en haut */
+            height: 100vh;
+            margin: 0;
+            padding-top: 20px; /* Espace supplémentaire en haut */
+        }
+
+        .container {
+            text-align: left;
+            background: white;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            width: 85%; /* Réduit la largeur du conteneur */
+            max-width: 600px; /* Réduit la largeur maximale */
+        }
+
+        h1 {
+            font-size: 2rem;
+            margin-bottom: 30px;
+            color: #333;
+            text-align: center;
+        }
+
+        .chiva {
+            font-size: 2.5rem;
+            color: #007bff;
+            font-weight: 600;
+            text-align: center;
+            margin-bottom: 40px;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.2);
+            font-family: 'Poppins', sans-serif;
+        }
+
+        ul {
+            list-style-type: none;
+            padding: 0;
+            margin: 0;
+        }
+
+        li {
+            font-size: 1.5rem;
+            margin-bottom: 20px;
+            color: #666;
+            display: flex;
+            align-items: center;
+            border-bottom: 1px solid #ddd;
+            padding: 15px 0;
+        }
+
+        .circle {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            background-color: #ff5722;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: bold;
+            margin-right: 20px;
+            font-size: 1.5rem;
+        }
+
+        .info {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .name {
+            font-weight: 600;
+            color: #333;
+        }
+
+        .message-link {
+            color: #007bff;
+            text-decoration: none;
+            font-size: 1rem;
+            margin-top: 5px;
+        }
+
+        .message-link:hover {
+            color: #0056b3;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1 class="chiva">Liste des Candidats</h1> <!-- Titre bien visible et stylé -->
+        <ul>
+            {% for candidat in candidats %}
+                <li>
+                    <div class="circle">{{ candidat.Nom_complet|slice:":1" }}</div>
+                    <div class="info">
+                        <span class="name">{{ candidat.Nom_complet }}</span>
+                        <a class="message-link" href="{% url 'envoyer_message' candidat.Id_candidat %}">Envoyer un message</a>
+                    </div>
+                </li>
+            {% endfor %}
+        </ul>
+    </div>
+</body>
+</html> 

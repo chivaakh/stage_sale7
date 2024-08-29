@@ -11,9 +11,70 @@ from .forms import CandidatForm
 from django.contrib.auth.hashers import make_password
 from django.contrib import messages
 from django.http import HttpResponse , JsonResponse
+from django.contrib.auth.models import User
+from django.contrib.auth.decorators import user_passes_test
+import logging
+from .models import Sujet_stage
+from django.http import HttpResponseRedirect
+from django.urls import reverse
+from .forms import SujetStageForm  # Assume que tu as un formulaire pour Sujet_stage
 
 # Create your views here.
 #les views pour gestions des utilisateur
+
+from django.shortcuts import render, get_object_or_404, redirect
+from .models import Candidats, Notification
+
+def liste_candidats(request):
+    candidats = Candidats.objects.all()
+    return render(request, 'utilisateur/liste_candidats.html', {'candidats': candidats})
+
+logger = logging.getLogger(__name__)
+
+def envoyer_message(request, candidat_id):
+    candidat = get_object_or_404(Candidats, pk=candidat_id)
+    if request.method == 'POST':
+        message = request.POST.get('message')
+        
+        utilisateur_django = request.user
+        logger.debug(f'Utilisateur Django connecté : {utilisateur_django.email}')
+        
+        # Essayer de récupérer l'utilisateur personnalisé basé sur l'email
+        try:
+            utilisateur = Utilisateur.objects.get(Email=utilisateur_django.email)
+            logger.debug(f'Utilisateur trouvé : {utilisateur.Nom_complet}')
+        except Utilisateur.DoesNotExist:
+            logger.error(f'Utilisateur non trouvé pour l\'email : {utilisateur_django.email}')
+            return render(request, 'sidebar/error.html', {'error_message': "Utilisateur non trouvé."})
+
+        # Créer la notification
+        notification = Notification.objects.create(
+            message=message,
+            utilisateur=utilisateur,
+            candidat=candidat
+        )
+        notification.save()
+        
+         
+
+        return redirect('liste_messages')
+     
+    return render(request, 'utilisateur/envoyer_message.html', {'candidat': candidat})
+    
+
+def liste_messages(request):
+    
+    notifications = Notification.objects.all()
+    return render(request, 'utilisateur/liste_messages.html', {'notifications': notifications})
+
+
+def marquer_comme_lu(request, notification_id):
+    notification = get_object_or_404(Notification, pk=notification_id)
+    notification.lu = True
+    notification.save()
+    return redirect('liste_messages')
+
+
 
 
 def create_utilisateur(request):
@@ -193,9 +254,7 @@ def confirmation(request):
 def form_candidat(request):
     return render(request, 'Candidats/code.html')
 
-def notifications_view(request):
-    # Récupère toutes les notifications
-    notifications = Notification.objects.all()
+
     return render(request, 'Notifications/notifications.html', {'notifications': notifications})
 def create_candidate(request):
     if request.method == 'POST':
@@ -215,59 +274,57 @@ def create_candidate(request):
 
 
 
-# Liste des sujets
-def liste_sujets(request):
-    query = request.GET.get('query', '')
-    if query:
-        sujets = Sujet_stage.objects.filter(
-            Q(titre__icontains=query) | Q(Description__icontains=query)
-        )
-    else:
-        sujets = Sujet_stage.objects.all()
-    context = {
-        'sujets': sujets,
-    }
-    return render(request, 'Sujets/liste.html', context)
 
-
-# Ajouter un sujet
-def ajouter_sujet(request):
-    if request.method == "POST":
-        form = SujetStageForm(request.POST)
-        if form.is_valid():
-            sujet = form.save(commit=False)
-            sujet.save()
-            return redirect('liste_sujets')
-    else:
-        form = SujetStageForm()
-    return render(request, 'Sujets/ajouter.html', {'form': form})
-
-# Modifier un sujet
-def modifier_sujet(request, pk):
-    sujet = get_object_or_404(Sujet_stage, pk=pk)
-    if request.method == "POST":
-        form = SujetStageForm(request.POST, instance=sujet)
-        if form.is_valid():
-            form.save()
-            return redirect('liste_sujets')
-    else:
-        form = SujetStageForm(instance=sujet)
-    return render(request, 'Sujets/modifier.html', {'form': form})
-
-# Supprimer un sujet
-def supprimer_sujet(request, pk):
-    sujet = get_object_or_404(Sujet_stage, pk=pk)
-    sujet.delete()
-    return redirect('liste_sujets')
-
+# Liste des sujets par service
 def liste_sujets_par_service(request, service_id):
     service = get_object_or_404(Service, pk=service_id)
     sujets = Sujet_stage.objects.filter(Id_service=service)
-    context = {
-        'service': service,
-        'sujets': sujets,
-    }
-    return render(request, 'Sujets/liste_par_service.html', context)
+    query = request.GET.get('q')
+    if query:
+        sujets = sujets.filter(titre__icontains=query)
+    return render(request, 'sujets/liste_par_service.html', {'service': service, 'sujets': sujets})
+
+# Ajouter un sujet
+def ajouter_sujet(request, service_id):
+    service = get_object_or_404(Service, pk=service_id)
+    if request.method == 'POST':
+        form = SujetStageForm(request.POST)
+        if form.is_valid():
+            sujet = form.save(commit=False)
+            sujet.Id_service = service  # Associe le sujet au service
+            sujet.save()
+            return redirect('liste_sujets_par_service', service_id=service.Id_service)
+    else:
+        form = SujetStageForm()
+
+    return render(request, 'sujets/ajouter.html', {'form': form, 'service': service})
+
+# Modifier un sujet
+
+def modifier_sujet(request, sujet_id):
+    sujet = get_object_or_404(Sujet_stage, pk=sujet_id)
+    if request.method == 'POST':
+        form = SujetStageForm(request.POST, instance=sujet)
+        if form.is_valid():
+            form.save()
+            return redirect('liste_sujets_par_service', service_id=sujet.Id_service.Id_service)
+    else:
+        form = SujetStageForm(instance=sujet)
+    return render(request, 'sujets/modifier.html', {'form': form, 'sujet': sujet, 'service': sujet.Id_service})
+
+
+
+# Supprimer un sujet
+
+def supprimer_sujet(request, sujet_id):
+    sujet = get_object_or_404(Sujet_stage, pk=sujet_id)
+    if request.method == 'POST':
+        service_id = sujet.Id_service.Id_service  # Utilise Id_service pour accéder à l'ID
+        sujet.delete()
+        return redirect('liste_sujets_par_service', service_id=service_id)
+    return render(request, 'sujets/confirm_delete.html', {'sujet': sujet})
+
+
 
 def homepage(request):
     return render(request, 'first/code.html')

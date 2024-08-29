@@ -7,71 +7,70 @@
    
     <style>
         /* Style de la table */
-        body{
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
-        }
         table {
             margin-top: 40px;
             border-collapse: collapse;
             width: 900px;
             height: 50%;
             margin-bottom: 20px;
-            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);}
+            
+       body {
+            background-color: #f4f7f6;
+            font-family: Arial, sans-serif;
         }
         
-        /* Style des cellules */
-        th, td {
-            border: 1px solid #dddddd;
-            padding: 10px;
-            text-align: left;
+        h1 {
             text-align: center;
-           
-        }
-        
-        /* Style des entêtes */
-        th {
-            background-color:rgb(59, 155, 251);;
             color: #333;
-            font-weight: bold;
-            color: #fff;
+            margin-top: 20px;
         }
-        
-        /* Style des lignes */
-        tr:nth-child(even) {
+
+        table.can {
+            width: 90%;
+            margin: 30px auto;
+            border-collapse: collapse;
+            background-color: #fff;
+            color: #333;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        table.can th, table.can td {
+            padding: 12px;
+            text-align: left;
+            border: 1px solid #ddd;
+        }
+
+        table.can th {
+            background-color: #007BFF;
+            color: #fff;
+            font-weight: bold;
+            text-transform: uppercase;
+        }
+
+        table.can tr:nth-child(even) {
             background-color: #f9f9f9;
         }
-        
-        /* Style des liens */
-        a {
-            color: #337ab7;
+
+        table.can tr:hover {
+            background-color: #e1e1e1;
+        }
+
+        table.can td a {
+            color: #007BFF;
             text-decoration: none;
+            transition: color 0.3s ease;
         }
-        
-        /* Style des icônes */
-        .icon {
-            font-size: 16px;
-            margin-right: 5px;
+
+        table.can td a:hover {
+            color: #0056b3;
         }
-        h1{ text-align: center;
-            padding: 9px 6px;
-            background-color: #a4cef3;
-            margin-top: 20px;
-            border-radius: 2px;
-            border-style: none;
-            width: 500px;
-            color: #fff;
-        }
-        
-        .can{
-            width: 600px;
-        }
-    </style>
+   </style>
+
 <body>
-    <h1>Liste des utilisateurs</h1>
-    <table border="1">
+    <h1>Liste des utilisateurss</h1>
+    <table border="1" class="can">
         <th>Id_utilisateur</th>
         <th>Nom_complet</th>
         <th>Email</th>
@@ -114,8 +113,4 @@
     </script>
 </body>
 {% endblock %}
-
-    
-        
-   
 

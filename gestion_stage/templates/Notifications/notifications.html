@@ -1,8 +1,0 @@
-<h1>Notifications</h1>
-<ul>
-    {% for notification in notifications %}
-        <li>{{ notification.Message }} - {{ notification.Date_notification }} - {{ notification.statut }}</li>
-    {% empty %}
-        <li>Aucune notification pour le moment.</li>
-    {% endfor %}
-</ul>
