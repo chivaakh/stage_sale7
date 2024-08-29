@@ -127,8 +127,9 @@ class Room(models.Model):
 
 class Evaluation(models.Model):
     Id_evaluation = models.AutoField(primary_key=True)
-    content = models.CharField(max_length=50, null=False, blank=False) 
+    content = models.CharField(max_length=50, default='') 
     user = models.CharField(max_length=20, null=False, blank=False) 
+    files=models.FileField(upload_to='Evaluation/')
     room = models.ForeignKey(Room, on_delete=models.CASCADE)  
     date = models.DateTimeField(default=datetime.now, blank=True)
 

@@ -4,7 +4,17 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css">
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-   <style>
+   
+    <style>
+        /* Style de la table */
+        table {
+            margin-top: 40px;
+            border-collapse: collapse;
+            width: 900px;
+            height: 50%;
+            margin-bottom: 20px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);}
+            
        body {
             background-color: #f4f7f6;
             font-family: Arial, sans-serif;
@@ -66,7 +76,7 @@
         <th>Email</th>
         <th>role</th>
         <th>Date_creation</th>
-        <th colspan="2">actions</th>
+        <th colspan="1">actions</th>
         {% for user in utilisateur %}
         <tr>
             <td>{{ user.Id_utilisateur }} </td>
@@ -103,8 +113,4 @@
     </script>
 </body>
 {% endblock %}
-
-    
-        
-   
 

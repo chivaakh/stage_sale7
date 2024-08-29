@@ -1,0 +1,132 @@
+
+<!DOCTYPE html>
+<html>
+<head>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+</head>
+<body>
+    <style>
+   @import url('https://fonts.googleapis.com/css?family=Poppins:400,500,600,700&display=swap');
+*{
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: 'Poppins', sans-serif;
+}
+html,body{
+  display: grid;
+  height: 100%;
+  place-items: center;
+  text-align: center;
+  background: #f2f2f2;
+}
+.container{
+  background: #fff;
+  padding: 20px 30px;
+  width: 520px;
+  border-radius: 5px;
+  box-shadow: 0 0 15px rgba(0,0,0,0.2);
+}
+.container header{
+  padding-top: 5px;
+  font-size: 25px;
+  font-weight: 600;
+  line-height: 33px;
+}
+.container form{
+  margin: 5px 8px;
+  padding: 9px 0;
+}
+.container form .error-text{
+  background: #F8D7DA;
+  padding: 8px 0;
+  border-radius: 5px;
+  color: #8B3E46;
+  border: 1px solid #F5C6CB;
+  display: none;
+}
+.container form .error-text.matched{
+  background: #D4EDDA;
+  color: #588C64;
+  border-color: #C3E6CB;
+}
+.container form .field{
+  width: 100%;
+  height: 45px;
+  display: flex;
+  margin: 15px 0;
+  position: relative;
+}
+form .field input{
+  width: 100%;
+  height: 100%;
+  border: 1px solid #efe4e4;
+  padding-left: 15px;
+  outline: none;
+  border-radius: 5px;
+  font-size: 17px;
+  transition: all 0.3s;
+}
+form .field input::placeholder{
+  font-size: 16px;
+}
+form .field input:focus{
+border-color:rgb(144, 172, 243);
+box-shadow: inset 0 0 3px rgb(51, 106, 244);
+}
+form .field .show{
+  position: absolute;
+  right: 10px;
+  top: 50%;
+  transform: translateY(-50%);
+  font-size: 14px;
+  font-weight: 600;
+  user-select: none;
+  cursor: pointer;
+  display: none;
+}
+form .field .show.active{
+  color: #27ae60;
+}
+form button{
+  width: 100%;
+  height: 45px;
+  margin: 3px 0 10px 0;
+  border: none;
+  outline: none;
+  background: #1b86f8;
+  border-radius: 5px;
+  color: #fff;
+  font-size: 18px;
+  font-weight: 500;
+  letter-spacing: 1px;
+  cursor: pointer;
+  opacity: 0.7;
+}
+form button{
+  cursor: pointer;
+  opacity: 1;
+  transition: all 0.3s;
+}
+form button:hover{
+  background: rgb(6, 71, 235);
+}
+
+    </style>
+    <div class="container">
+        <header>Nouvelle Évaluation</header>
+        <form id = "post-form" method="POST" action="checkview">
+            {% csrf_token %}
+          <div class="error-text"></div>
+          <div class="field">
+            <input   type="text" name="room_name"  placeholder="Salle"  />
+          </div>
+          <div class="field">
+            <input type="text" name="username"  placeholder="Nom d'utilisateur" />
+          </div>
+          <button  type="submit">Créer</button>
+        </form>
+      </div>
+     
+</body>
+</html>
