@@ -73,6 +73,23 @@ class Sujet_stage(models.Model):
     Date_creation = models.DateTimeField(auto_now_add=True)
     Date_mise_a_jour = models.DateTimeField(auto_now=True)
 
+    def __str__(self):
+         return f"{self.titre}"
+
+from django.contrib.auth.models import User  # Assurez-vous d'utiliser le modèle utilisateur approprié
+
+class ChoixSujet(models.Model):
+    Id_choix = models.AutoField(primary_key=True)
+    sujet = models.ForeignKey(Sujet_stage, on_delete=models.CASCADE)
+    stagiaire = models.ForeignKey(Candidats, on_delete=models.CASCADE)
+    utilisateur = models.ForeignKey(Utilisateur, on_delete=models.CASCADE, null=True, blank=True)
+    Date_choix = models.DateTimeField(auto_now_add=True)
+    affecté = models.BooleanField(default=False)  # Indique si le sujet est affecté au stagiaire ou pas
+
+    def __str__(self):
+        return f"{self.stagiaire.Nom_complet} - {self.sujet.titre}"
+
+
 
 
 

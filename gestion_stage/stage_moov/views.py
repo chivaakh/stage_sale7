@@ -14,6 +14,8 @@ from .models import Sujet_stage
 from django.http import HttpResponseRedirect
 from django.urls import reverse
 from .forms import SujetStageForm  # Assume que tu as un formulaire pour Sujet_stage
+from django.http import JsonResponse, HttpResponseBadRequest
+from .models import ChoixSujet, Affectation, Demandes, Sujet_stage
 
 # Create your views here.
 #les views pour gestions des utilisateur
@@ -52,7 +54,7 @@ def create_utilisateur(request):
 
     return render(request, 'gestions_users/home.html')
 #fonction pour la login
-def login(request):
+def home(request):
     error_message = None  # Initialise la variable pour stocker les messages d'erreur
 
     if request.method == 'POST':
@@ -121,8 +123,8 @@ def delete_candidate(request,id_candidate):
 
 #pour gestion des demandes
 def gestion_demandes(request):
-    if not request.user.is_authenticated:
-        return redirect('login')
+    # if not request.user.is_authenticated:
+    #     return redirect('home')
     demandes = Demandes.objects.all()
     return render(request, 'gestion_demande/gestion_demandes.html',{'demandes': demandes})
 #les views pour accepter
@@ -130,7 +132,8 @@ def accepter_demande(request, demande_id):
    demande = Demandes.objects.filter(Id_demande=demande_id).first()
    demande.statut = 'accepter'
    demande.save()
-   return redirect('gestion_demandes')
+   # Rediriger vers la page de choix de fichiers après acceptation
+   return redirect('sujets/sujets_disponibles.html', demande_id=demande.Id_demande)
 
 #pour la rejet
 def rejeter_demande(request, demande_id):
@@ -264,6 +267,51 @@ def supprimer_sujet(request, sujet_id):
         sujet.delete()
         return redirect('liste_sujets_par_service', service_id=service_id)
     return render(request, 'sujets/confirm_delete.html', {'sujet': sujet})
+
+
+
+
+
+def sujets_disponibles(request):
+    service_id = request.GET.get('service_id', None)
+    
+    if service_id:
+        sujets = Sujet_stage.objects.filter(Id_service_id=service_id)
+    else:
+        sujets = Sujet_stage.objects.all()
+
+    services = Service.objects.all()
+
+    return render(request, 'sujets/sujets_disponibles.html', {'sujets': sujets, 'services': services})
+
+
+from django.contrib.auth.decorators import login_required
+from stage_moov.models import Utilisateur  # Remplacez par le chemin correct vers votre modèle personnalisé
+
+@login_required
+def affecter_sujet(request):
+    choix_sujets = ChoixSujet.objects.filter(affecté=False).select_related('stagiaire', 'sujet__Id_service')
+
+    if request.method == 'POST':
+        choix_id = request.POST.get('choix_id')
+        choix = get_object_or_404(ChoixSujet, pk=choix_id)
+        choix.affecté = True
+        
+        # Récupérer l'utilisateur connecté comme instance du modèle `Utilisateur`
+        utilisateur = Utilisateur.objects.get(Email=request.user.email)  # ou utiliser un autre champ pour lier les utilisateurs
+        choix.utilisateur = utilisateur  # Associe l'utilisateur connecté à l'affectation
+        
+        choix.save()
+
+        # Créer une nouvelle affectation dans la table `Affectation`
+        affectation = Affectation.objects.create(
+            Id_demande=choix.stagiaire.Id_utilisateur,  # ou la relation appropriée pour obtenir la demande
+            Id_sujet=choix.sujet
+        )
+
+        return redirect('affecter_sujet')  # Redirige vers la même page après l'affectation
+
+    return render(request, 'sujets/affecter_sujet.html', {'choix_sujets': choix_sujets})
 
 
 

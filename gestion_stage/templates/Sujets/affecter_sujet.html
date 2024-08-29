@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Affectation des Sujets</title>
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+</head>
+<body>
+    <div class="container">
+        <h1>Affectation des Sujets</h1>
+        <form method="post">
+            {% csrf_token %}
+            <table class="table table-bordered">
+                <thead>
+                    <tr>
+                        <th>ID Choix</th>
+                        <th>Nom du Candidat</th>
+                        <th>Sujet</th>
+                        <th>Service</th>
+                        <th>Action</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for choix in choix_sujets %}
+                    <tr>
+                        <td>{{ choix.pk }}</td>
+                        <td>{{ choix.stagiaire.Nom_complet }}</td>
+                        <td>{{ choix.sujet.titre }}</td>
+                        <td>{{ choix.sujet.Id_service.Nom_service }}</td>
+                        <td>
+                            <button type="submit" name="choix_id" value="{{ choix.pk }}" class="btn btn-primary">Affecter</button>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </form>
+    </div>
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.0.6/dist/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+</body>
+</html>

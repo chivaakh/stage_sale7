@@ -1,9 +1,10 @@
 from django.urls import path
 from . import views
 
+
 urlpatterns=[
     path('start_user',views.create_utilisateur, name='create_utilisateur'),
-    path('form_user',views.login, name='home'),
+    path('form_user',views.home, name='home'),
     path('create_candidate',views.create_candidate, name='create_candidate'),
     path('services/', views.service_list, name='service_list'),
     path('services/add/', views.service_add, name='service_add'),
@@ -27,14 +28,14 @@ urlpatterns=[
     path('utilisateur/inscription/', views.create_utilisateur, name='create_utilisateur'),
     path('', views.homepage, name='homepage'),
     path('ev_start', views.start_chat , name ="start"),
-    path('<str:room>/', views.room , name ="room"),
-    path('checkview', views.checkview , name ="checkview"),
-    path('send', views.send , name ="send"),
-    path('getMessages/<str:room>/', views.getMessages , name ="getMessages"),
     path('service/<int:service_id>/sujets/', views.liste_sujets_par_service, name='liste_sujets_par_service'),
     path('service/<int:service_id>/sujets/ajouter/', views.ajouter_sujet, name='ajouter_sujet'),
     path('sujets/<int:sujet_id>/modifier/', views.modifier_sujet, name='modifier_sujet'),
     path('sujets/<int:sujet_id>/supprimer/', views.supprimer_sujet, name='supprimer_sujet'),
-
-
+    path('sujets/', views.sujets_disponibles, name='sujets_disponibles'),
+    path('affecter_sujet/', views.affecter_sujet, name='affecter_sujet'),
+    path('<str:room>/', views.room , name ="room"),
+    path('checkview', views.checkview , name ="checkview"),
+    path('send', views.send , name ="send"),
+    path('getMessages/<str:room>/', views.getMessages , name ="getMessages"),
 ]
