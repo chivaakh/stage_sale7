@@ -3,96 +3,94 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>sidebar</title>
+    <title>{% block title %}Gestion des Stages{% endblock %}</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-
     {% load static %}
-
     <style>
-    /* custom_sidebar.css */
-    body {
-        display: flex;
-        min-height: 100vh;
-        margin: 0;
-        font-family: Arial, sans-serif;
-    }
+        /* Incluez ici le CSS pour la sidebar */
+        body {
+            display: flex;
+            min-height: 100vh;
+            margin: 0;
+            font-family: Arial, sans-serif;
+        }
 
-    .sidebar {
-        width: 250px;
-        background-color: #fff; /* Couleur de fond harmonisée avec le formulaire */
-        color: #333; /* Couleur du texte similaire à celle utilisée dans le formulaire */
-        padding: 20px;
-        box-shadow: 2px 0 10px rgba(19, 35, 47, 0.3); /* Ombre similaire à celle du formulaire */
-        position: fixed;
-        height: 100%;
-    }
+        .sidebar {
+            width: 250px;
+            background-color: #fff;
+            color: #333;
+            padding: 20px;
+            box-shadow: 2px 0 10px rgba(19, 35, 47, 0.3);
+            position: fixed;
+            height: 100%;
+        }
 
-    .sidebar .logo-container {
-        display: flex;
-        align-items: center;
-        margin-bottom: 20px; /* Ajoutez de l'espace sous le logo et le texte */
-    }
+        .sidebar .logo-container {
+            display: flex;
+            align-items: center;
+            margin-bottom: 20px;
+        }
 
-    .sidebar .logo-container img {
-        max-width: 50px; /* Réduisez la taille du logo ici */
-        height: auto;
-        margin-right: 10px;
-    }
+        .sidebar .logo-container img {
+            max-width: 50px;
+            height: auto;
+            margin-right: 10px;
+        }
 
-    .sidebar .logo-container h2 {
-        font-size: 1.2rem;
-        color: #007bff; /* Couleur bleue similaire à celle utilisée dans le formulaire */
-        margin: 0;
-        text-transform: uppercase;
-    }
+        .sidebar .logo-container h2 {
+            font-size: 1.2rem;
+            color: #007bff;
+            margin: 0;
+            text-transform: uppercase;
+        }
 
-    .sidebar .links h4 {
-        margin-bottom: 10px;
-        color: #007bff; /* Couleur bleue pour les titres des sections */
-        text-transform: uppercase;
-        font-size: 0.85rem;
-    }
+        .sidebar .links h4 {
+            margin-bottom: 10px;
+            color: #007bff;
+            text-transform: uppercase;
+            font-size: 0.85rem;
+        }
 
-    .sidebar ul {
-        list-style: none;
-        padding: 0;
-    }
+        .sidebar ul {
+            list-style: none;
+            padding: 0;
+        }
 
-    .sidebar ul li {
-        margin: 15px 0;
-    }
+        .sidebar ul li {
+            margin: 15px 0;
+        }
 
-    .sidebar ul li a {
-        color: #333; /* Couleur du texte similaire à celle utilisée dans le formulaire */
-        text-decoration: none;
-        font-size: 1rem;
-        display: flex;
-        align-items: center;
-    }
+        .sidebar ul li a {
+            color: #333;
+            text-decoration: none;
+            font-size: 1rem;
+            display: flex;
+            align-items: center;
+        }
 
-    .sidebar ul li a:hover {
-        color: #fff;
-        background-color: #007bff; /* Couleur bleue pour les éléments survolés */
-        padding: 10px;
-        border-radius: 5px;
-    }
+        .sidebar ul li a:hover {
+            color: #fff;
+            background-color: #007bff;
+            padding: 10px;
+            border-radius: 5px;
+        }
 
-    .sidebar ul li .material-symbols-outlined {
-        margin-right: 10px;
-        font-size: 1.5rem;
-    }
+        .sidebar ul li .material-symbols-outlined {
+            margin-right: 10px;
+            font-size: 1.5rem;
+        }
 
-    .sidebar ul li.logout-link {
-        margin-top: auto;
-    }
+        .sidebar ul li.logout-link {
+            margin-top: auto;
+        }
 
-    .container-content {
-        margin-left: 270px; /* 250px de la largeur de la sidebar + 20px de padding */
-        padding: 20px;
-        width: calc(100% - 270px);
-    }
-
+        .container-content {
+            margin-left: 270px;
+            padding: 20px;
+            width: calc(100% - 270px);
+        }
     </style>
+    {% block extra_head %}{% endblock %}
 </head>
 <body>
     <aside class="sidebar">
@@ -121,8 +119,7 @@
     </aside>
 
     <div class="container-content">
-        <h1 class="h3 mb-4">Titre de la Page</h1>
-        <!-- Ajoutez le contenu de votre page ici -->
+        {% block content %}{% endblock %}
     </div>
 </body>
 </html>

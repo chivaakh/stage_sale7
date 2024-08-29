@@ -1,14 +1,12 @@
-{% load static %}
-<head>
+{% extends "sidebar/nevbar_admin.html" %}
+
+{% block title %}Liste des Candidats{% endblock %}
+
+{% block extra_head %}
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css">
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <style>
-        body {
-            background-color: #f4f7f6;
-            font-family: Arial, sans-serif;
-        }
-        
         h1 {
             text-align: center;
             color: #333;
@@ -56,13 +54,14 @@
             color: #0056b3;
         }
     </style>
-</head>
-<body>
-    <h1>Liste des Candidates</h1>
+{% endblock %}
+
+{% block content %}
+    <h1>Liste des Candidats</h1>
     <table border="1" class="can">
         <thead>
             <tr>
-                <th>Id Candidate</th>
+                <th>Id Candidat</th>
                 <th>Nom Complet</th>
                 <th>Université</th>
                 <th>Niveau Académique</th>
@@ -121,4 +120,4 @@
             });
         }
     </script>
-</body>
+{% endblock %}
