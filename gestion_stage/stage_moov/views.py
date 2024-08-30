@@ -1,5 +1,5 @@
 from django.shortcuts import render, redirect,get_object_or_404
-from .forms import UtilisateurForm,CandidateForm,ServiceForm,SujetStageForm
+from .forms import ServiceForm,SujetStageForm
 from .models import *
 from django.contrib.auth import logout
 from django.contrib.auth import authenticate, login as auth_login
@@ -75,8 +75,6 @@ def marquer_comme_lu(request, notification_id):
     return redirect('liste_messages')
 
 
-
-
 def create_utilisateur(request):
     if request.method == 'POST':
         nom_complet = request.POST.get('Nom_complet')
@@ -124,7 +122,9 @@ def login(request):
                 if utilisateur and utilisateur.role == 'Admin':
                     return redirect('nevbar_admin') 
                 elif utilisateur and utilisateur.role == 'RH':
-                     return redirect('gestion_demandes') 
+                     return redirect('nevbar_RH') 
+                elif utilisateur and utilisateur.role == 'Encadreur':
+                     return redirect('nevbar_encadreur') 
                 else:
                      return redirect('hello') 
                 
@@ -145,33 +145,81 @@ def login(request):
 
 def logout(request):
     return redirect('login')
-#les views pour les creet de candidate
-def create_candidate(request):
+#les views pour les creet de candidat
+def login_candidat(request):
     if request.method == 'POST':
-        form = CandidateForm(request.POST, request.FILES)
-        if form.is_valid():
-            form.save()
-            return redirect('Candidats/confirmation.html')  # Replace 'success_url' with your desired redirect URL
-    else:
-        form = CandidateForm()
-    
-    return render(request, 'Candidats/code.html', {'form': form})
+        email = request.POST.get('email')
+        password = request.POST.get('Password')
+
+        candidats = Candidats.objects.filter(email=email)
+        if candidats.exists():
+            candidat = candidats.first()  
+            if password == candidat.password:
+                return redirect('nevbar_candidat')
+            else:
+                return render(request, 'Candidats/login.html', {'error': 'Mot de passe incorrect'})
+        else:
+            return render(request, 'Candidats/login.html', {'error': 'Email non trouvé'})
+
+    return render(request, 'Candidats/login.html',{'login_candidat':'login_candidat'})
 
 #les fonction CRUD pour gestions les utilisateurs
 def interface_principal(request):
-    utilisateur=Utilisateur.objects.all()
+    query = request.GET.get('cherch')
+    if query:
+        utilisateur=Utilisateur.objects.filter(
+            Q(Id_utilisateur__icontains=query)|
+            Q(Nom_complet__icontains=query)|
+            Q(role__icontains=query)|
+            Q(Email__icontains=query)|
+            Q(Date_creation__icontains=query)
+        )
+    else:
+        utilisateur=Utilisateur.objects.all()
     return render(request,'gestions_users/Interface_principale.html',{'utilisateur': utilisateur} )
+def modifier_role(request, id_user):
+    utilisateur = get_object_or_404(Utilisateur, Id_utilisateur=id_user)
+    if request.method == 'POST':
+        nouveau_role = request.POST.get('role')
+        if nouveau_role:
+            utilisateur.role = nouveau_role
+            utilisateur.save()
+            messages.success(request, "Le rôle a été mis à jour avec succès.")
+            return redirect('interface_principal') 
+        else:
+            messages.error(request, "Veuillez sélectionner un rôle valide.")
+    return redirect('interface_principal') 
 def deletuser(request, id_user):
     utilisateur = Utilisateur.objects.filter(Id_utilisateur=id_user).first()  
     if utilisateur: 
         utilisateur.delete()  
     return redirect('interface_principal') 
+# les nevbars:
 def nevbar_admin(request):
     return render(request,'sidebar/nevbar_admin.html')
+def nevbar_RH(request):
+    return render(request,'sidebar/nevbar_RH.html')
+def nevbar_encadreur (request):
+    return render(request,'sidebar/nevbar_encadreur.html')
+def nevbar_candidat (request):
+    return render(request,'sidebar/nevbar_candidat.html')
 
-#RD pour la candidate
+
+#RD pour la candidat
 def show_candidate(request):
-    candidate=Candidats.objects.all()
+    query = request.GET.get('cherch')
+    if query:
+        candidate=Candidats.objects.filter(
+            Q(Nom_complet__icontains=query)|
+            Q(universite__icontains=query)|
+            Q(niveau_academique__icontains=query)|
+            Q(specialite__icontains=query)|
+            Q(Date_Naissance__icontains=query)|
+            Q(telephone__icontains=query)|
+            Q(periode__icontains=query)
+        )
+    else:
+       candidate=Candidats.objects.all()
     return render(request,'Candidats/show_candidat.html',{'candidate':candidate})
 
 def delete_candidate(request,id_candidate):
@@ -253,27 +301,6 @@ def confirmation(request):
 
 def form_candidat(request):
     return render(request, 'Candidats/code.html')
-
-
-    return render(request, 'Notifications/notifications.html', {'notifications': notifications})
-def create_candidate(request):
-    if request.method == 'POST':
-        form = CandidateForm(request.POST, request.FILES)
-        if form.is_valid():
-            candidate = form.save()
-            # Créer une notification pour l'utilisateur
-            Notification.objects.create(
-                utilisateur=request.user,
-                message="Un nouveau candidat a été créé."
-            )
-            return redirect('Candidats/confirmation.html')
-    else:
-        form = CandidateForm()
-
-    return render(request, 'Candidats/code.html', {'form': form})
-
-
-
 
 # Liste des sujets par service
 def liste_sujets_par_service(request, service_id):

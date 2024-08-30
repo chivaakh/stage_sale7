@@ -15,9 +15,40 @@
             margin-top: 20px;
         }
 
-        table.can {
+        .search-container {
             width: 90%;
-            margin: 30px auto;
+            margin: 20px auto;
+            display: flex;
+            justify-content: center;
+        }
+
+        .search-container input[type="text"] {
+            padding: 10px;
+            font-size: 16px;
+            width: 300px;
+            border: 1px solid #ddd;
+            border-radius: 5px 0 0 5px;
+            outline: none;
+        }
+
+        .search-container button {
+            padding: 10px 20px;
+            font-size: 16px;
+            border: none;
+            background-color: #007BFF;
+            color: white;
+            cursor: pointer;
+            border-radius: 0 5px 5px 0;
+            outline: none;
+        }
+
+        .search-container button:hover {
+            background-color: #0056b3;
+        }
+
+        table.can {
+            width: 50%;
+            margin: 10px auto;
             border-collapse: collapse;
             background-color: #fff;
             color: #333;
@@ -26,9 +57,10 @@
         }
 
         table.can th, table.can td {
-            padding: 12px;
+            padding: 10px;
             text-align: left;
             border: 1px solid #ddd;
+            text-align: center;
         }
 
         table.can th {
@@ -59,10 +91,20 @@
 </head>
 <body>
     <h1>Liste des Candidates</h1>
+
+    <div class="search-container">
+        <form method="GET" action="{% url 'show_candidate' %}">
+            <input type="text" name="cherch" placeholder="Rechercher un candidat..." value="{{ request.GET.cherch }}">
+            <button type="submit">
+                <i class="fa-solid fa-search"></i> Rechercher
+            </button>
+        </form>
+    </div>
+
     <table border="1" class="can">
         <thead>
             <tr>
-                <th>Id Candidate</th>
+                <th>Id Candidat</th>
                 <th>Nom Complet</th>
                 <th>Université</th>
                 <th>Niveau Académique</th>

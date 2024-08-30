@@ -136,14 +136,37 @@
                 row-gap: 15px;
             }
         }
+        button{
+            height: 30px;
+            width: 20%;
+            color: #fff;
+            font-size: 1rem;
+            font-weight: 400;
+            margin-top: 30px;
+            border: none;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            background: #007bff;
+            border-radius: 15px;
+       
+          
+        }
+        button a{
+            text-decoration: none;
+            
+        }
+        .a{
+            margin-left: 525px;
+        }
     </style>
 </head>
 <body>
+ 
     <section class="container">
         <header>Formulaire d'Inscription Candidat</header>
+        <button type="button" class="a"><a href="{% url 'login_candidat' %}">Connexion</a></button>
         <form action="{% url 'enregistrer_candidat' %}" method="post" enctype="multipart/form-data" class="form">
             {% csrf_token %}
-            {{ form.as_p }}
 
             <div class="input-box">
                 <label>Nom Complet</label>
@@ -153,6 +176,10 @@
             <div class="input-box">
                 <label>Email</label>
                 <input type="email" name="email" placeholder="Entrez votre email" required />
+            </div>
+            <div class="input-box">
+                <label>Password</label>
+                <input type="Password" name="password" placeholder="Entrez votre Password" required />
             </div>
 
             <div class="input-box">
@@ -181,12 +208,12 @@
             </div>
 
             <div class="file-upload-wrapper">
-                <input type="file" name="cv" required />
+                <input type="file" name="cv"  />
                 <label>Choisir un fichier CV</label>
             </div>
 
             <div class="file-upload-wrapper">
-                <input type="file" name="lettre_motivation" required />
+                <input type="file" name="lettre_motivation"  />
                 <label>Choisir une lettre de motivation</label>
             </div>
 

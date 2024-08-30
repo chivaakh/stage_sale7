@@ -16,7 +16,7 @@ class Utilisateur(models.Model):
     ROLE_CHOICES = [
         ('Admin', 'Admin'),
         ('RH', 'RH'),
-        ('Encadeur', 'Encadeur'),
+        ('Encadreur', 'Encadreur'),
         ('User_simple', 'User_simple'),
     ]
     Id_utilisateur = models.AutoField(primary_key=True)
@@ -45,6 +45,7 @@ class Candidats(models.Model):
     specialite= models.CharField(max_length=50, default='TC')
     Date_Naissance = models.DateField()
     email = models.EmailField(max_length=50, unique=True)
+    password = models.CharField(max_length=100)
     telephone = models.CharField(max_length=8, validators=[RegexValidator(regex=r'^[432]\d{7}$', message="Le numéro de téléphone doit être un numéro national")])
     Date_demande = models.DateTimeField(default=timezone.now)
     cv = models.FileField(upload_to='Documents/cv/',null=True,blank=True)
