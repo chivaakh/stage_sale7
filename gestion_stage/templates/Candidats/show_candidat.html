@@ -1,14 +1,11 @@
-{% load static %}
+{% extends "sidebar/nevbar_admin.html" %}
+
+{% block extra_head %}
 <head>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css">
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <style>
-        body {
-            background-color: #f4f7f6;
-            font-family: Arial, sans-serif;
-        }
-        
         h1 {
             text-align: center;
             color: #333;
@@ -89,8 +86,10 @@
         }
     </style>
 </head>
+{% endblock %}
+{% block content %}
 <body>
-    <h1>Liste des Candidates</h1>
+    <h1>Liste des Candidats</h1>
 
     <div class="search-container">
         <form method="GET" action="{% url 'show_candidate' %}">
@@ -163,4 +162,4 @@
             });
         }
     </script>
-</body>
+{% endblock %}

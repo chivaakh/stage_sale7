@@ -162,6 +162,8 @@ def login_candidat(request):
             return render(request, 'Candidats/login.html', {'error': 'Email non trouvé'})
 
     return render(request, 'Candidats/login.html',{'login_candidat':'login_candidat'})
+def logout_candidat(request):
+    return redirect('login_candidat')
 
 #les fonction CRUD pour gestions les utilisateurs
 def interface_principal(request):
@@ -411,4 +413,7 @@ def getMessages(request, room):
         messages_list.append(message_data)
 
     return JsonResponse({"messages": messages_list})
-#dfghjkjhg
+#pour le rapport:
+# def rapport(request):
+#     if request.method=='POST':
+#         form=

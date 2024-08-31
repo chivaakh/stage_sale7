@@ -29,6 +29,7 @@ urlpatterns=[
     path('encadreur',views.nevbar_encadreur, name='nevbar_encadreur'),
     path('candidat',views.nevbar_candidat, name='nevbar_candidat'),
     path('login_candidat',views.login_candidat, name='login_candidat'),
+    path('logout_candidat',views.logout_candidat, name='logout_candidat'),
     path('deletuser/<int:id_user>/', views.deletuser,name='deletuser'),
     path('show_candidate',views.show_candidate, name='show_candidate'),
     path('delete_candidate/<int:id_candidate>/', views.delete_candidate,name='delete_candidate'),
