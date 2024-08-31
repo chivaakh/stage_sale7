@@ -12,6 +12,7 @@ from datetime import datetime
 #     return f'Documents/documents_user_{instance.Id_candidat}/{filename}'
 
 class Utilisateur(models.Model):
+    
     ROLE_CHOICES = [
         ('Admin', 'Admin'),
         ('RH', 'RH'),
@@ -20,6 +21,7 @@ class Utilisateur(models.Model):
     ]
     Id_utilisateur = models.AutoField(primary_key=True)
     Nom_complet = models.CharField(max_length=50)
+    
     Email = models.EmailField(max_length=191, unique=True)
     password = models.CharField(max_length=100)
     role = models.CharField( choices=ROLE_CHOICES, max_length=50)
@@ -129,9 +131,12 @@ class Affectation(models.Model):
     Id_demande = models.ForeignKey(Demandes, on_delete=models.CASCADE)
     Id_sujet = models.ForeignKey(Sujet_stage, on_delete=models.CASCADE)
     date_affectaion = models.DateTimeField(auto_now=True)
-
+   
     def __str__(self):
-        return str(self.Id_affectation)
+        return f"Affectation {self.Id_affectation} pour {self.Id_demande.Id_candidat.Nom_complet}"
+
+
+
 
 class Room(models.Model):
     id = models.AutoField(primary_key=True)
@@ -142,8 +147,9 @@ class Room(models.Model):
 
 class Evaluation(models.Model):
     Id_evaluation = models.AutoField(primary_key=True)
-    content = models.CharField(max_length=50, null=False, blank=False) 
+    content = models.CharField(max_length=50, default='') 
     user = models.CharField(max_length=20, null=False, blank=False) 
+    files=models.FileField(upload_to='Evaluation/')
     room = models.ForeignKey(Room, on_delete=models.CASCADE)  
     date = models.DateTimeField(default=datetime.now, blank=True)
 
@@ -160,13 +166,12 @@ class Attestation(models.Model):
         return str(self.Id_attestation)
 
 class Notification(models.Model):
-    Id_notification = models.AutoField(primary_key=True)
-    utilisateur = models.ForeignKey(Utilisateur, on_delete=models.CASCADE)
-    Message = models.TextField(max_length=50)
-    Date_notification = models.DateTimeField(auto_now_add=True)
-    statut = models.CharField(max_length=50)          
+    message = models.TextField()
+    date_envoi = models.DateTimeField(auto_now_add=True)
+    lu = models.BooleanField(default=False)
+    utilisateur = models.ForeignKey(Utilisateur, on_delete=models.CASCADE, related_name='notifications_envoyees')
+    candidat = models.ForeignKey(Candidats, on_delete=models.CASCADE, related_name='notifications_recues')
 
-    def __str__(self):
-        return str(self.utilisateur)
+    
 
 

@@ -1,6 +1,7 @@
 from django.shortcuts import render, redirect,get_object_or_404
 from .forms import UtilisateurForm,CandidateForm,ServiceForm,SujetStageForm
 from .models import *
+from django.contrib.auth import logout
 from django.contrib.auth import authenticate, login as auth_login
 from django.contrib.auth.decorators import login_required
 from .models import Service,Utilisateur,Candidats,Demandes
@@ -10,6 +11,9 @@ from .forms import CandidatForm
 from django.contrib.auth.hashers import make_password
 from django.contrib import messages
 from django.http import HttpResponse , JsonResponse
+from django.contrib.auth.models import User
+from django.contrib.auth.decorators import user_passes_test
+import logging
 from .models import Sujet_stage
 from django.http import HttpResponseRedirect
 from django.urls import reverse
@@ -19,6 +23,60 @@ from .models import ChoixSujet, Affectation, Demandes, Sujet_stage
 
 # Create your views here.
 #les views pour gestions des utilisateur
+
+from django.shortcuts import render, get_object_or_404, redirect
+from .models import Candidats, Notification
+
+def liste_candidats(request):
+    candidats = Candidats.objects.all()
+    return render(request, 'utilisateur/liste_candidats.html', {'candidats': candidats})
+
+logger = logging.getLogger(__name__)
+
+def envoyer_message(request, candidat_id):
+    candidat = get_object_or_404(Candidats, pk=candidat_id)
+    if request.method == 'POST':
+        message = request.POST.get('message')
+        
+        utilisateur_django = request.user
+        logger.debug(f'Utilisateur Django connecté : {utilisateur_django.email}')
+        
+        # Essayer de récupérer l'utilisateur personnalisé basé sur l'email
+        try:
+            utilisateur = Utilisateur.objects.get(Email=utilisateur_django.email)
+            logger.debug(f'Utilisateur trouvé : {utilisateur.Nom_complet}')
+        except Utilisateur.DoesNotExist:
+            logger.error(f'Utilisateur non trouvé pour l\'email : {utilisateur_django.email}')
+            return render(request, 'sidebar/error.html', {'error_message': "Utilisateur non trouvé."})
+
+        # Créer la notification
+        notification = Notification.objects.create(
+            message=message,
+            utilisateur=utilisateur,
+            candidat=candidat
+        )
+        notification.save()
+        
+         
+
+        return redirect('liste_messages')
+     
+    return render(request, 'utilisateur/envoyer_message.html', {'candidat': candidat})
+    
+
+def liste_messages(request):
+    
+    notifications = Notification.objects.all()
+    return render(request, 'utilisateur/liste_messages.html', {'notifications': notifications})
+
+
+def marquer_comme_lu(request, notification_id):
+    notification = get_object_or_404(Notification, pk=notification_id)
+    notification.lu = True
+    notification.save()
+    return redirect('liste_messages')
+
+
 
 
 def create_utilisateur(request):
@@ -54,7 +112,7 @@ def create_utilisateur(request):
 
     return render(request, 'gestions_users/home.html')
 #fonction pour la login
-def home(request):
+def login(request):
     error_message = None  # Initialise la variable pour stocker les messages d'erreur
 
     if request.method == 'POST':
@@ -66,7 +124,7 @@ def home(request):
             utilisateur = Utilisateur.objects.filter(Email=email).first()
             if utilisateur and utilisateur.check_password(password):
                 if utilisateur and utilisateur.role == 'Admin':
-                    return redirect('interface_principal') 
+                    return redirect('nevbar_admin') 
                 elif utilisateur and utilisateur.role == 'RH':
                      return redirect('gestion_demandes') 
                 else:
@@ -87,7 +145,8 @@ def home(request):
         'error_message': error_message, 
     })
 
-
+def logout(request):
+    return redirect('login')
 #les views pour les creet de candidate
 def create_candidate(request):
     if request.method == 'POST':
@@ -109,6 +168,8 @@ def deletuser(request, id_user):
     if utilisateur: 
         utilisateur.delete()  
     return redirect('interface_principal') 
+def nevbar_admin(request):
+    return render(request,'sidebar/nevbar_admin.html')
 
 #RD pour la candidate
 def show_candidate(request):
@@ -196,9 +257,7 @@ def confirmation(request):
 def form_candidat(request):
     return render(request, 'Candidats/code.html')
 
-def notifications_view(request):
-    # Récupère toutes les notifications
-    notifications = Notification.objects.all()
+
     return render(request, 'Notifications/notifications.html', {'notifications': notifications})
 def create_candidate(request):
     if request.method == 'POST':
@@ -271,56 +330,12 @@ def supprimer_sujet(request, sujet_id):
 
 
 
-
-def sujets_disponibles(request):
-    service_id = request.GET.get('service_id', None)
-    
-    if service_id:
-        sujets = Sujet_stage.objects.filter(Id_service_id=service_id)
-    else:
-        sujets = Sujet_stage.objects.all()
-
-    services = Service.objects.all()
-
-    return render(request, 'sujets/sujets_disponibles.html', {'sujets': sujets, 'services': services})
-
-
-from django.contrib.auth.decorators import login_required
-from stage_moov.models import Utilisateur  # Remplacez par le chemin correct vers votre modèle personnalisé
-
-@login_required
-def affecter_sujet(request):
-    choix_sujets = ChoixSujet.objects.filter(affecté=False).select_related('stagiaire', 'sujet__Id_service')
-
-    if request.method == 'POST':
-        choix_id = request.POST.get('choix_id')
-        choix = get_object_or_404(ChoixSujet, pk=choix_id)
-        choix.affecté = True
-        
-        # Récupérer l'utilisateur connecté comme instance du modèle `Utilisateur`
-        utilisateur = Utilisateur.objects.get(Email=request.user.email)  # ou utiliser un autre champ pour lier les utilisateurs
-        choix.utilisateur = utilisateur  # Associe l'utilisateur connecté à l'affectation
-        
-        choix.save()
-
-        # Créer une nouvelle affectation dans la table `Affectation`
-        affectation = Affectation.objects.create(
-            Id_demande=choix.stagiaire.Id_utilisateur,  # ou la relation appropriée pour obtenir la demande
-            Id_sujet=choix.sujet
-        )
-
-        return redirect('affecter_sujet')  # Redirige vers la même page après l'affectation
-
-    return render(request, 'sujets/affecter_sujet.html', {'choix_sujets': choix_sujets})
-
-
-
 def homepage(request):
     return render(request, 'first/code.html')
 
 #les view pour evaluation
 def start_chat(request):
-    return render(request, 'evaluation/lancer_chat.html')
+    return render(request, 'evaluation/noveau_evaluation.html')
 
 def room(request , room):
     username = request.GET.get('username')
@@ -343,18 +358,34 @@ def checkview(request):
     
 
 def send(request):
-    message = request.POST['message']
-    username = request.POST['username']
-    room_name= request.POST['room_id']
+    if request.method == 'POST':
+        message = request.POST['message']
+        username = request.POST['username']
+        room_Id = request.POST['room_id']  
+        file=request.FILES.get('file')
+  
+        room = Room.objects.get(id=room_Id)
+        if file:
+                new_message = Evaluation.objects.create(content=message, user=username, room=room, files=file)
+        else:
+                new_message = Evaluation.objects.create(content=message, user=username, room=room)
+        new_message.save()
+        return JsonResponse({'status': 'Message envoyé avec succès!'})
+    return JsonResponse({'status': 'Requête invalide'}, status=400)
 
-    new_message = Evaluation.objects.create(content= message , user = username , room = room_name)
-    new_message.save()
-    return HttpResponse('Message envoyé avec succès')
-
-def getMessages(request , room):
+def getMessages(request, room):
     room_details = Room.objects.get(name=room)
-    messages = Evaluation.objects.filter(room = room_details.id).order_by('date')
-    return JsonResponse({"messages" :list(messages.values())})
+    messages = Evaluation.objects.filter(room=room_details.id).order_by('date')
+    messages_list = []
 
+    for message in messages:
+        message_data = {
+            'content': message.content,
+            'user': message.user,
+            'date': message.date.isoformat(),
+            'files': message.files.url if message.files else None
+        }
+        messages_list.append(message_data)
 
+    return JsonResponse({"messages": messages_list})
 #dfghjkjhg

@@ -1,6 +1,7 @@
 from django.contrib import admin
-from .models import Utilisateur,Candidats,Demandes,Document,Service,Sujet_stage,Affectation,Evaluation,Attestation,Notification
+from .models import Utilisateur,Candidats,Demandes,Document,Service,Sujet_stage,Affectation,Evaluation,Attestation,Notification,Room
 from .forms import UtilisateurForm,CandidateForm,AdminCandidateForm,ServiceForm
+from .models import ChoixSujet
 # Register your models here.
 class UtilisateurAdmin(admin.ModelAdmin):
     form = UtilisateurForm 
@@ -21,7 +22,11 @@ admin.site.register(Sujet_stage)
 admin.site.register(Demandes)
 admin.site.register(Document)
 admin.site.register(Affectation)
+admin.site.register(Room)
 admin.site.register(Evaluation)
 admin.site.register(Attestation)
 admin.site.register(Notification)
+
+
+admin.site.register(ChoixSujet)
 
