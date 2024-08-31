@@ -9,44 +9,115 @@
     {% load static %}
     <link rel="stylesheet" href="{% static 'css/sidebar.css' %}">
     <style>
+    
+      /* Incluez ici le CSS pour la sidebar */
       body {
-        background-image: url("{% static 'image/fo.jpg' %}");
-        background-size: cover;
-        height: 100vh;
-        width: 100%;
-        margin: 0;
-        display: flex;
-        justify-content: center;
-        align-items: center;
+          display: flex;
+          min-height: 100vh;
+          margin: 0;
+          font-family: Arial, sans-serif;
       }
-    </style>
+
+      .sidebar {
+          width: 250px;
+          background-color: #fff;
+          color: #333;
+          padding: 20px;
+          box-shadow: 2px 0 10px rgba(19, 35, 47, 0.3);
+          position: fixed;
+          height: 100%;
+      }
+
+      .sidebar .logo-container {
+          display: flex;
+          align-items: center;
+          margin-bottom: 20px;
+      }
+
+      .sidebar .logo-container img {
+          max-width: 50px;
+          height: auto;
+          margin-right: 10px;
+      }
+
+      .sidebar .logo-container h2 {
+          font-size: 1.2rem;
+          color: #007bff;
+          margin: 0;
+          text-transform: uppercase;
+      }
+
+      .sidebar .links h4 {
+          margin-bottom: 10px;
+          color: #007bff;
+          text-transform: uppercase;
+          font-size: 0.85rem;
+      }
+
+      .sidebar ul {
+          list-style: none;
+          padding: 0;
+      }
+
+      .sidebar ul li {
+          margin: 15px 0;
+      }
+
+      .sidebar ul li a {
+          color: #333;
+          text-decoration: none;
+          font-size: 1rem;
+          display: flex;
+          align-items: center;
+      }
+
+      .sidebar ul li a:hover {
+          color: #fff;
+          background-color: #007bff;
+          padding: 10px;
+          border-radius: 5px;
+      }
+
+      .sidebar ul li .material-symbols-outlined {
+          margin-right: 10px;
+          font-size: 1.5rem;
+      }
+
+      .sidebar ul li.logout-link {
+          margin-top: auto;
+      }
+
+      .container-content {
+          margin-left: 270px;
+          padding: 20px;
+          width: calc(100% - 270px);
+      }
+  </style>
   </head>
 
   <body class="background">
     <aside class="sidebar">
-      <div class="logo">
-        <img src="{% static 'image/Moov_Mauritel_(logo_in_French).png' %}" alt="Logo de Moov Mauritel">
-        <h2>Gestion Stage</h2>
+      <div class="logo-container">
+          <img src="{% static 'image/Moov_Mauritel_(logo_in_French).png' %}" alt="logo">
+          <h2>Gestion des Stages</h2>
       </div>
       <ul class="links">
-        <h4>Main Menu</h4>
-        <li>
-          <span class="material-symbols-outlined">dashboard</span>
-          <a href="#">Dashboard</a>
-        </li>
-        <li>
-          <span class="material-symbols-outlined">show_chart</span>
-          <a href="{% %}">Gestion des Sujets</a>
-        </li>
-        <li>
-          <span class="material-symbols-outlined">group</span>
-          <a href="{% ev_start %}">Gestion des Evaluations</a>
-        </li>
-        <li class="logout-link">
-          <span class="material-symbols-outlined">logout</span>
-          <a href="{% logout %}">Logout</a>
-        </li>
+          <li>
+              <span class="material-symbols-outlined">show_chart</span>
+              <a href="{%  url 'service_list' %}">Gestion des services</a>
+          </li>
+          <li>
+              <span class="material-symbols-outlined">group</span>
+              <a href="{% url 'gestion_demandes' %}">Gestion des demandes</a>
+          </li>
+          <li class="logout-link">
+              <span class="material-symbols-outlined">logout</span>
+              <a href="{% url 'logout' %}">Logout</a>
+          </li>
       </ul>
     </aside>
+    <div class="container-content">
+      {% block content %}{% endblock %}
+  </div>
   </body>
 </html>

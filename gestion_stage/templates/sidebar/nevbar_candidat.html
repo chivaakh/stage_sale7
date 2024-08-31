@@ -9,7 +9,7 @@
   <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200">
   {% load static %}
   <link rel="stylesheet" href="{% static 'css/sidebar.css' %}">
-
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200">
   <style>
     body {
       background-image: url("{% static 'image/fo.jpg' %}");
@@ -63,20 +63,12 @@
     <ul class="links">
       <h4>Main Menu</h4>
       <li>
-        <span class="material-symbols-outlined">dashboard</span>
-        <a href="#">Dashboard</a>
+        <span class="material-symbols-outlined">show_chart</span>
+        <a href="{% url 'liste_messages' %}">Notification</a>
       </li>
       <li>
         <span class="material-symbols-outlined">show_chart</span>
-        <a href="{% url '' %}">Notification</a>
-      </li>
-      <li>
-        <span class="material-symbols-outlined">group</span>
-        <a href="{% url '' %}">Importer votre rapport</a>
-      </li>
-      <li>
-        <span class="material-symbols-outlined">group</span>
-        <a href="{% url '' %}">Exporter votre attestation</a>
+        <a href="{% url 'ev_start' %}">Evaluation</a>
       </li>
       <li>
         <span class="material-symbols-outlined">group</span>
@@ -88,6 +80,9 @@
       </li>
     </ul>
   </aside>
+  <div class="container-content">
+    {% block content %}{% endblock %}
+</div>
 </body>
 
 </html>

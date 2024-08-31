@@ -228,14 +228,25 @@ def delete_candidate(request,id_candidate):
     candidate=Candidats.objects.filter(Id_candidat=id_candidate).first()
     if candidate:
         candidate.delete()
-    return redirect('show_candidat')
+    return redirect('show_candidate')
 
 #pour gestion des demandes
 def gestion_demandes(request):
     if not request.user.is_authenticated:
         return redirect('login')
-    demandes = Demandes.objects.all()
-    return render(request, 'gestion_demande/gestion_demandes.html',{'demandes': demandes})
+    
+    query = request.GET.get('cherch', '')
+    
+    if query:
+        demandes = Demandes.objects.filter(
+            Q(Nom_candidat__Nom_complet__icontains=query) |
+            Q(statut__icontains=query) |
+            Q(Date_soumission__icontains=query)
+        )
+    else:
+        demandes = Demandes.objects.all()
+    
+    return render(request, 'gestion_demande/gestion_demandes.html', {'demandes': demandes})
 #les views pour accepter
 def accepter_demande(request, demande_id):
    demande = Demandes.objects.filter(Id_demande=demande_id).first()
