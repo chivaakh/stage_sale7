@@ -115,6 +115,17 @@ h1 {
 
 </head>
 <body>
+    {% if utilisateur.role != 'Admin' %}
+<style>
+    .d-flexjustify-content-between a{
+     display: none;
+    }
+    .actions a{
+        display: none;
+    }
+</style>
+{% endif %}
+
     <div class="container mt-5">
         <h1 class="text-center mb-4">Liste des Services</h1>
         <div class="actions">
@@ -136,7 +147,7 @@ h1 {
                             </a>
                         </h5>
                         <p class="card-text">{{ service.description|default:"Pas de description disponible." }}</p>
-                        <div class="d-flex justify-content-between">
+                        <div class="d-flexjustify-content-between">
                             <a href="{% url 'service_edit' service.pk %}" class="btn btn-primary icon-btn"><i class="fas fa-edit"></i></a>
                             <a href="{% url 'service_delete' service.pk %}" class="btn btn-light icon-btn"><i class="fas fa-trash"></i></a>
                         </div>
@@ -157,5 +168,4 @@ h1 {
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
 </body>
 </html>
-
 {% endblock %}

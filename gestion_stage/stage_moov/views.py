@@ -119,6 +119,8 @@ def login(request):
         
             utilisateur = Utilisateur.objects.filter(Email=email).first()
             if utilisateur and utilisateur.check_password(password):
+                request.session['user_email'] = utilisateur.Email
+                request.session['user_role'] = utilisateur.role
                 if utilisateur and utilisateur.role == 'Admin':
                     return redirect('nevbar_admin') 
                 elif utilisateur and utilisateur.role == 'RH':
@@ -262,13 +264,16 @@ def rejeter_demande(request, demande_id):
     return redirect('gestion_demandes')
 #les views pour la service
 def service_list(request):
+    user_email = request.session.get('user_email') 
+    utilisateur = Utilisateur.objects.filter(Email=user_email).first()
+    # user=Utilisateur.objects.filter(Utilisateur.role).first
     query = request.GET.get('q')
     if query:
         services = Service.objects.filter(Nom_service__icontains=query)
     else:
         services = Service.objects.all()
     
-    return render(request, 'Service/service_list.html', {'services': services, 'query': query})
+    return render(request, 'Service/service_list.html', {'services': services, 'query': query, 'utilisateur':utilisateur})
 
 # Rest of your views...
 def service_add(request):
