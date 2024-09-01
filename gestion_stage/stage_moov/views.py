@@ -440,7 +440,7 @@ def getMessages(request, room):
 
 
 from .models import Attestation
-from .forms import AttestationForm
+
 
 def create_attestation(request):
     candidats = Candidats.objects.all()
