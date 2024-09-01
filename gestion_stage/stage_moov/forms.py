@@ -72,3 +72,12 @@ class SujetStageForm(forms.ModelForm):
 
 
         fields = ['titre', 'description']
+
+
+
+from .models import Attestation
+
+class AttestationForm(forms.ModelForm):
+    class Meta:
+        model = Attestation
+        fields = ['Id_affectation', 'stagaire', 'chemin_attestation']

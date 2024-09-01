@@ -150,3 +150,5 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 SESSION_ENGINE = 'django.contrib.sessions.backends.db'  # Stockage des sessions dans la base de données
 SESSION_COOKIE_NAME = 'sessionid'  # Nom du cookie de session
 SESSION_COOKIE_AGE = 1209600  # Durée de vie du cookie (en secondes)
+# Configuration pour Crispy Forms
+# CRISPY_TEMPLATE_PACK = 'bootstrap4'

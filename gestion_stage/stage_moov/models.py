@@ -128,7 +128,7 @@ class Attestation(models.Model):
     Id_affectation = models.ForeignKey(Affectation, on_delete=models.CASCADE)
     stagaire = models.ForeignKey(Candidats, on_delete=models.CASCADE)
     Date_emission = models.DateTimeField(auto_now_add=True)
-    chemin_attestation = models.FileField(upload_to='Attestation/%y%m%d_{stagaire}')
+    chemin_attestation = models.FileField(upload_to='Attestation/%y_%m_%d')
 
     def __str__(self):
         return str(self.Id_attestation)

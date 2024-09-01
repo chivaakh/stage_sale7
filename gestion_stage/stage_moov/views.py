@@ -152,10 +152,10 @@ def login_candidat(request):
     if request.method == 'POST':
         email = request.POST.get('email')
         password = request.POST.get('Password')
-
         candidats = Candidats.objects.filter(email=email)
         if candidats.exists():
-            candidat = candidats.first()  
+            candidat = candidats.first() 
+            request.session['candidat_email'] = candidat.email
             if password == candidat.password:
                 return redirect('nevbar_candidat')
             else:
@@ -433,3 +433,60 @@ def getMessages(request, room):
 # def rapport(request):
 #     if request.method=='POST':
 #         form=
+
+
+
+
+
+
+from .models import Attestation
+from .forms import AttestationForm
+
+def create_attestation(request):
+    candidats = Candidats.objects.all()
+    affectation = Affectation.objects.all()
+    
+    if request.method == 'POST':
+        # Récupération des données du formulaire
+        Id_affectation = request.POST.get('Id_affectation')
+        stagaire_id = request.POST.get('stagaire')
+        chemin_attestation = request.FILES.get('chemin_attestation')
+
+        # Vérification de la présence des données nécessaires
+        if Id_affectation and stagaire_id and chemin_attestation:
+            # Création d'une nouvelle instance d'Attestation
+            attestation = Attestation(
+                Id_affectation=Affectation.objects.get(Id_affectation=Id_affectation),
+                stagaire=Candidats.objects.get(Id_candidat=stagaire_id),
+                chemin_attestation=chemin_attestation
+            )
+            attestation.save()
+            return redirect('success_page') 
+        else:
+            print("Données manquantes ou invalides")
+
+    return render(request, 'Candidats/attestation.html', {'candidats': candidats, 'affectation': affectation})
+
+
+def list_attestations(request):
+    user_email = request.session.get('candidat_email') 
+    candidat=Candidats.objects.filter(email=user_email).first()
+    attestations = Attestation.objects.filter(stagaire=candidat.Id_candidat)
+
+    return render(request, 'Candidats/exporter_attes.html', {'attestations': attestations})
+
+
+
+from django.http import FileResponse, Http404
+from django.shortcuts import get_object_or_404
+from .models import Attestation
+import os
+
+def download_attestation(request, attestation_id):
+    attestation = get_object_or_404(Attestation, pk=attestation_id)
+    file_path = attestation.chemin_attestation.path 
+
+    if not os.path.exists(file_path):
+        raise Http404("File not found")
+
+    return FileResponse(open(file_path, 'rb'), as_attachment=True, filename=attestation.chemin_attestation.name)
