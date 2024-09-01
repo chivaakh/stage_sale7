@@ -1,5 +1,5 @@
 from django.shortcuts import render, redirect,get_object_or_404
-from .forms import UtilisateurForm,CandidateForm,ServiceForm,SujetStageForm
+from .forms import ServiceForm,SujetStageForm
 from .models import *
 from django.contrib.auth import logout
 from django.contrib.auth import authenticate, login as auth_login
@@ -18,6 +18,7 @@ from .models import Sujet_stage
 from django.http import HttpResponseRedirect
 from django.urls import reverse
 from .forms import SujetStageForm  # Assume que tu as un formulaire pour Sujet_stage
+from django.contrib.auth.hashers import check_password
 
 # Create your views here.
 #les views pour gestions des utilisateur
@@ -41,7 +42,7 @@ def envoyer_message(request, candidat_id):
         
         # Essayer de récupérer l'utilisateur personnalisé basé sur l'email
         try:
-            utilisateur = Utilisateur.objects.get(Email=utilisateur_django.email)
+            utilisateur = Utilisateur.objects.all()
             logger.debug(f'Utilisateur trouvé : {utilisateur.Nom_complet}')
         except Utilisateur.DoesNotExist:
             logger.error(f'Utilisateur non trouvé pour l\'email : {utilisateur_django.email}')
@@ -54,27 +55,31 @@ def envoyer_message(request, candidat_id):
             candidat=candidat
         )
         notification.save()
-        
-         
 
-        return redirect('liste_messages')
-     
+        # Ajouter un message de succès
+        messages.success(request, 'Le message a été envoyé avec succès.')
+
+        # Rendre à nouveau le template avec le message de succès
+        return render(request, 'utilisateur/envoyer_message.html', {'candidat': candidat})
+
     return render(request, 'utilisateur/envoyer_message.html', {'candidat': candidat})
     
-
+#liste message pour les candidats
+def chivaa(request):
+    
+    notifications = Notification.objects.all()
+    return render(request, 'utilisateur/liste_messages_chiva.html', {'notifications': notifications})
+#liste message pour les utilisateur
 def liste_messages(request):
     
     notifications = Notification.objects.all()
     return render(request, 'utilisateur/liste_messages.html', {'notifications': notifications})
-
 
 def marquer_comme_lu(request, notification_id):
     notification = get_object_or_404(Notification, pk=notification_id)
     notification.lu = True
     notification.save()
     return redirect('liste_messages')
-
-
 
 
 def create_utilisateur(request):
@@ -124,7 +129,9 @@ def login(request):
                 if utilisateur and utilisateur.role == 'Admin':
                     return redirect('nevbar_admin') 
                 elif utilisateur and utilisateur.role == 'RH':
-                     return redirect('gestion_demandes') 
+                     return redirect('nevbar_RH') 
+                elif utilisateur and utilisateur.role == 'Encadreur':
+                     return redirect('nevbar_encadreur') 
                 else:
                      return redirect('hello') 
                 
@@ -145,33 +152,83 @@ def login(request):
 
 def logout(request):
     return redirect('login')
-#les views pour les creet de candidate
-def create_candidate(request):
+#les views pour les creet de candidat
+def login_candidat(request):
     if request.method == 'POST':
-        form = CandidateForm(request.POST, request.FILES)
-        if form.is_valid():
-            form.save()
-            return redirect('Candidats/confirmation.html')  # Replace 'success_url' with your desired redirect URL
-    else:
-        form = CandidateForm()
-    
-    return render(request, 'Candidats/code.html', {'form': form})
+        email = request.POST.get('email')
+        password = request.POST.get('Password')
+
+        candidats = Candidats.objects.filter(email=email)
+        if candidats.exists():
+            candidat = candidats.first()  
+            if password == candidat.password:
+                return redirect('nevbar_candidat')
+            else:
+                return render(request, 'Candidats/login.html', {'error': 'Mot de passe incorrect'})
+        else:
+            return render(request, 'Candidats/login.html', {'error': 'Email non trouvé'})
+
+    return render(request, 'Candidats/login.html',{'login_candidat':'login_candidat'})
+def logout_candidat(request):
+    return redirect('login_candidat')
 
 #les fonction CRUD pour gestions les utilisateurs
 def interface_principal(request):
-    utilisateur=Utilisateur.objects.all()
+    query = request.GET.get('cherch')
+    if query:
+        utilisateur=Utilisateur.objects.filter(
+            Q(Id_utilisateur__icontains=query)|
+            Q(Nom_complet__icontains=query)|
+            Q(role__icontains=query)|
+            Q(Email__icontains=query)|
+            Q(Date_creation__icontains=query)
+        )
+    else:
+        utilisateur=Utilisateur.objects.all()
     return render(request,'gestions_users/Interface_principale.html',{'utilisateur': utilisateur} )
+def modifier_role(request, id_user):
+    utilisateur = get_object_or_404(Utilisateur, Id_utilisateur=id_user)
+    if request.method == 'POST':
+        nouveau_role = request.POST.get('role')
+        if nouveau_role:
+            utilisateur.role = nouveau_role
+            utilisateur.save()
+            messages.success(request, "Le rôle a été mis à jour avec succès.")
+            return redirect('interface_principal') 
+        else:
+            messages.error(request, "Veuillez sélectionner un rôle valide.")
+    return redirect('interface_principal') 
 def deletuser(request, id_user):
     utilisateur = Utilisateur.objects.filter(Id_utilisateur=id_user).first()  
     if utilisateur: 
         utilisateur.delete()  
     return redirect('interface_principal') 
+# les nevbars:
 def nevbar_admin(request):
     return render(request,'sidebar/nevbar_admin.html')
+def nevbar_RH(request):
+    return render(request,'sidebar/nevbar_RH.html')
+def nevbar_encadreur (request):
+    return render(request,'sidebar/nevbar_encadreur.html')
+def nevbar_candidat (request):
+    return render(request,'sidebar/nevbar_candidat.html')
 
-#RD pour la candidate
+
+#RD pour la candidat
 def show_candidate(request):
-    candidate=Candidats.objects.all()
+    query = request.GET.get('cherch')
+    if query:
+        candidate=Candidats.objects.filter(
+            Q(Nom_complet__icontains=query)|
+            Q(universite__icontains=query)|
+            Q(niveau_academique__icontains=query)|
+            Q(specialite__icontains=query)|
+            Q(Date_Naissance__icontains=query)|
+            Q(telephone__icontains=query)|
+            Q(periode__icontains=query)
+        )
+    else:
+       candidate=Candidats.objects.all()
     return render(request,'Candidats/show_candidat.html',{'candidate':candidate})
 
 def delete_candidate(request,id_candidate):
@@ -253,27 +310,6 @@ def confirmation(request):
 
 def form_candidat(request):
     return render(request, 'Candidats/code.html')
-
-
-    return render(request, 'Notifications/notifications.html', {'notifications': notifications})
-def create_candidate(request):
-    if request.method == 'POST':
-        form = CandidateForm(request.POST, request.FILES)
-        if form.is_valid():
-            candidate = form.save()
-            # Créer une notification pour l'utilisateur
-            Notification.objects.create(
-                utilisateur=request.user,
-                message="Un nouveau candidat a été créé."
-            )
-            return redirect('Candidats/confirmation.html')
-    else:
-        form = CandidateForm()
-
-    return render(request, 'Candidats/code.html', {'form': form})
-
-
-
 
 # Liste des sujets par service
 def liste_sujets_par_service(request, service_id):
@@ -384,4 +420,7 @@ def getMessages(request, room):
         messages_list.append(message_data)
 
     return JsonResponse({"messages": messages_list})
-#dfghjkjhg
+#pour le rapport:
+# def rapport(request):
+#     if request.method=='POST':
+#         form=

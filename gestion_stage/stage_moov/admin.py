@@ -1,14 +1,14 @@
 from django.contrib import admin
 from .models import Utilisateur,Candidats,Demandes,Document,Service,Sujet_stage,Affectation,Evaluation,Attestation,Notification,Room
-from .forms import UtilisateurForm,CandidateForm,AdminCandidateForm,ServiceForm
+from .forms import UtilisateurForm,AdminCandidatForm,ServiceForm
 # Register your models here.
 class UtilisateurAdmin(admin.ModelAdmin):
     form = UtilisateurForm 
     list_display = ('Nom_complet', 'Email','password' ,'role', 'Date_creation') 
 # un class pour la chmaps specifique a l'interface de l'admin
 class CandidatsAdmin(admin.ModelAdmin):
-    form=AdminCandidateForm
-    list_display=('Id_candidat','Nom_complet', 'universite', 'niveau_academique','Date_Naissance','email', 'telephone', 'cv', 'lettre_motivation', 'demande','periode','Date_demande')
+    form=AdminCandidatForm
+    list_display=('Id_candidat','Nom_complet', 'universite', 'niveau_academique','Date_Naissance','email','password', 'telephone', 'cv', 'lettre_motivation', 'demande','periode','Date_demande')
 #utilisation de formulaire personalliser
 class ServiceAdmin(admin.ModelAdmin):
     form=ServiceForm
