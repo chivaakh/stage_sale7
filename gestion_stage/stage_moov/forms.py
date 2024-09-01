@@ -26,23 +26,27 @@ class UtilisateurForm(forms.ModelForm):
         return utilisateur
 
 #formulaire pour la candidate
-class CandidateForm(forms.ModelForm):
+class AdminCandidatForm(forms.ModelForm):
     class Meta:
         model = Candidats
-        fields = ['Nom_complet', 'universite', 'niveau_academique','specialite','Date_Naissance','email', 'telephone', 'cv', 'lettre_motivation', 'demande','periode']
+        fields = ['Id_utilisateur', 'Nom_complet', 'universite', 'niveau_academique','specialite','Date_Naissance','email', 'password','telephone','cv','lettre_motivation','demande','periode']  
 
-    def save(self, commit=True):
         
+class CandidatForm(forms.ModelForm):
+    class Meta:
+        model = Candidats
+        fields = ['Nom_complet', 'universite', 'niveau_academique', 'specialite', 'Date_Naissance', 'email', 'password', 'telephone', 'cv', 'lettre_motivation', 'demande', 'periode']
+    
+    def save(self, commit=True):
         candidate = super().save(commit=False)
         
         if commit:
             candidate.save()
 
         return candidate
-class AdminCandidateForm(forms.ModelForm):
-    class Meta:
-        model = Candidats
-        fields = ['Id_utilisateur', 'Nom_complet', 'universite', 'niveau_academique','specialite','Date_Naissance','email', 'telephone','cv','lettre_motivation','demande','periode']  
+
+
+
 #formulaire pour ajouter une service
 class ServiceForm(forms.ModelForm):
     class Meta:
@@ -56,12 +60,6 @@ class ServiceForm(forms.ModelForm):
         if commit:
             service.save()
         return service
-class CandidatForm(forms.ModelForm):
-    class Meta:
-        model = Candidats
-        fields = ['Nom_complet', 'universite', 'niveau_academique', 'specialite', 'Date_Naissance', 'email', 'telephone', 'cv', 'lettre_motivation', 'demande', 'periode']
-    
-
 
 
 

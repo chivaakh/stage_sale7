@@ -8,15 +8,13 @@ from django.contrib.auth.hashers import make_password, check_password
 from django.contrib.auth.models import User
 from datetime import datetime
 
-# def get_upload_path(instance, filename):
-#     return f'Documents/documents_user_{instance.Id_candidat}/{filename}'
 
 class Utilisateur(models.Model):
     
     ROLE_CHOICES = [
         ('Admin', 'Admin'),
         ('RH', 'RH'),
-        ('Encadeur', 'Encadeur'),
+        ('Encadreur', 'Encadreur'),
         ('User_simple', 'User_simple'),
     ]
     Id_utilisateur = models.AutoField(primary_key=True)
@@ -27,7 +25,7 @@ class Utilisateur(models.Model):
     role = models.CharField( choices=ROLE_CHOICES, max_length=50)
     Date_creation = models.DateTimeField(auto_now_add=True)
 
-    def __str__(self):
+    def _str_(self):
         return self.Nom_complet
     def set_password(self, raw_password):
         self.password = make_password(raw_password)
@@ -45,6 +43,7 @@ class Candidats(models.Model):
     specialite= models.CharField(max_length=50, default='TC')
     Date_Naissance = models.DateField()
     email = models.EmailField(max_length=50, unique=True)
+    password = models.CharField(max_length=100)
     telephone = models.CharField(max_length=8, validators=[RegexValidator(regex=r'^[432]\d{7}$', message="Le numéro de téléphone doit être un numéro national")])
     Date_demande = models.DateTimeField(default=timezone.now)
     cv = models.FileField(upload_to='Documents/cv/',null=True,blank=True)
@@ -52,7 +51,7 @@ class Candidats(models.Model):
     demande = models.FileField(upload_to='Documents/demandes/', null=False,blank=False)
     periode = models.CharField(max_length=50)
 
-    def __str__(self):
+    def _str_(self):
         return self.Nom_complet
     
 
@@ -64,7 +63,7 @@ class Service(models.Model):
 
 
 
-    def __str__(self):
+    def _str_(self):
         return self.Nom_service
 
 class Sujet_stage(models.Model):
@@ -75,45 +74,17 @@ class Sujet_stage(models.Model):
     Date_creation = models.DateTimeField(auto_now_add=True)
     Date_mise_a_jour = models.DateTimeField(auto_now=True)
 
-    def __str__(self):
-         return f"{self.titre}"
-
-from django.contrib.auth.models import User  # Assurez-vous d'utiliser le modèle utilisateur approprié
-
-class ChoixSujet(models.Model):
-    Id_choix = models.AutoField(primary_key=True)
-    sujet = models.ForeignKey(Sujet_stage, on_delete=models.CASCADE)
-    stagiaire = models.ForeignKey(Candidats, on_delete=models.CASCADE)
-    utilisateur = models.ForeignKey(Utilisateur, on_delete=models.CASCADE, null=True, blank=True)
-    Date_choix = models.DateTimeField(auto_now_add=True)
-    affecté = models.BooleanField(default=False)  # Indique si le sujet est affecté au stagiaire ou pas
-
-    def __str__(self):
-        return f"{self.stagiaire.Nom_complet} - {self.sujet.titre}"
-
-
 
 
 
 
 class Demandes(models.Model):
     Id_demande = models.AutoField(primary_key=True)
-    Id_candidat = models.ForeignKey(Candidats, on_delete=models.CASCADE)
-    Id_sujet = models.ForeignKey(Sujet_stage, on_delete=models.CASCADE)
+    Nom_candidat = models.ForeignKey(Candidats, on_delete=models.CASCADE)
     Date_soumission = models.DateTimeField()
     statut = models.CharField(max_length=50)
 
-
-    def save(self, *args, **kwargs):
-        if self.Date_soumission is None:
-            self.Date_soumission = self.Id_candidat.Date_demande
-        super().save(*args, **kwargs)
-    # pour id_demande=id_candidate
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
-        if self.Id_demande:  
-            self.Id_candidat = self.Id_demande
-    def __str__(self):
+    def _str_(self):
         return str(self.Id_demande)
 
 class Document(models.Model):
@@ -123,7 +94,7 @@ class Document(models.Model):
     type_document = models.CharField(max_length=50, null=True, blank=True)
     chemin_document = models.CharField(max_length=50)
 
-    def __str__(self):
+    def _str_(self):
         return f"{self.candidat.Nom_complet}"
 
 class Affectation(models.Model):
@@ -131,18 +102,15 @@ class Affectation(models.Model):
     Id_demande = models.ForeignKey(Demandes, on_delete=models.CASCADE)
     Id_sujet = models.ForeignKey(Sujet_stage, on_delete=models.CASCADE)
     date_affectaion = models.DateTimeField(auto_now=True)
-   
-    def __str__(self):
-        return f"Affectation {self.Id_affectation} pour {self.Id_demande.Id_candidat.Nom_complet}"
 
-
-
+    def _str_(self):
+        return str(self.Id_affectation)
 
 class Room(models.Model):
     id = models.AutoField(primary_key=True)
     name = models.CharField(max_length=20, unique=True)  
 
-    def __str__(self):
+    def _str_(self):
         return self.name
 
 class Evaluation(models.Model):
@@ -153,7 +121,7 @@ class Evaluation(models.Model):
     room = models.ForeignKey(Room, on_delete=models.CASCADE)  
     date = models.DateTimeField(default=datetime.now, blank=True)
 
-    def __str__(self):
+    def _str_(self):
         return f'Evaluation {self.Id_evaluation} by {self.user}'
 class Attestation(models.Model):
     Id_attestation = models.AutoField(primary_key=True)
@@ -162,7 +130,7 @@ class Attestation(models.Model):
     Date_emission = models.DateTimeField(auto_now_add=True)
     chemin_attestation = models.FileField(upload_to='Attestation/%y%m%d_{stagaire}')
 
-    def __str__(self):
+    def _str_(self):
         return str(self.Id_attestation)
 
 class Notification(models.Model):
@@ -173,5 +141,14 @@ class Notification(models.Model):
     candidat = models.ForeignKey(Candidats, on_delete=models.CASCADE, related_name='notifications_recues')
 
     
+from django.db.models.signals import post_save
+from django.dispatch import receiver
 
-
+@receiver(post_save, sender=Candidats)
+def create_demande(sender, instance, created, **kwargs):
+    if created:
+        Demandes.objects.create(
+            Nom_candidat=instance,
+            Date_soumission=instance.Date_demande,
+            statut="En attente"
+        )

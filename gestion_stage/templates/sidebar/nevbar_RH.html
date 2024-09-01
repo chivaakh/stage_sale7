@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gestion Stage | Sidebar</title>
+    <!-- Google font link for icons -->
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200">
+    {% load static %}
+    <link rel="stylesheet" href="{% static 'css/sidebar.css' %}">
+    <style>
+      body {
+        background-image: url("{% static 'image/fo.jpg' %}");
+        background-size: cover;
+        height: 100vh;
+        width: 100%;
+        margin: 0;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+      }
+    </style>
+  </head>
+
+  <body class="background">
+    <aside class="sidebar">
+      <div class="logo">
+        <img src="{% static 'image/Moov_Mauritel_(logo_in_French).png' %}" alt="Logo de Moov Mauritel">
+        <h2>Gestion Stage</h2>
+      </div>
+      <ul class="links">
+        <h4>Main Menu</h4>
+        <li>
+          <span class="material-symbols-outlined">dashboard</span>
+          <a href="#">Dashboard</a>
+        </li>
+        <li>
+          <span class="material-symbols-outlined">show_chart</span>
+          <a href="{% %}">Gestion des Sujets</a>
+        </li>
+        <li>
+          <span class="material-symbols-outlined">group</span>
+          <a href="{% ev_start %}">Gestion des Evaluations</a>
+        </li>
+        <li class="logout-link">
+          <span class="material-symbols-outlined">logout</span>
+          <a href="{% logout %}">Logout</a>
+        </li>
+      </ul>
+    </aside>
+  </body>
+</html>

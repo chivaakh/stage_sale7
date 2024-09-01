@@ -1,4 +1,6 @@
-{% block content%}
+
+{% extends "sidebar/nevbar_admin.html" %}
+{% block content %}
 {% load static %}
 <head>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
@@ -13,11 +15,39 @@
             width: 900px;
             height: 50%;
             margin-bottom: 20px;
-            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);}
-            
-       body {
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+
+        body {
             background-color: #f4f7f6;
             font-family: Arial, sans-serif;
+        }
+
+        .search-container {
+            width: 90%;
+            margin: 20px auto;
+            display: flex;
+            justify-content: center;
+        }
+
+        .search-container input[type="text"] {
+            padding: 10px;
+            font-size: 16px;
+            width: 300px;
+            border: 1px solid #ddd;
+            border-radius: 5px 0 0 5px;
+            outline: none;
+        }
+
+        .search-container button {
+            padding: 10px 20px;
+            font-size: 16px;
+            border: none;
+            background-color: #007BFF;
+            color: white;
+            cursor: pointer;
+            border-radius: 0 5px 5px 0;
+            outline: none;
         }
         
         h1 {
@@ -27,8 +57,8 @@
         }
 
         table.can {
-            width: 90%;
-            margin: 30px auto;
+            width: 80%;
+            margin: 10px auto;
             border-collapse: collapse;
             background-color: #fff;
             color: #333;
@@ -37,9 +67,10 @@
         }
 
         table.can th, table.can td {
-            padding: 12px;
+            padding: 5px;
             text-align: left;
             border: 1px solid #ddd;
+            text-align: center;
         }
 
         table.can th {
@@ -67,35 +98,68 @@
             color: #0056b3;
         }
    </style>
-
+</head>
 <body>
-    <h1>Liste des utilisateurss</h1>
+    <h1>Liste des utilisateurs</h1>
+    <div class="search-container">
+        <form method="GET" action="{% url 'interface_principal' %}">
+            <input type="text" name="cherch" placeholder="Rechercher un utilisateur..." value="{{ request.GET.cherch }}">
+            <button type="submit">
+                <i class="fa-solid fa-search"></i> Rechercher
+            </button>
+        </form>
+    </div>
     <table border="1" class="can">
-        <th>Id_utilisateur</th>
-        <th>Nom_complet</th>
-        <th>Email</th>
-        <th>role</th>
-        <th>Date_creation</th>
-        <th colspan="1">actions</th>
-        {% for user in utilisateur %}
-        <tr>
-            <td>{{ user.Id_utilisateur }} </td>
-            <td>{{ user.Nom_complet }} </td>
-            <td>{{ user.Email }}</td>
-            <td>{{ user.role }}</td>
-            <td>{{ user.Date_creation }}</td>
-            <td>
-                <a href="#" data-id="{{user.Id_utilisateur}}"   onclick="confirmDelete(this);">
-                    <i class="fa-solid fa-trash-can" style="color: rgb(231, 52, 52);"></i>
-                </a>
-            </td>
-    
-        </tr>
-        {% endfor %}
+        <thead>
+            <tr>
+                <th>Id_utilisateur</th>
+                <th>Nom_complet</th>
+                <th>Email</th>
+                <th>role</th>
+                <th>Date_creation</th>
+                <th colspan="2">Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for user in utilisateur %}
+            <tr>
+                <td>{{ user.Id_utilisateur }} </td>
+                <td>{{ user.Nom_complet }} </td>
+                <td>{{ user.Email }}</td>
+                <td>
+                    {{ user.role }}
+                    <a href="#" onclick="showRoleForm({{ user.Id_utilisateur }}); return false;">
+                        <i class="fa-solid fa-pen" style="color: #007BFF; margin-left: 10px;"></i>
+                    </a>
+                    <form id="role-form-{{ user.Id_utilisateur }}" action="{% url 'modifier_role' user.Id_utilisateur %}" method="POST" style="display: none; margin-top: 5px;">
+                        {% csrf_token %}
+                        <label for="role-{{ user.Id_utilisateur }}" style="display: inline;">Rôle:</label>
+                        <select name="role" id="role-{{ user.Id_utilisateur }}" onchange="this.form.submit();">
+                            <option value="Admin" {% if user.role == 'Admin' %}selected{% endif %}>Admin</option>
+                            <option value="RH" {% if user.role == 'RH' %}selected{% endif %}>RH</option>
+                            <option value="Encadreur" {% if user.role == 'Encadreur' %}selected{% endif %}>Encadreur</option>
+                            <!-- Add other roles as needed -->
+                        </select>
+                    </form>
+                </td>
+                <td>{{ user.Date_creation }}</td>
+                <td>
+                    <a href="#" data-id="{{ user.Id_utilisateur }}" onclick="confirmDelete(this); return false;">
+                        <i class="fa-solid fa-trash-can" style="color: rgb(231, 52, 52);"></i>
+                    </a>
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
     </table>
-   <script>
+    <script>
+        function showRoleForm(userId) {
+            var form = document.getElementById('role-form-' + userId);
+            form.style.display = form.style.display === 'none' ? 'block' : 'none';
+        }
+
         function confirmDelete(element) {
-            const userId=element.getAttribute('data-id')
+            const userId = element.getAttribute('data-id');
             Swal.fire({
                 title: "Êtes-vous sûr?",
                 text: "Vous ne pourrez pas revenir en arrière!",
@@ -111,6 +175,7 @@
             });
         }
     </script>
+   
 </body>
-{% endblock %}
 
+{% endblock %}

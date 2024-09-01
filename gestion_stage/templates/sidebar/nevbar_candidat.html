@@ -68,23 +68,23 @@
       </li>
       <li>
         <span class="material-symbols-outlined">show_chart</span>
-        <a href="{% url 'gestions_candidate' %}">Notification</a>
+        <a href="{% url '' %}">Notification</a>
       </li>
       <li>
         <span class="material-symbols-outlined">group</span>
-        <a href="{% url 'gestions_candidate' %}">Importer votre rapport</a>
+        <a href="{% url '' %}">Importer votre rapport</a>
       </li>
       <li>
         <span class="material-symbols-outlined">group</span>
-        <a href="{% url 'gestions_users:interface_principale' %}">Exporter votre attestation</a>
+        <a href="{% url '' %}">Exporter votre attestation</a>
       </li>
       <li>
         <span class="material-symbols-outlined">group</span>
-        <a href="{% url 'gestions_users:interface_principale' %}">Voir les services</a>
+        <a href="{% url 'service_list' %}">Voir les services</a>
       </li>
       <li class="logout-link">
         <span class="material-symbols-outlined">logout</span>
-        <a href="#">Logout</a>
+        <a href="{% url 'login_candidat' %}">Logout</a>
       </li>
     </ul>
   </aside>

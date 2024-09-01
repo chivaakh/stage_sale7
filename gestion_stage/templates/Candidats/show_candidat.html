@@ -1,23 +1,51 @@
-{% load static %}
+{% extends "sidebar/nevbar_admin.html" %}
+
+{% block extra_head %}
 <head>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css">
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <style>
-        body {
-            background-color: #f4f7f6;
-            font-family: Arial, sans-serif;
-        }
-        
         h1 {
             text-align: center;
             color: #333;
             margin-top: 20px;
         }
 
-        table.can {
+        .search-container {
             width: 90%;
-            margin: 30px auto;
+            margin: 20px auto;
+            display: flex;
+            justify-content: center;
+        }
+
+        .search-container input[type="text"] {
+            padding: 10px;
+            font-size: 16px;
+            width: 300px;
+            border: 1px solid #ddd;
+            border-radius: 5px 0 0 5px;
+            outline: none;
+        }
+
+        .search-container button {
+            padding: 10px 20px;
+            font-size: 16px;
+            border: none;
+            background-color: #007BFF;
+            color: white;
+            cursor: pointer;
+            border-radius: 0 5px 5px 0;
+            outline: none;
+        }
+
+        .search-container button:hover {
+            background-color: #0056b3;
+        }
+
+        table.can {
+            width: 50%;
+            margin: 10px auto;
             border-collapse: collapse;
             background-color: #fff;
             color: #333;
@@ -26,9 +54,10 @@
         }
 
         table.can th, table.can td {
-            padding: 12px;
+            padding: 10px;
             text-align: left;
             border: 1px solid #ddd;
+            text-align: center;
         }
 
         table.can th {
@@ -57,12 +86,24 @@
         }
     </style>
 </head>
+{% endblock %}
+{% block content %}
 <body>
-    <h1>Liste des Candidates</h1>
+    <h1>Liste des Candidats</h1>
+
+    <div class="search-container">
+        <form method="GET" action="{% url 'show_candidate' %}">
+            <input type="text" name="cherch" placeholder="Rechercher un candidat..." value="{{ request.GET.cherch }}">
+            <button type="submit">
+                <i class="fa-solid fa-search"></i> Rechercher
+            </button>
+        </form>
+    </div>
+
     <table border="1" class="can">
         <thead>
             <tr>
-                <th>Id Candidate</th>
+                <th>Id Candidat</th>
                 <th>Nom Complet</th>
                 <th>Université</th>
                 <th>Niveau Académique</th>
@@ -121,4 +162,4 @@
             });
         }
     </script>
-</body>
+{% endblock %}
