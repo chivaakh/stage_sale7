@@ -84,7 +84,7 @@ class Demandes(models.Model):
     Date_soumission = models.DateTimeField()
     statut = models.CharField(max_length=50)
 
-    def _str_(self):
+    def __str__(self):
         return str(self.Id_demande)
 
 class Document(models.Model):
@@ -128,7 +128,7 @@ class Attestation(models.Model):
     Id_affectation = models.ForeignKey(Affectation, on_delete=models.CASCADE)
     stagaire = models.ForeignKey(Candidats, on_delete=models.CASCADE)
     Date_emission = models.DateTimeField(auto_now_add=True)
-    chemin_attestation = models.FileField(upload_to='Attestation/%y%m%d_{stagaire}')
+    chemin_attestation = models.FileField(upload_to='Attestation/%y_%m_%d')
 
     def _str_(self):
         return str(self.Id_attestation)
@@ -143,6 +143,15 @@ class Notification(models.Model):
     
 from django.db.models.signals import post_save
 from django.dispatch import receiver
+
+@receiver(post_save, sender=Candidats)
+def create_demande(sender, instance, created, **kwargs):
+    if created:
+        Demandes.objects.create(
+            Nom_candidat=instance,
+            Date_soumission=instance.Date_demande,
+            statut="En attente"
+        )
 
 @receiver(post_save, sender=Candidats)
 def create_demande(sender, instance, created, **kwargs):

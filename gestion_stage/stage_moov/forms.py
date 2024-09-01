@@ -72,3 +72,4 @@ class SujetStageForm(forms.ModelForm):
 
 
         fields = ['titre', 'description']
+
