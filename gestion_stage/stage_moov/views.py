@@ -126,6 +126,8 @@ def login(request):
         
             utilisateur = Utilisateur.objects.filter(Email=email).first()
             if utilisateur and utilisateur.check_password(password):
+                request.session['user_email'] = utilisateur.Email
+                request.session['user_role'] = utilisateur.role
                 if utilisateur and utilisateur.role == 'Admin':
                     return redirect('nevbar_admin') 
                 elif utilisateur and utilisateur.role == 'RH':
@@ -157,10 +159,10 @@ def login_candidat(request):
     if request.method == 'POST':
         email = request.POST.get('email')
         password = request.POST.get('Password')
-
         candidats = Candidats.objects.filter(email=email)
         if candidats.exists():
-            candidat = candidats.first()  
+            candidat = candidats.first() 
+            request.session['candidat_email'] = candidat.email
             if password == candidat.password:
                 return redirect('nevbar_candidat')
             else:
@@ -235,14 +237,25 @@ def delete_candidate(request,id_candidate):
     candidate=Candidats.objects.filter(Id_candidat=id_candidate).first()
     if candidate:
         candidate.delete()
-    return redirect('show_candidat')
+    return redirect('show_candidate')
 
 #pour gestion des demandes
 def gestion_demandes(request):
     if not request.user.is_authenticated:
         return redirect('login')
-    demandes = Demandes.objects.all()
-    return render(request, 'gestion_demande/gestion_demandes.html',{'demandes': demandes})
+    
+    query = request.GET.get('cherch', '')
+    
+    if query:
+        demandes = Demandes.objects.filter(
+            Q(Nom_candidat__Nom_complet__icontains=query) |
+            Q(statut__icontains=query) |
+            Q(Date_soumission__icontains=query)
+        )
+    else:
+        demandes = Demandes.objects.all()
+    
+    return render(request, 'gestion_demande/gestion_demandes.html', {'demandes': demandes})
 #les views pour accepter
 def accepter_demande(request, demande_id):
    demande = Demandes.objects.filter(Id_demande=demande_id).first()
@@ -258,13 +271,16 @@ def rejeter_demande(request, demande_id):
     return redirect('gestion_demandes')
 #les views pour la service
 def service_list(request):
+    user_email = request.session.get('user_email') 
+    utilisateur = Utilisateur.objects.filter(Email=user_email).first()
+    # user=Utilisateur.objects.filter(Utilisateur.role).first
     query = request.GET.get('q')
     if query:
         services = Service.objects.filter(Nom_service__icontains=query)
     else:
         services = Service.objects.all()
     
-    return render(request, 'Service/service_list.html', {'services': services, 'query': query})
+    return render(request, 'Service/service_list.html', {'services': services, 'query': query, 'utilisateur':utilisateur})
 
 # Rest of your views...
 def service_add(request):
@@ -424,3 +440,60 @@ def getMessages(request, room):
 # def rapport(request):
 #     if request.method=='POST':
 #         form=
+
+
+
+
+
+
+from .models import Attestation
+
+
+def create_attestation(request):
+    candidats = Candidats.objects.all()
+    affectation = Affectation.objects.all()
+    
+    if request.method == 'POST':
+        # Récupération des données du formulaire
+        Id_affectation = request.POST.get('Id_affectation')
+        stagaire_id = request.POST.get('stagaire')
+        chemin_attestation = request.FILES.get('chemin_attestation')
+
+        # Vérification de la présence des données nécessaires
+        if Id_affectation and stagaire_id and chemin_attestation:
+            # Création d'une nouvelle instance d'Attestation
+            attestation = Attestation(
+                Id_affectation=Affectation.objects.get(Id_affectation=Id_affectation),
+                stagaire=Candidats.objects.get(Id_candidat=stagaire_id),
+                chemin_attestation=chemin_attestation
+            )
+            attestation.save()
+            return redirect('success_page') 
+        else:
+            print("Données manquantes ou invalides")
+
+    return render(request, 'Candidats/attestation.html', {'candidats': candidats, 'affectation': affectation})
+
+
+def list_attestations(request):
+    user_email = request.session.get('candidat_email') 
+    candidat=Candidats.objects.filter(email=user_email).first()
+    attestations = Attestation.objects.filter(stagaire=candidat.Id_candidat)
+
+    return render(request, 'Candidats/exporter_attes.html', {'attestations': attestations})
+
+
+
+from django.http import FileResponse, Http404
+from django.shortcuts import get_object_or_404
+from .models import Attestation
+import os
+
+def download_attestation(request, attestation_id):
+    attestation = get_object_or_404(Attestation, pk=attestation_id)
+    file_path = attestation.chemin_attestation.path 
+
+    if not os.path.exists(file_path):
+        raise Http404("File not found")
+
+    return FileResponse(open(file_path, 'rb'), as_attachment=True, filename=attestation.chemin_attestation.name)

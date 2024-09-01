@@ -8,8 +8,6 @@ from django.contrib.auth.hashers import make_password, check_password
 from django.contrib.auth.models import User
 from datetime import datetime
 
-# def get_upload_path(instance, filename):
-#     return f'Documents/documents_user_{instance.Id_candidat}/{filename}'
 
 class Utilisateur(models.Model):
     
@@ -82,21 +80,10 @@ class Sujet_stage(models.Model):
 
 class Demandes(models.Model):
     Id_demande = models.AutoField(primary_key=True)
-    Id_candidat = models.ForeignKey(Candidats, on_delete=models.CASCADE)
-    Id_sujet = models.ForeignKey(Sujet_stage, on_delete=models.CASCADE)
+    Nom_candidat = models.ForeignKey(Candidats, on_delete=models.CASCADE)
     Date_soumission = models.DateTimeField()
     statut = models.CharField(max_length=50)
 
-
-    def save(self, *args, **kwargs):
-        if self.Date_soumission is None:
-            self.Date_soumission = self.Id_candidat.Date_demande
-        super().save(*args, **kwargs)
-    # pour id_demande=id_candidate
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
-        if self.Id_demande:  
-            self.Id_candidat = self.Id_demande
     def __str__(self):
         return str(self.Id_demande)
 
@@ -141,7 +128,7 @@ class Attestation(models.Model):
     Id_affectation = models.ForeignKey(Affectation, on_delete=models.CASCADE)
     stagaire = models.ForeignKey(Candidats, on_delete=models.CASCADE)
     Date_emission = models.DateTimeField(auto_now_add=True)
-    chemin_attestation = models.FileField(upload_to='Attestation/%y%m%d_{stagaire}')
+    chemin_attestation = models.FileField(upload_to='Attestation/%y_%m_%d')
 
     def __str__(self):
         return str(self.Id_attestation)
@@ -154,5 +141,16 @@ class Notification(models.Model):
     candidat = models.ForeignKey(Candidats, on_delete=models.CASCADE, related_name='notifications_recues')
 
     
+from django.db.models.signals import post_save
+from django.dispatch import receiver
+
+@receiver(post_save, sender=Candidats)
+def create_demande(sender, instance, created, **kwargs):
+    if created:
+        Demandes.objects.create(
+            Nom_candidat=instance,
+            Date_soumission=instance.Date_demande,
+            statut="En attente"
+        )
 
 

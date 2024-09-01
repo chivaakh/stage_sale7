@@ -142,5 +142,18 @@ MEDIA_URL='/media/'
 # https://docs.djangoproject.com/en/5.0/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+<<<<<<< HEAD
 
 SESSION_ENGINE = 'django.contrib.sessions.backends.db'
+=======
+# AUTH_USER_MODEL = 'stage_moov.Utilisateur'
+
+# settings.py
+
+# Configuration des sessions
+SESSION_ENGINE = 'django.contrib.sessions.backends.db'  # Stockage des sessions dans la base de données
+SESSION_COOKIE_NAME = 'sessionid'  # Nom du cookie de session
+SESSION_COOKIE_AGE = 1209600  # Durée de vie du cookie (en secondes)
+# Configuration pour Crispy Forms
+# CRISPY_TEMPLATE_PACK = 'bootstrap4'
+>>>>>>> 56933b99c687e11f5ce724731cf5f0ea0fc10561

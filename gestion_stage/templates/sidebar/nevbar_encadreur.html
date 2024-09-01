@@ -31,22 +31,21 @@
       <ul class="links">
         <h4>Main Menu</h4>
         <li>
-          <span class="material-symbols-outlined">dashboard</span>
-          <a href="#">Dashboard</a>
-        </li>
-        <li>
           <span class="material-symbols-outlined">show_chart</span>
-          <a href="{% %}">Gestion des Sujets</a>
+          <a href="{% url 'liste_sujets_par_service' %}">Gestion des Sujets</a>
         </li>
         <li>
           <span class="material-symbols-outlined">group</span>
-          <a href="{% ev_start %}">Gestion des Evaluations</a>
+          <a href="{% url 'ev_start' %}">Gestion des Evaluations</a>
         </li>
         <li class="logout-link">
           <span class="material-symbols-outlined">logout</span>
-          <a href="{% logout %}">Logout</a>
+          <a href="{% url 'logout' %}">Logout</a>
         </li>
       </ul>
     </aside>
+    <div class="container-content">
+      {% block content %}{% endblock %}
+  </div>
   </body>
 </html>
