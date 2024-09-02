@@ -102,9 +102,15 @@
 <body>
   <aside class="sidebar">
     <div class="logo-container">
-      <img src="{% static 'image/Moov_Mauritel_(logo_in_French).png' %}" alt="Logo Moov Mauritel">
-      <h2>Gestion des Stages</h2>
+        <img src="{% static 'image/Moov_Mauritel_(logo_in_French).png' %}" alt="Logo Moov Mauritel">
+        <h2>Gestion des Stages</h2>
     </div>
+    
+    {% if request.session.candidat_nom_complet %}
+    <div class="user-info">
+        <p>Bienvenue, {{ request.session.candidat_nom_complet }}</p>
+    </div>
+    {% endif %}
    
     <ul class="links">
       <li>

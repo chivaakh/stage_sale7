@@ -188,9 +188,15 @@
 <body>
   <aside class="sidebar">
     <div class="logo-container">
-      <img src="{% static 'image/Moov_Mauritel_(logo_in_French).png' %}" alt="Logo Moov Mauritel">
-      <h2>Gestion des Stages</h2>
+        <img src="{% static 'image/Moov_Mauritel_(logo_in_French).png' %}" alt="Logo Moov Mauritel">
+        <h2>Gestion des Stages</h2>
     </div>
+    
+    {% if request.session.candidat_nom_complet %}
+    <div class="user-info">
+        <p>Bienvenue, {{ request.session.candidat_nom_complet }}</p>
+    </div>
+    {% endif %}
 
     <ul class="links">
       <li>
@@ -212,7 +218,7 @@
         <ion-icon name="notifications-sharp" class="material-symbols-outlined"></ion-icon>
         <a href="{% url 'liste_messages' %}">Notification</a>
       </li>
-      
+      <br><br><br>
       <li class="logout-link">
         <ion-icon name="log-out-sharp" class="material-symbols-outlined"></ion-icon>
         <a href="{% url 'login_candidat' %}">Logout</a>

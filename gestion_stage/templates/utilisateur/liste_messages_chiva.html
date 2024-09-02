@@ -213,6 +213,7 @@
         <ion-icon name="notifications-sharp" class="material-symbols-outlined"></ion-icon>
         <a href="{% url 'chivaa' %}">Notifications Envoyées</a>
     </li>
+    <br><br>
       <li class="logout-link">
         <ion-icon name="log-out-sharp" class="material-symbols-outlined"></ion-icon>
         <a href="{% url 'logout' %}">Logout</a>
@@ -221,7 +222,7 @@
   </aside>
   <div class="container-content">
     <div class="container">
-      <h1 class="chiva">Vos Messages</h1>
+      <h1 class="chiva">Notifications Envoyées</h1>
       <ul>
         {% for notification in notifications %}
           <li>
@@ -232,10 +233,7 @@
             {% if notification.lu %}
               <div class="lu">(Lu)</div>
             {% else %}
-              <form action="{% url 'marquer_comme_lu' notification.id %}" method="post" style="display: inline;">
-                {% csrf_token %}
-                <button type="submit">Marquer comme lu</button>
-              </form>
+            
             {% endif %}
           </li>
         {% endfor %}

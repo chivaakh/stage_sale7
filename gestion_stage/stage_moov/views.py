@@ -42,7 +42,7 @@ def envoyer_message(request, candidat_id):
         
         # Essayer de récupérer l'utilisateur personnalisé basé sur l'email
         try:
-            utilisateur = Utilisateur.objects.all()
+            utilisateur = Utilisateur.objects.get(Email=utilisateur_django.email)
             logger.debug(f'Utilisateur trouvé : {utilisateur.Nom_complet}')
         except Utilisateur.DoesNotExist:
             logger.error(f'Utilisateur non trouvé pour l\'email : {utilisateur_django.email}')
@@ -64,16 +64,45 @@ def envoyer_message(request, candidat_id):
 
     return render(request, 'utilisateur/envoyer_message.html', {'candidat': candidat})
     
-#liste message pour les candidats
+#liste message pour les utilisateur
 def chivaa(request):
     
     notifications = Notification.objects.all()
     return render(request, 'utilisateur/liste_messages_chiva.html', {'notifications': notifications})
-#liste message pour les utilisateur
+#liste message pour les candidat
+from django.shortcuts import get_object_or_404
+
 def liste_messages(request):
-    
-    notifications = Notification.objects.all()
+    utilisateur_connecte = request.user
+    print(f"Utilisateur Django connecté : {utilisateur_connecte}")
+
+    try:
+        utilisateur_personnalise = Utilisateur.objects.get(Id_utilisateur=utilisateur_connecte.id)
+        print(f"Utilisateur personnalisé trouvé : {utilisateur_personnalise}")
+
+        # Vérifiez toutes les instances de Candidats associées à cet utilisateur
+        candidats_associes = Candidats.objects.filter(Id_utilisateur=utilisateur_personnalise)
+        print(f"Candidats associés trouvés : {candidats_associes}")
+
+        if candidats_associes.exists():
+            candidat_connecte = candidats_associes.first()  # Choisir le premier candidat associé
+            print(f"Candidat connecté : {candidat_connecte}")
+
+            notifications = Notification.objects.filter(candidat=candidat_connecte)
+            print(f"Notifications trouvées : {notifications}")
+        else:
+            notifications = Notification.objects.none()
+            print("Aucun candidat trouvé pour cet utilisateur.")
+
+    except Utilisateur.DoesNotExist:
+        print("Utilisateur personnalisé non trouvé.")
+        notifications = Notification.objects.none()
+
     return render(request, 'utilisateur/liste_messages.html', {'notifications': notifications})
+
+
+
+
 
 def marquer_comme_lu(request, notification_id):
     notification = get_object_or_404(Notification, pk=notification_id)
@@ -162,15 +191,17 @@ def login_candidat(request):
         candidats = Candidats.objects.filter(email=email)
         if candidats.exists():
             candidat = candidats.first() 
-            request.session['candidat_email'] = candidat.email
             if password == candidat.password:
+                request.session['candidat_email'] = candidat.email
+                request.session['candidat_nom_complet'] = candidat.Nom_complet  # Stocke le nom complet du candidat dans la session
                 return redirect('nevbar_candidat')
             else:
                 return render(request, 'Candidats/login.html', {'error': 'Mot de passe incorrect'})
         else:
             return render(request, 'Candidats/login.html', {'error': 'Email non trouvé'})
 
-    return render(request, 'Candidats/login.html',{'login_candidat':'login_candidat'})
+    return render(request, 'Candidats/login.html', {'login_candidat': 'login_candidat'})
+
 def logout_candidat(request):
     return redirect('login_candidat')
 
