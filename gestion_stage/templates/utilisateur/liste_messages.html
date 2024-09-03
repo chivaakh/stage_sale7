@@ -203,7 +203,10 @@
         <ion-icon name="menu-sharp" class="material-symbols-outlined"></ion-icon>
         <a href="{% url 'service_list_candidat' %}">Voir les services</a>
       </li>
-
+      <li>
+        <ion-icon name="menu-sharp" class="material-symbols-outlined"></ion-icon>
+        <a href="{% url 'choix_sujet' %}">choisir un sujet</a>
+      </li> 
       <li>
         <ion-icon name="exit-sharp" class="material-symbols-outlined" ></ion-icon>
         <a href="{% url 'liste_messages' %}">Importer votre rapport</a>
@@ -218,7 +221,8 @@
         <ion-icon name="notifications-sharp" class="material-symbols-outlined"></ion-icon>
         <a href="{% url 'liste_messages' %}">Notification</a>
       </li>
-      <br><br><br>
+     
+    
       <li class="logout-link">
         <ion-icon name="log-out-sharp" class="material-symbols-outlined"></ion-icon>
         <a href="{% url 'login_candidat' %}">Logout</a>

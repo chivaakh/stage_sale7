@@ -117,12 +117,15 @@
         <ion-icon name="menu-sharp" class="material-symbols-outlined"></ion-icon>
         <a href="{% url 'service_list_candidat' %}">Voir les services</a>
       </li>
-    
+      <li>
+        <ion-icon name="menu-sharp" class="material-symbols-outlined"></ion-icon>
+        <a href="{% url 'choix_sujet' %}">choisir un sujet</a>
+      </li> 
       <li>
         <ion-icon name="download-sharp" class="material-symbols-outlined"></ion-icon>
         <a href="{% url 'liste_messages' %}">Importer votre rapport</a>
       </li>
-   
+     
       <li>
         <ion-icon name="download-sharp" class="material-symbols-outlined"></ion-icon>
         <a href="{% url 'liste_messages' %}">Exporter votre attestation</a>
@@ -132,6 +135,7 @@
         <ion-icon name="notifications-sharp" class="material-symbols-outlined"></ion-icon>
         <a href="{% url 'liste_messages' %}">Notification</a>
       </li>
+    
   
       <li class="logout-link">
         <ion-icon name="log-out-sharp" class="material-symbols-outlined"></ion-icon>

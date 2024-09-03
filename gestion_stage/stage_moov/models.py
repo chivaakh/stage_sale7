@@ -25,7 +25,7 @@ class Utilisateur(models.Model):
     role = models.CharField( choices=ROLE_CHOICES, max_length=50)
     Date_creation = models.DateTimeField(auto_now_add=True)
 
-    def __str__(self):
+    def _str_(self):
         return self.Nom_complet
     def set_password(self, raw_password):
         self.password = make_password(raw_password)
@@ -51,7 +51,7 @@ class Candidats(models.Model):
     demande = models.FileField(upload_to='Documents/demandes/', null=False,blank=False)
     periode = models.CharField(max_length=50)
 
-    def __str__(self):
+    def _str_(self):
         return self.Nom_complet
     
 
@@ -63,7 +63,7 @@ class Service(models.Model):
 
 
 
-    def __str__(self):
+    def _str_(self):
         return self.Nom_service
 
 class Sujet_stage(models.Model):
@@ -94,7 +94,7 @@ class Document(models.Model):
     type_document = models.CharField(max_length=50, null=True, blank=True)
     chemin_document = models.CharField(max_length=50)
 
-    def __str__(self):
+    def _str_(self):
         return f"{self.candidat.Nom_complet}"
 
 class Affectation(models.Model):
@@ -103,14 +103,14 @@ class Affectation(models.Model):
     Id_sujet = models.ForeignKey(Sujet_stage, on_delete=models.CASCADE)
     date_affectaion = models.DateTimeField(auto_now=True)
 
-    def __str__(self):
+    def _str_(self):
         return str(self.Id_affectation)
 
 class Room(models.Model):
     id = models.AutoField(primary_key=True)
     name = models.CharField(max_length=20, unique=True)  
 
-    def __str__(self):
+    def _str_(self):
         return self.name
 
 class Evaluation(models.Model):
@@ -121,7 +121,7 @@ class Evaluation(models.Model):
     room = models.ForeignKey(Room, on_delete=models.CASCADE)  
     date = models.DateTimeField(default=datetime.now, blank=True)
 
-    def __str__(self):
+    def _str_(self):
         return f'Evaluation {self.Id_evaluation} by {self.user}'
 class Attestation(models.Model):
     Id_attestation = models.AutoField(primary_key=True)
@@ -130,7 +130,7 @@ class Attestation(models.Model):
     Date_emission = models.DateTimeField(auto_now_add=True)
     chemin_attestation = models.FileField(upload_to='Attestation/%y_%m_%d')
 
-    def __str__(self):
+    def _str_(self):
         return str(self.Id_attestation)
 
 class Notification(models.Model):
@@ -153,4 +153,11 @@ def create_demande(sender, instance, created, **kwargs):
             statut="En attente"
         )
 
-
+@receiver(post_save, sender=Candidats)
+def create_demande(sender, instance, created, **kwargs):
+    if created:
+        Demandes.objects.create(
+            Nom_candidat=instance,
+            Date_soumission=instance.Date_demande,
+            statut="En attente"
+        )

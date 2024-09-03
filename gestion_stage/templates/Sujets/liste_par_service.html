@@ -49,7 +49,8 @@
                     </button>
                 </form>
                 <div class='hi'>
-                <a href="{% url 'ajouter_sujet' service.Id_service %}" class="btn btn-success">
+            <!-- Exemple d'utilisation correcte -->
+                <a href="{% url 'ajouter_sujet' service_id=sujet.Id_service %}" class="btn btn-primary">Ajouter Sujet</a>
                     <i class="bi bi-plus-circle"></i> Ajouter un nouveau sujet
                 </a>
             </div>

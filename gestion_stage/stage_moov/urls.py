@@ -45,6 +45,8 @@ urlpatterns=[
     path('getMessages/<str:room>/', views.getMessages , name ="getMessages"),
     path('service/<int:service_id>/sujets/', views.liste_sujets_par_service, name='liste_sujets_par_service'),
     path('service/<int:service_id>/sujets/ajouter/', views.ajouter_sujet, name='ajouter_sujet'),
+    path('choix_sujet', views.choix_sujet, name='choix_sujet'),
+    path('vue_sujets_choisis', views.vue_sujets_choisis, name='vue_sujets_choisis'),
     path('sujets/<int:sujet_id>/modifier/', views.modifier_sujet, name='modifier_sujet'),
     path('sujets/<int:sujet_id>/supprimer/', views.supprimer_sujet, name='supprimer_sujet'),
     path('create_attestation/', views.create_attestation, name='create_attestation'),
@@ -55,4 +57,5 @@ urlpatterns=[
     path('checkview', views.checkview , name ="checkview"),
     path('send', views.send , name ="send"),
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
+
 

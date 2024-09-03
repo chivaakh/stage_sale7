@@ -9,96 +9,97 @@
     {% load static %}
    
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@600&display=swap');
-    
-        body {
-          display: flex;
-          min-height: 100vh;
-          margin: 0;
-          font-family: 'Poppins', sans-serif;
-          background-image: url("{% static 'image/fo.jpg' %}");
-          background-size: cover;
-        }
-    
-        .sidebar {
-          width: 250px;
-          background-color: #fff;
-          color: #333;
-          padding: 20px;
-          box-shadow: 2px 0 10px rgba(19, 35, 47, 0.3);
-          position: fixed;
-          height: 100%;
-        }
-    
-        .logo {
-          display: flex;
-          align-items: center;
-          margin-bottom: 20px;
-        }
-    
-        .logo img {
-          max-width: 50px;
-          height: auto;
-          margin-right: 10px;
-        }
-    
-        .logo h2 {
-          font-size: 1.2rem;
-          color: #007bff;
-          margin: 0;
-          text-transform: uppercase;
-        
-        }
-    
-        .links {
-          list-style: none;
-          padding: 0;
-          margin: 0;
-        }
-    
-        .links li {
-          display: flex;
-          align-items: center;
-          margin: 15px 0;
-        }
-    
-        .links a {
-          color: #333;
-          text-decoration: none;
-          font-size: 1.2rem; /* Taille de la police augmentée */
-          font-weight: 600;
-          display: flex;
-          align-items: center;
-          margin-left: 10px;
-          transition: all 0.3s ease;
-        }
-    
-        .links a:hover {
-          color: #fff;
-          background-color: #007bff;
-          padding: 10px;
-          border-radius: 5px;
-        }
-    
-        .material-symbols-outlined {
-          font-size: 1.5rem;
-        }
-    
-        .logout-link a {
-          font-weight: bold;
-          font-size: 1.2rem; /* Taille de la police augmentée */
-        }
-    
-        .logout-link a:hover {
-          color: #fff;
-          background-color: #007bff; 
-        }
-    
-        .container{
-          margin-left: 270px;
-          padding: 20px;
-          width: calc(100% - 270px);
-        }
+      @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@600&display=swap');
+
+body {
+  display: flex;
+  min-height: 100vh;
+  margin: 0;
+  font-family: 'Poppins', sans-serif;
+  background-image: url("{% static 'image/fo.jpg' %}");
+  background-size: cover;
+}
+
+.sidebar {
+  width: 250px;
+  background-color: #fff;
+  color: #333;
+  padding: 20px;
+  box-shadow: 2px 0 10px rgba(19, 35, 47, 0.3);
+  position: fixed;
+  height: 100%;
+}
+
+.logo-container {
+  display: flex;
+  align-items: center;
+  margin-bottom: 20px;
+}
+
+.logo-container img {
+  max-width: 50px;
+  height: auto;
+  margin-right: 10px;
+}
+
+.logo-container h2 {
+  font-size: 1.2rem;
+  color: #007bff;
+  margin: 0;
+  text-transform: uppercase;
+
+}
+
+.links {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.links li {
+  display: flex;
+  align-items: center;
+  margin: 15px 0;
+}
+
+.links a {
+  color: #333;
+  font-size: 1.2rem; /* Taille de la police augmentée */
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+  margin-left: 10px;
+  transition: all 0.3s ease;
+  text-decoration: none;
+ 
+}
+
+.links a:hover {
+  color: #fff;
+  background-color: #007bff;
+  padding: 10px;
+  border-radius: 5px;
+}
+
+.material-symbols-outlined {
+  font-size: 1.5rem;
+}
+
+.logout-link a {
+  font-weight: bold;
+  font-size: 1.2rem; /* Taille de la police augmentée */
+}
+
+.logout-link a:hover {
+  color: #fff;
+  background-color: #007bff; 
+}
+
+.container-content {
+  margin-left: 270px;
+  padding: 20px;
+  width: calc(100% - 270px);
+}
       </style>
   </head>
 

@@ -1,0 +1,130 @@
+{% extends 'sidebar/nevbar_encadreur.html' %}
+
+{% block content %}
+<head>
+    <style>
+        /* Style pour le conteneur principal */
+body {
+    font-family: 'Arial', sans-serif;
+    background-color: #f4f4f9;
+    color: #333;
+}
+
+h2 {
+    text-align: center;
+    color: #4a4a4a;
+    margin-bottom: 20px;
+}
+
+/* Style pour les messages de succès */
+.messages {
+    list-style-type: none;
+    padding: 0;
+    margin-bottom: 20px;
+    text-align: center;
+}
+
+.messages li {
+    display: inline-block;
+    background-color: #d4edda;
+    color: #155724;
+    padding: 10px 15px;
+    border: 1px solid #c3e6cb;
+    border-radius: 5px;
+    margin: 5px;
+}
+
+/* Style pour le tableau */
+table {
+    width: 80%;
+    margin: 0 auto;
+    border-collapse: collapse;
+    background-color: #ffffff;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    border-radius: 8px;
+    overflow: hidden;
+}
+
+thead {
+    background-color: #4a90e2;
+    color: #ffffff;
+}
+
+th, td {
+    padding: 12px 15px;
+    text-align: left;
+    border-bottom: 1px solid #ddd;
+}
+
+th {
+    font-size: 16px;
+    text-transform: uppercase;
+}
+
+tbody tr:nth-child(even) {
+    background-color: #f9f9f9;
+}
+
+tbody tr:hover {
+    background-color: #e6f7ff;
+}
+
+/* Bouton Affecter */
+form button[type="submit"] {
+    background-color: #4a90e2;
+    color: #ffffff;
+    border: none;
+    padding: 8px 16px;
+    cursor: pointer;
+    border-radius: 4px;
+    font-size: 14px;
+    transition: background-color 0.3s ease;
+}
+
+form button[type="submit"]:hover {
+    background-color: #357ab8;
+}
+
+    </style>
+
+    <head>
+<h2>Liste des sujets choisis par les stagiaires</h2>
+
+<!-- Affichage des messages de succès -->
+{% if messages %}
+    <ul class="messages">
+        {% for message in messages %}
+        <li{% if message.tags %} class="{{ message.tags }}"{% endif %}>{{ message }}</li>
+        {% endfor %}
+    </ul>
+{% endif %}
+
+<table>
+    <thead>
+        <tr>
+            <th>Sujet</th>
+            <th>Service</th>
+            <th>Stagiaire</th>
+            <th>Action</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for affectation in affectations %}
+        <tr>
+            <td>{{ affectation.Id_sujet.titre }}</td>
+            <td>{{ affectation.Id_sujet.Id_service.Nom_service }}</td>
+            <td>{{ affectation.Id_demande.Nom_candidat.Nom_complet }}</td>
+            <td>
+                <!-- Formulaire pour affecter -->
+                <form method="post" action="">
+                    {% csrf_token %}
+                    <input type="hidden" name="affectation_id" value="{{ affectation.Id_affectation }}">
+                    <button type="submit">Affecter</button>
+                </form>
+            </td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+
+{% endblock %}

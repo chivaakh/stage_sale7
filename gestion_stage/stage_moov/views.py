@@ -18,6 +18,8 @@ from .models import Sujet_stage
 from django.http import HttpResponseRedirect
 from django.urls import reverse
 from .forms import SujetStageForm  # Assume que tu as un formulaire pour Sujet_stage
+from django.http import JsonResponse, HttpResponseBadRequest
+from .models import Affectation, Demandes, Sujet_stage
 from django.contrib.auth.hashers import check_password
 
 # Create your views here.
@@ -272,6 +274,10 @@ def delete_candidate(request,id_candidate):
 
 #pour gestion des demandes
 def gestion_demandes(request):
+    # if not request.user.is_authenticated:
+    #     return redirect('home')
+    demandes = Demandes.objects.all()
+    return render(request, 'gestion_demande/gestion_demandes.html',{'demandes': demandes})
     if not request.user.is_authenticated:
         return redirect('login')
     
@@ -292,7 +298,8 @@ def accepter_demande(request, demande_id):
    demande = Demandes.objects.filter(Id_demande=demande_id).first()
    demande.statut = 'accepter'
    demande.save()
-   return redirect('gestion_demandes')
+   # Rediriger vers la page de choix de fichiers après acceptation
+   return redirect('sujets/sujets_disponibles.html', demande_id=demande.Id_demande)
 
 #pour la rejet
 def rejeter_demande(request, demande_id):
@@ -302,7 +309,7 @@ def rejeter_demande(request, demande_id):
     return redirect('gestion_demandes')
 #les views pour la service
 def service_list(request):
-    user_email = request.session.get('user_email') 
+    user_email = request.session.get('user_email')
     utilisateur = Utilisateur.objects.filter(Email=user_email).first()
     # user=Utilisateur.objects.filter(Utilisateur.role).first
     query = request.GET.get('q')
@@ -312,7 +319,6 @@ def service_list(request):
         services = Service.objects.all()
     
     return render(request, 'Service/service_list.html', {'services': services, 'query': query, 'utilisateur':utilisateur})
-
 # Rest of your views...
 def service_add(request):
     if request.method == 'POST':
@@ -360,12 +366,13 @@ def form_candidat(request):
 
 # Liste des sujets par service
 def liste_sujets_par_service(request, service_id):
-    service = get_object_or_404(Service, pk=service_id)
+    service = get_object_or_404(Service, Id_service=service_id)
     sujets = Sujet_stage.objects.filter(Id_service=service)
-    query = request.GET.get('q')
-    if query:
-        sujets = sujets.filter(titre__icontains=query)
-    return render(request, 'sujets/liste_par_service.html', {'service': service, 'sujets': sujets})
+    
+    # Ajouter service_id au contexte pour utilisation dans le template
+    return render(request, 'sujets/liste_par_service.html', {'sujets': sujets, 'service_id': service_id})
+
+
 
 # Ajouter un sujet
 def ajouter_sujet(request, service_id):
@@ -406,6 +413,7 @@ def supprimer_sujet(request, sujet_id):
         sujet.delete()
         return redirect('liste_sujets_par_service', service_id=service_id)
     return render(request, 'sujets/confirm_delete.html', {'sujet': sujet})
+
 
 
 
@@ -528,3 +536,63 @@ def download_attestation(request, attestation_id):
         raise Http404("File not found")
 
     return FileResponse(open(file_path, 'rb'), as_attachment=True, filename=attestation.chemin_attestation.name)
+
+from django.shortcuts import render, get_object_or_404, redirect
+from django.db.models import Q
+from .models import Sujet_stage, Service, Candidats, Affectation, Demandes
+
+def choix_sujet(request):
+    # Récupérer tous les sujets
+    sujets = Sujet_stage.objects.all()
+    services = Service.objects.all()
+
+    # Filtrage par service
+    service_id = request.GET.get('service')
+    if service_id:
+        sujets = sujets.filter(Id_service=service_id)
+
+    # Recherche par titre ou description
+    query = request.GET.get('query')
+    if query:
+        sujets = sujets.filter(Q(titre__icontains=query) | Q(description__icontains=query))
+
+    # Lorsqu'un stagiaire choisit un sujet
+    if request.method == "POST":
+        sujet_id = request.POST.get('sujet_id')
+        sujet = get_object_or_404(Sujet_stage, pk=sujet_id)
+        candidat = Candidats.objects.get(Id_utilisateur=request.user.utilisateur)  # Assure-toi que le candidat est récupéré correctement.
+        demande = Demandes.objects.get(Nom_candidat=candidat)  # Supposons que chaque candidat a une seule demande.
+        
+        # Créer une affectation pour ce sujet et ce candidat
+        Affectation.objects.create(Id_demande=demande, Id_sujet=sujet)
+
+        # Rediriger après le choix
+        return redirect('confirmation_page')  # Remplace 'confirmation_page' par le nom de la page de confirmation
+
+    return render(request, 'sujets/choix_sujet.html', {'sujets': sujets, 'services': services})
+
+
+
+from django.shortcuts import render, redirect, get_object_or_404
+from django.contrib import messages
+from .models import Affectation, Demandes
+
+def vue_sujets_choisis(request):
+    # Récupérer toutes les affectations
+    affectations = Affectation.objects.select_related('Id_sujet', 'Id_demande__Nom_candidat', 'Id_sujet__Id_service')
+
+    if request.method == "POST":
+        # Récupérer l'affectation à partir de l'ID envoyé via le formulaire
+        affectation_id = request.POST.get('affectation_id')
+        affectation = get_object_or_404(Affectation, pk=affectation_id)
+
+        # Mettre à jour la table Affectation ou gérer l'affectation
+        # Par exemple, mettre à jour le statut de la demande ou toute autre logique
+        affectation.date_affectaion = timezone.now()  # Mettre à jour la date d'affectation
+        affectation.save()
+
+        messages.success(request, f"Le sujet '{affectation.Id_sujet.titre}' a été affecté avec succès à {affectation.Id_demande.Nom_candidat.Nom_complet}.")
+
+        return redirect('vue_sujets_choisis')  # Redirige après la mise à jour
+
+    return render(request, 'sujets/vue_sujets_choisis.html', {'affectations': affectations})
