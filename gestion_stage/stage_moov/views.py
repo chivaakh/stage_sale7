@@ -164,7 +164,7 @@ def login(request):
                 elif utilisateur and utilisateur.role == 'Encadreur':
                      return redirect('nevbar_encadreur') 
                 else:
-                     return redirect('hello') 
+                     return redirect('nevbar_encadreur') 
                 
             else:
                 error_message = "Email ou mot de passe incorrect."
