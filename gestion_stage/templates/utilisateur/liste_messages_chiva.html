@@ -17,7 +17,6 @@
       font-family: 'Poppins', sans-serif;
       background-image: url("{% static 'image/fo.jpg' %}");
       background-size: cover;
-      flex-direction: row;
     }
 
     .sidebar {
@@ -77,10 +76,11 @@
       background-color: #007bff;
       padding: 10px;
       border-radius: 5px;
+      text-decoration: none;
     }
 
     .material-symbols-outlined {
-      font-size: 1.5rem;
+      font-size: 1.8rem;
     }
 
     .logout-link a {
@@ -90,7 +90,9 @@
 
     .logout-link a:hover {
       color: #fff;
-      background-color: #007bff;
+      background-color: #dc3545;
+      padding: 10px;
+      border-radius: 5px;
     }
 
     .container-content {
@@ -99,8 +101,7 @@
       width: calc(100% - 270px);
     }
 
-    /* Styles du premier fichier */
-
+    /* Styles spécifiques de la première version */
     .chiva {
       font-size: 2.5rem;
       color: #007bff;
@@ -117,8 +118,8 @@
       padding: 20px;
       border-radius: 10px;
       box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-      width: 75%; /* Augmente la largeur du container */
-      max-width: 700px; /* Augmente la largeur maximale */
+      width: 75%;
+      max-width: 700px;
       height: 70vh;
       overflow-y: auto;
       margin-top: 20px;
@@ -191,59 +192,56 @@
       <img src="{% static 'image/Moov_Mauritel_(logo_in_French).png' %}" alt="Logo Moov Mauritel">
       <h2>Gestion des Stages</h2>
     </div>
-
     <ul class="links">
       <li>
         <ion-icon name="menu-sharp" class="material-symbols-outlined"></ion-icon>
-        <a href="{% url 'service_list_candidat' %}">Voir les services</a>
+        <a href="{% url 'service_list' %}">Gestion des services</a>
       </li>
-
       <li>
-        <ion-icon name="exit-sharp" class="material-symbols-outlined" ></ion-icon>
-        <a href="{% url 'liste_messages' %}">Importer votre rapport</a>
+        <ion-icon name="people-sharp" class="material-symbols-outlined"></ion-icon>
+        <a href="{% url 'show_candidate' %}">Gestion des Candidats</a>
       </li>
-
       <li>
-        <ion-icon name="download-sharp" class="material-symbols-outlined"></ion-icon>
-        <a href="{% url 'liste_messages' %}">Exporter votre attestation</a>
+        <ion-icon name="people-sharp" class="material-symbols-outlined"></ion-icon>
+        <a href="{% url 'interface_principal' %}">Gestion des Utilisateurs</a>
       </li>
-
       <li>
         <ion-icon name="notifications-sharp" class="material-symbols-outlined"></ion-icon>
-        <a href="{% url 'liste_messages' %}">Notification</a>
+        <a href="{% url 'liste_candidats' %}">Gestion des Notifications</a>
       </li>
-      
+      <li>
+        <ion-icon name="notifications-sharp" class="material-symbols-outlined"></ion-icon>
+        <a href="{% url 'chivaa' %}">Notifications Envoyées</a>
+    </li>
       <li class="logout-link">
         <ion-icon name="log-out-sharp" class="material-symbols-outlined"></ion-icon>
-        <a href="{% url 'login_candidat' %}">Logout</a>
+        <a href="{% url 'logout' %}">Logout</a>
       </li>
     </ul>
   </aside>
-
   <div class="container-content">
     <div class="container">
-        <h1 class="chiva">Vos Messages</h1>
-        <ul>
-            {% for notification in notifications %}
-                <li>
-                    <div class="message">
-                        <strong>{{ notification.utilisateur.Nom_complet }} à {{ notification.candidat.Nom_complet }}:</strong> {{ notification.message }}
-                    </div>
-                    <div class="date-time">Envoyé le {{ notification.date_envoi }}</div>
-                    {% if notification.lu %}
-                        <div class="lu">(Lu)</div>
-                    {% else %}
-                        <form action="{% url 'marquer_comme_lu' notification.id %}" method="post" style="display: inline;">
-                            {% csrf_token %}
-                            <button type="submit">Marquer comme lu</button>
-                        </form>
-                    {% endif %}
-                </li>
-            {% endfor %}
-        </ul>
+      <h1 class="chiva">Vos Messages</h1>
+      <ul>
+        {% for notification in notifications %}
+          <li>
+            <div class="message">
+              <strong>{{ notification.utilisateur.Nom_complet }} à {{ notification.candidat.Nom_complet }}:</strong> {{ notification.message }}
+            </div>
+            <div class="date-time">Envoyé le {{ notification.date_envoi }}</div>
+            {% if notification.lu %}
+              <div class="lu">(Lu)</div>
+            {% else %}
+              <form action="{% url 'marquer_comme_lu' notification.id %}" method="post" style="display: inline;">
+                {% csrf_token %}
+                <button type="submit">Marquer comme lu</button>
+              </form>
+            {% endif %}
+          </li>
+        {% endfor %}
+      </ul>
     </div>
   </div>
-
   <script type="module" src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.esm.js"></script>
   <script nomodule src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.js"></script>
 </body>

@@ -9,6 +9,8 @@ urlpatterns=[
     path('candidats/<int:candidat_id>/envoyer-message/', views.envoyer_message, name='envoyer_message'),
     # URL pour afficher les messages pour un candidat
     path('candidats/messages/', views.liste_messages, name='liste_messages'),
+     # URL pour afficher les messages pour un utilisateur
+     path('chivaa/', views.chivaa, name='chivaa'),
     # URL pour marquer un message comme lu
     path('messages/<int:notification_id>/marquer-comme-lu/', views.marquer_comme_lu, name='marquer_comme_lu'),
     path('start_user',views.create_utilisateur, name='create_utilisateur'),
@@ -16,6 +18,7 @@ urlpatterns=[
     path('logout/',views.logout, name='logout'),
     # path('create_candidate',views.create_candidate, name='create_candidate'),
     path('services/', views.service_list, name='service_list'),
+    path('services/', views.service_list, name='service_list_candidat'),
     path('services/add/', views.service_add, name='service_add'),
     path('services/edit/<int:pk>/', views.service_edit, name='service_edit'),
     path('services/delete/<int:pk>/', views.service_delete, name='service_delete'),
@@ -42,6 +45,8 @@ urlpatterns=[
     path('getMessages/<str:room>/', views.getMessages , name ="getMessages"),
     path('service/<int:service_id>/sujets/', views.liste_sujets_par_service, name='liste_sujets_par_service'),
     path('service/<int:service_id>/sujets/ajouter/', views.ajouter_sujet, name='ajouter_sujet'),
+    path('choix_sujet', views.choix_sujet, name='choix_sujet'),
+    path('vue_sujets_choisis', views.vue_sujets_choisis, name='vue_sujets_choisis'),
     path('sujets/<int:sujet_id>/modifier/', views.modifier_sujet, name='modifier_sujet'),
     path('sujets/<int:sujet_id>/supprimer/', views.supprimer_sujet, name='supprimer_sujet'),
     path('create_attestation/', views.create_attestation, name='create_attestation'),
