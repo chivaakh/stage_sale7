@@ -144,6 +144,7 @@ MEDIA_URL='/media/'
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 SESSION_ENGINE = 'django.contrib.sessions.backends.db'
+<<<<<<< HEAD
 # AUTH_USER_MODEL = 'stage_moov.Utilisateur'
 
 # settings.py
@@ -154,3 +155,5 @@ SESSION_COOKIE_NAME = 'sessionid'  # Nom du cookie de session
 SESSION_COOKIE_AGE = 1209600  # Durée de vie du cookie (en secondes)
 # Configuration pour Crispy Forms
 # CRISPY_TEMPLATE_PACK = 'bootstrap4'
+=======
+>>>>>>> cdd11c7e482c4e0a5c77f59ccaa64fe71f5c79b2

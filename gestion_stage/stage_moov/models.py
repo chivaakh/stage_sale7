@@ -36,7 +36,7 @@ class Utilisateur(models.Model):
 
 class Candidats(models.Model):
     Id_candidat = models.AutoField(primary_key=True)
-    Id_utilisateur = models.ForeignKey(Utilisateur, on_delete=models.CASCADE, null=True, blank=True)
+    Id_utilisateur = models.ForeignKey(Utilisateur, on_delete=models.CASCADE, null=True, blank=True,default=1)
     Nom_complet = models.CharField(max_length=50)
     universite = models.CharField(max_length=50)
     niveau_academique = models.CharField(max_length=50)
