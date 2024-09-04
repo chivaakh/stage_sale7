@@ -198,6 +198,17 @@
     margin: 0;
     font-weight: 600;
 }
+.candidat_name{
+  font-size: 2rem;
+  font-weight: bold;
+  color: #007bff; /* Couleur vive pour attirer l'attention */
+  text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.2); /* Ombre pour donner de la profondeur */
+  background: linear-gradient(45deg, #007bff, #00d2d3); /* Dégradé pour plus de dynamisme */
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  border-radius: 5px;
+  padding: 2px 6px;
+}
   </style>
 </head>
 <body>
@@ -247,7 +258,7 @@
 
   <div class="container-content">
     <div class="container">
-        <h1 class="chiva">Vos Messages</h1>
+        <h1 class="chiva">Notifications de <span class="candidat_name">{{ request.session.candidat_nom_complet }}</span></h1>
         <ul>
             {% for notification in notifications %}
                 <li>

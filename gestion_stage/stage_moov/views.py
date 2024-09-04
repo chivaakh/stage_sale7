@@ -73,11 +73,29 @@ def envoyer_message(request, candidat_id):
 
     return render(request, 'utilisateur/envoyer_message.html', {'candidat': candidat})
 
-#liste message pour les utilisateur
+#liste message pour les encadreurs
 def chivaa(request):
+    # Assurez-vous que l'utilisateur est connecté
+    if not request.user.is_authenticated:
+        return redirect('login')  # Redirige vers la page de connexion si non connecté
+
+    # Récupérez l'utilisateur connecté à partir de la session
+    email = request.session.get('user_email')
+    utilisateur = Utilisateur.objects.filter(Email=email).first()
     
-    notifications = Notification.objects.all()
+    if utilisateur is None:
+        return render(request, 'sidebar/error.html', {'error_message': "Utilisateur non trouvé."})
+
+    # Assurez-vous que l'utilisateur a le rôle "Encadreur"
+    if utilisateur.role != 'Encadreur':
+        return render(request, 'sidebar/error.html', {'error_message': "Vous n'avez pas l'autorisation de voir ces messages."})
+
+    # Filtrez les notifications envoyées par l'encadreur connecté
+    notifications = Notification.objects.filter(utilisateur=utilisateur)
+
     return render(request, 'utilisateur/liste_messages_chiva.html', {'notifications': notifications})
+
+
 #liste message pour les candidat
 from django.shortcuts import get_object_or_404
 
