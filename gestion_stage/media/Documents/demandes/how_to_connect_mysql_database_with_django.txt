@@ -1,0 +1,20 @@
+
+
+
+When you create a project :
+
+1)pip install mysqlclient
+2)create database (exemple:sample)
+3)DATABASES = {
+    'default': {
+        'ENGINE': 'django.db.backends.mysql',
+        'NAME': 'sample',
+        'USER': 'root',
+        'PASSWORD': '',
+        'HOST': 'localhost',  # or the hostname where your MySQL server is running
+        'PORT': '3306',      # or the port on which your MySQL server is listening
+    }
+}
+3)-python manage.py makemigrations
+  -python manege.py migrate
+

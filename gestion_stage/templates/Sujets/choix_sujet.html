@@ -1,0 +1,94 @@
+{% extends 'sidebar/nevbar_candidat.html' %}
+
+{% block content %}
+<div class="container">
+    <!-- Titre de la page -->
+    <div class="text-center mb-5">
+        <h1 class="display-4" style="color: #1b3a6b;">Sujets de Stage Disponibles</h1>
+        <p class="lead" style="color: #666;">Choisissez un sujet qui correspond à vos intérêts et compétences.</p>
+    </div>
+    
+    <!-- Section de filtrage par service -->
+    <div class="filter-section d-flex justify-content-center">
+        <label for="service-select" class="filter-label">Filtrer par Service : </label>
+        <select id="service-select" class="form-control w-25" onchange="filterByService()">
+            <option value="">Tous les services</option>
+            {% for service in services %}
+            <option value="{{ service.Id_service }}">{{ service.Nom_service }}</option>
+            {% endfor %}
+        </select>        
+    </div>
+    
+    <!-- Liste des sujets -->
+    <div id="sujets-list" class="row mt-4">
+        {% for sujet in sujets %}
+        <div class="col-md-6 mb-4">
+            <div class="card sujet-item">
+                <div class="card-body">
+                    <h5 class="card-title">{{ sujet.titre }}</h5>
+                    <p class="card-text">
+                        {{ sujet.description|truncatechars:20 }}
+                        {% if sujet.description|length > 20 %}
+                            <span class="more-link" data-toggle="modal" data-target="#modal-{{ sujet.Id_sujet }}">Voir plus</span>
+                        {% endif %}
+                    </p>
+                    <!-- Formulaire pour le choix d'un sujet -->
+                    <form method="post" onsubmit="return showConfirmation()">
+                        {% csrf_token %}
+                        <input type="hidden" name="sujet_id" value="{{ sujet.Id_sujet }}">
+                        <button type="submit" class="btn btn-primary">Choisir ce sujet</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+
+        <!-- Modale pour afficher la description complète -->
+        <div class="modal fade" id="modal-{{ sujet.Id_sujet }}" tabindex="-1" role="dialog" aria-labelledby="modalLabel-{{ sujet.Id_sujet }}" aria-hidden="true">
+            <div class="modal-dialog" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="modalLabel-{{ sujet.Id_sujet }}">{{ sujet.titre }}</h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                        {{ sujet.description }}
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Fermer</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+</div>
+
+<!-- Scripts JavaScript de Bootstrap et SweetAlert -->
+<script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@4.5.2/dist/js/bootstrap.bundle.min.js"></script>
+
+<script>
+    function showConfirmation() {
+        Swal.fire({
+            title: 'Sujet Choisi !',
+            text: 'Le sujet a été sélectionné avec succès.',
+            icon: 'success',
+            confirmButtonText: 'OK',
+            confirmButtonColor: '#1b3a6b'
+        });
+        return false;  // Empêche le formulaire de soumettre immédiatement
+    }
+
+    function filterByService() {
+        var serviceId = document.getElementById('service-select').value;
+        if (serviceId) {
+            window.location.href = '/service/' + serviceId + '/sujets/';
+        } else {
+            window.location.href = '/service/all/sujets/'; // Ou l'URL par défaut si nécessaire
+        }
+    }
+    
+</script>
+{% endblock %}

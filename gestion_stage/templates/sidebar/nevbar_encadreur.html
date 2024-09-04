@@ -7,17 +7,97 @@
     <!-- Google font link for icons -->
     <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200">
     {% load static %}
-    <link rel="stylesheet" href="{% static 'css/sidebar.css' %}">
+   
     <style>
+      @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@600&display=swap');
+  
       body {
+        display: flex;
+        min-height: 100vh;
+        margin: 0;
+        font-family: 'Poppins', sans-serif;
         background-image: url("{% static 'image/fo.jpg' %}");
         background-size: cover;
-        height: 100vh;
-        width: 100%;
-        margin: 0;
+      }
+  
+      .sidebar {
+        width: 250px;
+        background-color: #fff;
+        color: #333;
+        padding: 20px;
+        box-shadow: 2px 0 10px rgba(19, 35, 47, 0.3);
+        position: fixed;
+        height: 100%;
+      }
+  
+      .logo {
         display: flex;
-        justify-content: center;
         align-items: center;
+        margin-bottom: 20px;
+      }
+  
+      .logo img {
+        max-width: 50px;
+        height: auto;
+        margin-right: 10px;
+      }
+  
+      .logo h2 {
+        font-size: 1.2rem;
+        color: #007bff;
+        margin: 0;
+        text-transform: uppercase;
+      
+      }
+  
+      .links {
+        list-style: none;
+        padding: 0;
+        margin: 0;
+      }
+  
+      .links li {
+        display: flex;
+        align-items: center;
+        margin: 15px 0;
+      }
+  
+      .links a {
+        color: #333;
+        text-decoration: none;
+        font-size: 1.2rem; /* Taille de la police augmentée */
+        font-weight: 600;
+        display: flex;
+        align-items: center;
+        margin-left: 10px;
+        transition: all 0.3s ease;
+      }
+  
+      .links a:hover {
+        color: #fff;
+        background-color: #007bff;
+        padding: 10px;
+        border-radius: 5px;
+      }
+  
+      .material-symbols-outlined {
+        font-size: 1.5rem;
+      }
+  
+      .logout-link a {
+        font-weight: bold;
+        font-size: 1.2rem; /* Taille de la police augmentée */
+      }
+  
+      .logout-link a:hover {
+        color: #fff;
+        background-color: #007bff; 
+      }
+  
+      .container{
+        margin-left: 270px;
+        padding: 20px;
+        width: calc(100% - 270px);
       }
     </style>
   </head>
@@ -26,20 +106,22 @@
     <aside class="sidebar">
       <div class="logo">
         <img src="{% static 'image/Moov_Mauritel_(logo_in_French).png' %}" alt="Logo de Moov Mauritel">
-        <h2>Gestion Stage</h2>
+        <h2>Gestion des Stages</h2>
       </div>
       <ul class="links">
-        <h4>Main Menu</h4>
+       
         <li>
-          <span class="material-symbols-outlined">show_chart</span>
-          <a href="{% url 'liste_sujets_par_service' %}">Gestion des Sujets</a>
+          <ion-icon name="menu-sharp" class="material-symbols-outlined"></ion-icon>
+          <a href="{% url 'service_list_candidat' %}">Gestion des Sujets</a>
         </li>
+        
         <li>
-          <span class="material-symbols-outlined">group</span>
+          <ion-icon name="trending-up-sharp" class=".material-symbols-outlined "></ion-icon>
           <a href="{% url 'ev_start' %}">Gestion des Evaluations</a>
         </li>
+       
         <li class="logout-link">
-          <span class="material-symbols-outlined">logout</span>
+          <ion-icon name="log-out-sharp" class="material-symbols-outlined"></ion-icon>
           <a href="{% url 'logout' %}">Logout</a>
         </li>
       </ul>
@@ -49,3 +131,6 @@
   </div>
   </body>
 </html>
+
+<script type="module" src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.esm.js"></script>
+<script nomodule src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.js"></script>
