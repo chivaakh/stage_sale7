@@ -100,6 +100,31 @@ body {
   padding: 20px;
   width: calc(100% - 270px);
 }
+.user-info {
+    font-size: 0.9rem;
+    margin-top: 10px;
+    padding: 10px;
+    background-color: #f8f9fa;
+    border-radius: 6px;
+    text-align: center;
+    box-shadow: 0px 3px 5px rgba(0, 0, 0, 0.1);
+}
+
+        .user-info p {
+            margin: 0;
+            color: #007bff;
+        }
+
+        .user-info p:first-child {
+    font-size: 1.1rem;
+    font-weight: 600;
+}
+
+.user-info p:last-child {
+    font-size: 0.9rem;
+    font-weight: 500;
+    color: #6c757d;
+}
       </style>
   </head>
 
@@ -109,17 +134,21 @@ body {
           <img src="{% static 'image/Moov_Mauritel_(logo_in_French).png' %}" alt="logo">
           <h2>Gestion des Stages</h2>
       </div>
+      <div class="user-info">
+        <p>Nom: {{ request.session.user_name }}</p>
+        <p>Rôle: {{ request.session.user_role }}</p>
+    </div>
       <ul class="links">
           <li>
-              <span class="material-symbols-outlined">show_chart</span>
+            <ion-icon name="menu-sharp" class="material-symbols-outlined"></ion-icon>
               <a href="{%  url 'service_list_candidat' %}">Gestion des services</a>
           </li>
           <li>
-              <span class="material-symbols-outlined">group</span>
+            <ion-icon name="document-sharp"  class="material-symbols-outlined"></ion-icon>
               <a href="{% url 'gestion_demandes' %}">Gestion des demandes</a>
           </li>
           <li>
-            <span class="material-symbols-outlined">show_chart</span>
+            <ion-icon name="document-sharp"  class="material-symbols-outlined"></ion-icon>
             <a href="{%  url 'create_attestation' %}">Gestion des Attestation</a>
         </li>
           <li class="logout-link">
@@ -135,3 +164,4 @@ body {
 </html>
 <script type="module" src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.esm.js"></script>
 <script nomodule src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.js"></script>
+

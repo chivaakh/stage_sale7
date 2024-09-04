@@ -147,41 +147,40 @@ def create_utilisateur(request):
     return render(request, 'gestions_users/home.html')
 #fonction pour la login
 def login(request):
-    error_message = None  # Initialise la variable pour stocker les messages d'erreur
+    error_message = None
 
     if request.method == 'POST':
         email = request.POST.get('email')
         password = request.POST.get('password')
 
         if email and password:
-        
             utilisateur = Utilisateur.objects.filter(Email=email).first()
             if utilisateur and utilisateur.check_password(password):
                 request.session['user_email'] = utilisateur.Email
                 request.session['user_role'] = utilisateur.role
-                if utilisateur and utilisateur.role == 'Admin':
-                    return redirect('nevbar_admin') 
-                elif utilisateur and utilisateur.role == 'RH':
-                     return redirect('nevbar_RH') 
-                elif utilisateur and utilisateur.role == 'Encadreur':
-                     return redirect('nevbar_encadreur') 
+                request.session['user_name'] = utilisateur.Nom_complet  # Ajoutez cette ligne
+                if utilisateur.role == 'Admin':
+                    return redirect('nevbar_admin')
+                elif utilisateur.role == 'RH':
+                    return redirect('nevbar_RH')
+                elif utilisateur.role == 'Encadreur':
+                    return redirect('nevbar_encadreur')
                 else:
-                     return redirect('nevbar_encadreur') 
-                
+                    return redirect('nevbar_encadreur')
             else:
                 error_message = "Email ou mot de passe incorrect."
         else:
             error_message = "Veuillez remplir tous les champs."
 
     user = request.user
-   
     utilisateur_exists = Utilisateur.objects.filter(Email=user.email).exists() if user.is_authenticated else False
 
     return render(request, 'gestions_users/home.html', {
         'user': user,
         'utilisateur_exists': utilisateur_exists,
-        'error_message': error_message, 
+        'error_message': error_message,
     })
+
 
 def logout(request):
     return redirect('login')
