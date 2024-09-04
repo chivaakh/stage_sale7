@@ -91,8 +91,7 @@ class Document(models.Model):
     Id_document = models.AutoField(primary_key=True)
     candidat = models.ForeignKey(Candidats, on_delete=models.CASCADE)
     Id_demande = models.ForeignKey(Demandes, on_delete=models.CASCADE)
-    type_document = models.CharField(max_length=50, null=True, blank=True)
-    chemin_document = models.CharField(max_length=50)
+    chemin_document = models.FileField(upload_to='Rapport/%y_%m_%d')
 
     def __str__(self):
         return f"{self.candidat.Nom_complet}"

@@ -104,7 +104,7 @@ def create_utilisateur(request):
         )
 
         messages.success(request, 'Utilisateur créé avec succès.')
-        return redirect('interface_principal')
+        return redirect('login')
 
     return render(request, 'gestions_users/home.html')
 #fonction pour la login
@@ -431,10 +431,32 @@ def getMessages(request, room):
     return JsonResponse({"messages": messages_list})
 #pour le rapport:
 # def rapport(request):
-#     if request.method=='POST':
-#         form=
+#     return render(request,'Candidats/rapport.html')
+def list_rapport(request):
+    rapports = Document.objects.all()
+    return render(request, 'Candidats/list_rapport.html', {'rapports': rapports})
 
+def enrigstrer(request):
+    if request.method == 'POST':
+        user_email = request.session.get('candidat_email') 
+        candidat=Candidats.objects.filter(email=user_email).first()
+        id_demande=Demandes.objects.filter(Nom_candidat=candidat).first()
+        file = request.FILES['document_file']
+        document = Document(
+                    candidat=candidat,
+                    Id_demande=id_demande,
+                    chemin_document=file
+                )
+        document.save()
+    return render(request,'Candidats/rapport.html')
+def download_rapport(request, rapport_id):
+    rapport = get_object_or_404(Document, pk=rapport_id)
+    file_path = rapport.chemin_document.path 
 
+    if not os.path.exists(file_path):
+        raise Http404("File not found")
+
+    return FileResponse(open(file_path, 'rb'), as_attachment=True, filename= rapport.chemin_document.name)
 
 
 
@@ -490,3 +512,29 @@ def download_attestation(request, attestation_id):
         raise Http404("File not found")
 
     return FileResponse(open(file_path, 'rb'), as_attachment=True, filename=attestation.chemin_attestation.name)
+
+#for show les services candidat
+def service_list_candidat(request):
+    user_email = request.session.get('user_email') 
+    utilisateur = Utilisateur.objects.filter(Email=user_email).first()
+    # user=Utilisateur.objects.filter(Utilisateur.role).first
+    query = request.GET.get('q')
+    if query:
+        services = Service.objects.filter(Nom_service__icontains=query)
+    else:
+        services = Service.objects.all()
+    
+    return render(request, 'Service/service_candidat.html', {'services': services, 'query': query, 'utilisateur':utilisateur})
+
+
+def service_list_RH(request):
+    user_email = request.session.get('user_email') 
+    utilisateur = Utilisateur.objects.filter(Email=user_email).first()
+    # user=Utilisateur.objects.filter(Utilisateur.role).first
+    query = request.GET.get('q')
+    if query:
+        services = Service.objects.filter(Nom_service__icontains=query)
+    else:
+        services = Service.objects.all()
+    
+    return render(request, 'Service/service_RH.html', {'services': services, 'query': query, 'utilisateur':utilisateur})

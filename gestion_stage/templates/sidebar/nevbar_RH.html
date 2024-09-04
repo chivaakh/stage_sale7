@@ -104,12 +104,16 @@
       <ul class="links">
           <li>
               <span class="material-symbols-outlined">show_chart</span>
-              <a href="{%  url 'service_list' %}">Gestion des services</a>
+              <a href="{%  url 'service_list_RH' %}">Gestion des services</a>
           </li>
           <li>
               <span class="material-symbols-outlined">group</span>
               <a href="{% url 'gestion_demandes' %}">Gestion des demandes</a>
           </li>
+          <li>
+            <span class="material-symbols-outlined">show_chart</span>
+            <a href="{%  url 'list_rapport' %}">Gestion des rapports</a>
+        </li>
           <li>
             <span class="material-symbols-outlined">show_chart</span>
             <a href="{%  url 'create_attestation' %}">Gestion des Attestation</a>
