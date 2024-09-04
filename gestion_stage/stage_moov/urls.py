@@ -57,6 +57,8 @@ urlpatterns=[
     path('download_rapport/<int:rapport_id>',views.download_rapport, name='download_rapport'),
     path('service_list_candidat/',views.service_list_candidat, name='service_list_candidat'),
     path('service_list_RH/',views.service_list_RH, name='service_list_RH'),
+    path('service_list_encadreur/',views.service_list_encadreur, name='service_list_encadreur'),
+  
     path('ev_start', views.start_chat , name ="ev_start"),
     path('<str:room>/', views.room , name ="room"),
     path('checkview', views.checkview , name ="checkview"),

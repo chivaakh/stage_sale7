@@ -1,5 +1,5 @@
- {% extends "sidebar/nevbar_admin.html" %} 
- {% block content%}
+
+{% block content%}
 {% load static %}
 <!DOCTYPE html>
 <html lang="fr">
@@ -104,19 +104,12 @@ h1 {
         box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
         transition: all 0.3s ease-in-out;
         margin-left:250px;
-        margin-left: 125px;
     }
 
     .search-container input:focus {
         border-color: #2980b9;
         box-shadow: 0px 4px 15px rgba(41, 128, 185, 0.4);
         outline: none;
-    }
-    #tt{
-        margin-right: 83px;
-    }
-    #pp{
-        margin-right: 93px;
     }
 </style>
 
@@ -134,14 +127,14 @@ h1 {
 {% endif %}
 
     <div class="container mt-5">
-        <h1 class="text-center mb-4" id="pp">Liste des Services</h1>
+        <h1 class="text-center mb-4">Liste des Services</h1>
         <div class="actions">
             <div class="search-container">
                 <form method="GET" class="w-100">
                     <input type="text" name="q" placeholder="Rechercher un service..." value="{{ query|default:'' }}">
                 </form>
             </div>
-            <a href="{% url 'service_add' %}" class="btn btn-primary icon-btn" id="tt"><i class="fas fa-plus"></i> Ajouter</a>
+            <a href="{% url 'service_add' %}" class="btn btn-primary icon-btn"><i class="fas fa-plus"></i> Ajouter</a>
         </div>
         <div class="row">
             {% for service in services %}
@@ -149,9 +142,9 @@ h1 {
                 <div class="card mb-4">
                     <div class="card-body">
                         <h5 class="card-title">
-                           
-                                {{ service.Nom_service }}
-                        
+                             
+                                <a href="{% url 'liste_sujets_par_service' service.pk %}">   {{ service.Nom_service }}</a>
+                            </a>
                         </h5>
                         <p class="card-text">{{ service.description|default:"Pas de description disponible." }}</p>
                         <div class="d-flexjustify-content-between">

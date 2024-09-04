@@ -1,6 +1,4 @@
-{% comment %} {% extends 'base.html' %} {% endcomment %}
 
-{% block content %}
 <head>
     <title>Sujets pour le service {{ service.Nom_service }}</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
@@ -50,7 +48,8 @@
                 </form>
                 <div class='hi'>
             <!-- Exemple d'utilisation correcte -->
-                <a href="{% url 'ajouter_sujet' service_id=sujet.Id_service %}" class="btn btn-primary">Ajouter Sujet</a>
+            <a href="{% url 'ajouter_sujet' service_id=service_id %}" class="btn btn-primary">Ajouter Sujet</a>
+
                     <i class="bi bi-plus-circle"></i> Ajouter un nouveau sujet
                 </a>
             </div>
@@ -139,4 +138,4 @@
         });
     </script>
 </body>
-{% endblock %}
+

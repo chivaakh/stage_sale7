@@ -108,7 +108,7 @@
     
     {% if request.session.candidat_nom_complet %}
     <div class="user-info">
-        <p>Bienvenue, {{ request.session.candidat_nom_complet }}</p>
+        <strong>Bienvenue, {{ request.session.candidat_nom_complet }}</strong>
     </div>
     {% endif %}
    
@@ -123,40 +123,22 @@
       </li> 
       <li>
         <ion-icon name="download-sharp" class="material-symbols-outlined"></ion-icon>
-        <a href="{% url 'liste_messages' %}">Importer votre rapport</a>
+        <a href="{% url 'enrigstrer' %}">Importer votre rapport</a>
       </li>
      
       <li>
         <ion-icon name="download-sharp" class="material-symbols-outlined"></ion-icon>
-        <a href="{% url 'liste_messages' %}">Exporter votre attestation</a>
+        <a href="{% url 'list_attestations' %}">Exporter votre attestation</a>
       </li>
      
       <li>
         <ion-icon name="notifications-sharp" class="material-symbols-outlined"></ion-icon>
         <a href="{% url 'liste_messages' %}">Notification</a>
       </li>
-<<<<<<< HEAD
       <li>
-        <span class="material-symbols-outlined">show_chart</span>
+        <ion-icon name="notifications-sharp" class="material-symbols-outlined"></ion-icon>
         <a href="{% url 'ev_start' %}">Evaluation</a>
       </li>
-      <li>
-        <span class="material-symbols-outlined">group</span>
-        <a href="{% url 'service_list_candidat' %}">Voir les services</a>
-      </li>
-      <li>
-        <span class="material-symbols-outlined">show_chart</span>
-        <a href="{% url 'enrigstrer' %}">Importer votre rapport</a>
-      </li>
-      <li>
-        <span class="material-symbols-outlined">show_chart</span>
-        <a href="{% url 'list_attestations' %}">Exporter votre attestations</a>
-      </li>
-   
-=======
-    
-  
->>>>>>> c1203b2afffbc5c218af201caef9fe28815dd6c4
       <li class="logout-link">
         <ion-icon name="log-out-sharp" class="material-symbols-outlined"></ion-icon>
         <a href="{% url 'login_candidat' %}">Logout</a>

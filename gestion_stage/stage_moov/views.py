@@ -165,8 +165,6 @@ def login(request):
                      return redirect('nevbar_RH') 
                 elif utilisateur and utilisateur.role == 'Encadreur':
                      return redirect('nevbar_encadreur') 
-                else:
-                     return redirect('nevbar_encadreur') 
                 
             else:
                 error_message = "Email ou mot de passe incorrect."
@@ -195,7 +193,9 @@ def login_candidat(request):
             candidat = candidats.first() 
             if password == candidat.password:
                 request.session['candidat_email'] = candidat.email
-                request.session['candidat_nom_complet'] = candidat.Nom_complet  # Stocke le nom complet du candidat dans la session
+                request.session['candidat_nom_complet'] = candidat.Nom_complet  
+                request.session['candidat_id'] = candidat.Id_candidat
+                
                 return redirect('nevbar_candidat')
             else:
                 return render(request, 'Candidats/login.html', {'error': 'Mot de passe incorrect'})
@@ -274,10 +274,6 @@ def delete_candidate(request,id_candidate):
 
 #pour gestion des demandes
 def gestion_demandes(request):
-    # if not request.user.is_authenticated:
-    #     return redirect('home')
-    demandes = Demandes.objects.all()
-    return render(request, 'gestion_demande/gestion_demandes.html',{'demandes': demandes})
     if not request.user.is_authenticated:
         return redirect('login')
     
@@ -370,7 +366,7 @@ def liste_sujets_par_service(request, service_id):
     sujets = Sujet_stage.objects.filter(Id_service=service)
     
     # Ajouter service_id au contexte pour utilisation dans le template
-    return render(request, 'sujets/liste_par_service.html', {'sujets': sujets, 'service_id': service_id})
+    return render(request, 'sujets/liste_par_service.html', {'sujets': sujets,'service':service, 'service_id': service_id})
 
 
 
@@ -559,7 +555,6 @@ def download_attestation(request, attestation_id):
 
     return FileResponse(open(file_path, 'rb'), as_attachment=True, filename=attestation.chemin_attestation.name)
 
-<<<<<<< HEAD
 #for show les services candidat
 def service_list_candidat(request):
     user_email = request.session.get('user_email') 
@@ -585,42 +580,82 @@ def service_list_RH(request):
         services = Service.objects.all()
     
     return render(request, 'Service/service_RH.html', {'services': services, 'query': query, 'utilisateur':utilisateur})
-=======
+
+def service_list_encadreur(request):
+    user_email = request.session.get('user_email') 
+    utilisateur = Utilisateur.objects.filter(Email=user_email).first()
+    # user=Utilisateur.objects.filter(Utilisateur.role).first
+    query = request.GET.get('q')
+    if query:
+        services = Service.objects.filter(Nom_service__icontains=query)
+    else:
+        services = Service.objects.all()
+    
+    return render(request, 'Service/service_encadreur.html', {'services': services, 'query': query, 'utilisateur':utilisateur})
 from django.shortcuts import render, get_object_or_404, redirect
 from django.db.models import Q
 from .models import Sujet_stage, Service, Candidats, Affectation, Demandes
 
+# def choix_sujet(request):
+#     # Récupérer tous les sujets
+#     sujets = Sujet_stage.objects.all()
+#     services = Service.objects.all()
+
+#     # Filtrage par service
+#     service_id = request.GET.get('service')
+#     if service_id:
+#         sujets = sujets.filter(Id_service=service_id)
+
+#     # Recherche par titre ou description
+#     query = request.GET.get('query')
+#     if query:
+#         sujets = sujets.filter(Q(titre__icontains=query) | Q(description__icontains=query))
+
+#     # Lorsqu'un stagiaire choisit un sujet
+#     if request.method == "POST":
+#         sujet_id = request.POST.get('sujet_id')
+#         sujet = get_object_or_404(Sujet_stage, pk=sujet_id)
+#         candidat = Candidats.objects.get(Id_utilisateur=request.user.utilisateur)  # Assure-toi que le candidat est récupéré correctement.
+#         demande = Demandes.objects.get(Nom_candidat=candidat)  # Supposons que chaque candidat a une seule demande.
+        
+#         # Créer une affectation pour ce sujet et ce candidat
+#         Affectation.objects.create(Id_demande=demande, Id_sujet=sujet)
+
+#         # Rediriger après le choix
+#         return redirect('confirmation_page')  # Remplace 'confirmation_page' par le nom de la page de confirmation
+
+#     return render(request, 'sujets/choix_sujet.html', {'sujets': sujets, 'services': services})
+
+
+
 def choix_sujet(request):
-    # Récupérer tous les sujets
     sujets = Sujet_stage.objects.all()
     services = Service.objects.all()
 
-    # Filtrage par service
     service_id = request.GET.get('service')
     if service_id:
         sujets = sujets.filter(Id_service=service_id)
 
-    # Recherche par titre ou description
     query = request.GET.get('query')
     if query:
         sujets = sujets.filter(Q(titre__icontains=query) | Q(description__icontains=query))
 
-    # Lorsqu'un stagiaire choisit un sujet
     if request.method == "POST":
         sujet_id = request.POST.get('sujet_id')
         sujet = get_object_or_404(Sujet_stage, pk=sujet_id)
-        candidat = Candidats.objects.get(Id_utilisateur=request.user.utilisateur)  # Assure-toi que le candidat est récupéré correctement.
-        demande = Demandes.objects.get(Nom_candidat=candidat)  # Supposons que chaque candidat a une seule demande.
-        
-        # Créer une affectation pour ce sujet et ce candidat
-        Affectation.objects.create(Id_demande=demande, Id_sujet=sujet)
 
-        # Rediriger après le choix
-        return redirect('confirmation_page')  # Remplace 'confirmation_page' par le nom de la page de confirmation
+        candidat_id = request.session.get('candidat_id')
+        if not candidat_id:
+            return redirect('login_candidat')
+
+        candidat = get_object_or_404(Candidats, Id_candidat=candidat_id)
+        demandes = Demandes.objects.filter(Nom_candidat=candidat).first()
+
+        Affectation.objects.create(Id_demande=demandes, Id_sujet=sujet)
+        messages.success(request, f"Le sujet '{sujet.titre}' a été choisi et envoyé avec succès à votre encadreur.")
+        # return redirect('confirmation_page')
 
     return render(request, 'sujets/choix_sujet.html', {'sujets': sujets, 'services': services})
-
-
 
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib import messages
@@ -641,8 +676,32 @@ def vue_sujets_choisis(request):
         affectation.save()
 
         messages.success(request, f"Le sujet '{affectation.Id_sujet.titre}' a été affecté avec succès à {affectation.Id_demande.Nom_candidat.Nom_complet}.")
+        affectation.delete()
 
         return redirect('vue_sujets_choisis')  # Redirige après la mise à jour
 
     return render(request, 'sujets/vue_sujets_choisis.html', {'affectations': affectations})
->>>>>>> c1203b2afffbc5c218af201caef9fe28815dd6c4
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+# <a href="{% url 'liste_sujets_par_service' service.pk %}">

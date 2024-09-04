@@ -112,14 +112,18 @@
        
         <li>
           <ion-icon name="menu-sharp" class="material-symbols-outlined"></ion-icon>
-          <a href="{% url 'service_list_candidat' %}">Gestion des Sujets</a>
+          <a href="{% url 'service_list_encadreur' %}">Gestion des Sujets</a>
         </li>
-        
+              
+        <li>
+          <ion-icon name="menu-sharp" class="material-symbols-outlined"></ion-icon>
+          <a href="{% url 'vue_sujets_choisis' %}">Affectation des Sujets choisi</a>
+        </li>
+   
         <li>
           <ion-icon name="trending-up-sharp" class=".material-symbols-outlined "></ion-icon>
           <a href="{% url 'ev_start' %}">Gestion des Evaluations</a>
         </li>
-       
         <li class="logout-link">
           <ion-icon name="log-out-sharp" class="material-symbols-outlined"></ion-icon>
           <a href="{% url 'logout' %}">Logout</a>
