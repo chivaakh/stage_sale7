@@ -34,21 +34,29 @@ def liste_candidats(request):
 
 logger = logging.getLogger(__name__)
 
+@login_required
+
 def envoyer_message(request, candidat_id):
     candidat = get_object_or_404(Candidats, pk=candidat_id)
+
     if request.method == 'POST':
         message = request.POST.get('message')
-        
-        utilisateur_django = request.user
-        logger.debug(f'Utilisateur Django connecté : {utilisateur_django.email}')
-        
-        # Essayer de récupérer l'utilisateur personnalisé basé sur l'email
+
+        # Récupérer les informations de l'utilisateur à partir de la session
+        utilisateur_email = request.session.get('user_email')
+        utilisateur_role = request.session.get('user_role')
+
+        if not utilisateur_email or not utilisateur_role:
+            return render(request, 'sidebar/error.html', {'error_message': "Vous n'êtes pas connecté."})
+
         try:
-            utilisateur = Utilisateur.objects.get(Email=utilisateur_django.email)
-            logger.debug(f'Utilisateur trouvé : {utilisateur.Nom_complet}')
+            utilisateur = Utilisateur.objects.get(Email=utilisateur_email)
         except Utilisateur.DoesNotExist:
-            logger.error(f'Utilisateur non trouvé pour l\'email : {utilisateur_django.email}')
             return render(request, 'sidebar/error.html', {'error_message': "Utilisateur non trouvé."})
+
+        # Vérifier que l'utilisateur a le rôle 'Encadreur'
+        if utilisateur.role != 'Encadreur':
+            return render(request, 'sidebar/error.html', {'error_message': "Vous n'êtes pas autorisé à envoyer des messages."})
 
         # Créer la notification
         notification = Notification.objects.create(
@@ -61,16 +69,33 @@ def envoyer_message(request, candidat_id):
         # Ajouter un message de succès
         messages.success(request, 'Le message a été envoyé avec succès.')
 
-        # Rendre à nouveau le template avec le message de succès
         return render(request, 'utilisateur/envoyer_message.html', {'candidat': candidat})
 
     return render(request, 'utilisateur/envoyer_message.html', {'candidat': candidat})
-    
-#liste message pour les utilisateur
+
+#liste message pour les encadreurs
 def chivaa(request):
+    # Assurez-vous que l'utilisateur est connecté
+    if not request.user.is_authenticated:
+        return redirect('login')  # Redirige vers la page de connexion si non connecté
+
+    # Récupérez l'utilisateur connecté à partir de la session
+    email = request.session.get('user_email')
+    utilisateur = Utilisateur.objects.filter(Email=email).first()
     
-    notifications = Notification.objects.all()
+    if utilisateur is None:
+        return render(request, 'sidebar/error.html', {'error_message': "Utilisateur non trouvé."})
+
+    # Assurez-vous que l'utilisateur a le rôle "Encadreur"
+    if utilisateur.role != 'Encadreur':
+        return render(request, 'sidebar/error.html', {'error_message': "Vous n'avez pas l'autorisation de voir ces messages."})
+
+    # Filtrez les notifications envoyées par l'encadreur connecté
+    notifications = Notification.objects.filter(utilisateur=utilisateur)
+
     return render(request, 'utilisateur/liste_messages_chiva.html', {'notifications': notifications})
+
+
 #liste message pour les candidat
 from django.shortcuts import get_object_or_404
 
@@ -147,39 +172,38 @@ def create_utilisateur(request):
     return render(request, 'gestions_users/home.html')
 #fonction pour la login
 def login(request):
-    error_message = None  # Initialise la variable pour stocker les messages d'erreur
+    error_message = None
 
     if request.method == 'POST':
         email = request.POST.get('email')
         password = request.POST.get('password')
 
         if email and password:
-        
             utilisateur = Utilisateur.objects.filter(Email=email).first()
             if utilisateur and utilisateur.check_password(password):
                 request.session['user_email'] = utilisateur.Email
                 request.session['user_role'] = utilisateur.role
+                request.session['user_name'] = utilisateur.Nom_complet 
                 if utilisateur and utilisateur.role == 'Admin':
                     return redirect('nevbar_admin') 
                 elif utilisateur and utilisateur.role == 'RH':
                      return redirect('nevbar_RH') 
                 elif utilisateur and utilisateur.role == 'Encadreur':
                      return redirect('nevbar_encadreur') 
-                
             else:
                 error_message = "Email ou mot de passe incorrect."
         else:
             error_message = "Veuillez remplir tous les champs."
 
     user = request.user
-   
     utilisateur_exists = Utilisateur.objects.filter(Email=user.email).exists() if user.is_authenticated else False
 
     return render(request, 'gestions_users/home.html', {
         'user': user,
         'utilisateur_exists': utilisateur_exists,
-        'error_message': error_message, 
+        'error_message': error_message,
     })
+
 
 def logout(request):
     return redirect('login')
