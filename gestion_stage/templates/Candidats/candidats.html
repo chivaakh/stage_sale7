@@ -136,35 +136,68 @@
                 row-gap: 15px;
             }
         }
-        button{
-            height: 30px;
-            width: 20%;
-            color: #fff;
-            font-size: 1rem;
-            font-weight: 400;
-            margin-top: 30px;
-            border: none;
-            cursor: pointer;
-            transition: all 0.2s ease;
-            background: #007bff;
-            border-radius: 15px;
-       
-          
-        }
-        button a{
-            text-decoration: none;
-            
-        }
-        .a{
-            margin-left: 525px;
-        }
+        button.connexion {
+    background: linear-gradient(135deg, #007bff, #00d4ff);
+    border: none;
+    color: white;
+    font-size: 1.1rem;
+    font-weight: 600;
+    padding: 15px 30px;
+    border-radius: 50px;
+    text-transform: uppercase;
+    box-shadow: 0 8px 15px rgba(0, 123, 255, 0.3);
+    cursor: pointer;
+    transition: all 0.3s ease;
+    position: absolute;
+    top: 160px;
+    right: 20px;
+    margin-left: 190px;
+}
+
+button.connexion:hover {
+    background: linear-gradient(135deg, #00d4ff, #007bff);
+    box-shadow: 0 15px 20px rgba(0, 123, 255, 0.4);
+    transform: translateY(-5px);
+}
+
+button.connexion a {
+    color: white;
+    text-decoration: none;
+}
+.alert-success {
+    background-color: #d4edda; /* Couleur de fond vert pâle */
+    color: #155724; /* Texte vert foncé */
+    padding: 10px;
+    border-radius: 5px;
+    border: 1px solid #c3e6cb; /* Bordure vert pâle */
+    position: relative;
+    margin-bottom: 20px;
+    font-size: 1rem;
+}
+
+.alert-success::before {
+    content: '✔'; /* Icône de succès */
+    font-size: 1.5rem;
+    margin-right: 10px;
+}
+
+     
     </style>
 </head>
 <body>
  
     <section class="container">
         <header>Formulaire d'Inscription Candidat</header>
-        <button type="button" class="a"><a href="{% url 'login_candidat' %}">Connexion</a></button>
+        {% if messages %}
+        <div class="alert alert-success">
+            {% for message in messages %}
+                {{ message }}
+            {% endfor %}
+        </div>
+    {% endif %}
+    
+        <button type="button" class="connexion"><a href="{% url 'login_candidat' %}">Connexion</a></button>
+
         <form action="{% url 'enregistrer_candidat' %}" method="post" enctype="multipart/form-data" class="form">
             {% csrf_token %}
 

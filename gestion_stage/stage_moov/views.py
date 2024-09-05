@@ -316,10 +316,9 @@ def gestion_demandes(request):
 #les views pour accepter
 def accepter_demande(request, demande_id):
    demande = Demandes.objects.filter(Id_demande=demande_id).first()
-   demande.statut = 'accepter'
+   demande.statut = 'accepté'
    demande.save()
-   # Rediriger vers la page de choix de fichiers après acceptation
-   return redirect('sujets/sujets_disponibles.html', demande_id=demande.Id_demande)
+   return redirect('gestion_demandes')
 
 #pour la rejet
 def rejeter_demande(request, demande_id):
@@ -373,9 +372,10 @@ def enregistrer_candidat(request):
         form = CandidatForm(request.POST, request.FILES)
         if form.is_valid():
             form.save()
-            return redirect('confirmation')  # Redirigez vers une page de confirmation ou autre
+            messages.success(request, 'Le candidat a été enregistré avec succès.')
     else:
         form = CandidatForm()
+    
     return render(request, 'Candidats/candidats.html', {'form': form})
 
 def confirmation(request):

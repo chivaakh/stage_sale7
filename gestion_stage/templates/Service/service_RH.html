@@ -123,15 +123,25 @@ h1 {
     .actions a{
         display: none;
     }
+    #hh{
+        margin-left: 70px;
+    }
+    #bb{
+        margin-right: 100px;
+    }
+   .w-100{
+    margin-right: 100px;
+   }
+
 </style>
 {% endif %}
 
     <div class="container mt-5">
-        <h1 class="text-center mb-4">Liste des Services</h1>
+        <h1 class="text-center mb-4" id="hh">Liste des Services</h1>
         <div class="actions">
             <div class="search-container">
-                <form method="GET" class="w-100">
-                    <input type="text" name="q" placeholder="Rechercher un service..." value="{{ query|default:'' }}">
+                <form method="GET" class="w-100" id="bb">
+                    <input id="tt" type="text" name="q" placeholder="Rechercher un service..." value="{{ query|default:'' }}">
                 </form>
             </div>
             <a href="{% url 'service_add' %}" class="btn btn-primary icon-btn"><i class="fas fa-plus"></i> Ajouter</a>
