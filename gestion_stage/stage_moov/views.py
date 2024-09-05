@@ -213,20 +213,30 @@ def login_candidat(request):
         email = request.POST.get('email')
         password = request.POST.get('Password')
         candidats = Candidats.objects.filter(email=email)
+        
         if candidats.exists():
-            candidat = candidats.first() 
-            if password == candidat.password:
-                request.session['candidat_email'] = candidat.email
-                request.session['candidat_nom_complet'] = candidat.Nom_complet  
-                request.session['candidat_id'] = candidat.Id_candidat
+            candidat = candidats.first()
+
+            # Vérifier si la demande du candidat a été acceptée
+            demande = Demandes.objects.filter(Nom_candidat=candidat, statut='accepté').first()
+
+            if demande:
+                if password == candidat.password:
+                    # Stocker les informations du candidat dans la session
+                    request.session['candidat_email'] = candidat.email
+                    request.session['candidat_nom_complet'] = candidat.Nom_complet  
+                    request.session['candidat_id'] = candidat.Id_candidat
                 
-                return redirect('nevbar_candidat')
+                    return redirect('nevbar_candidat')
+                else:
+                    return render(request, 'Candidats/login.html', {'error': 'Mot de passe incorrect'})
             else:
-                return render(request, 'Candidats/login.html', {'error': 'Mot de passe incorrect'})
+                return render(request, 'Candidats/login.html', {'error': 'Votre demande de stage n\'a pas encore été acceptée'})
         else:
             return render(request, 'Candidats/login.html', {'error': 'Email non trouvé'})
 
     return render(request, 'Candidats/login.html', {'login_candidat': 'login_candidat'})
+
 
 def logout_candidat(request):
     return redirect('login_candidat')
